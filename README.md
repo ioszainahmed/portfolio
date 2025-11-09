@@ -10,11 +10,3 @@ A single-page portfolio that looks like an iPhone Home Screen with two widgets (
 
 ## Run
 Just open `index.html` in any modern browser. No build step needed.
-
-## Customize
-- Replace placeholder text in the widgets.
-- Swap emojis and labels in the app grid.
-- To use a local wallpaper, put an image into `assets/` and change `background` in `styles.css`:
-  ```css
-  body { background: url('assets/your_wallpaper.jpg') center/cover no-repeat; }
-  ```
