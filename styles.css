@@ -10,7 +10,7 @@
 html, body { height: 100%; width: 100%; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, Arial, sans-serif;
-  background: url('assets/wallpaper.jpg') center/cover no-repeat;
+  background: #0b0b0d;
   display: flex; justify-content: center; align-items: center;
   color: var(--text);
 }
@@ -42,6 +42,16 @@ body {
   display: grid; grid-template-rows: auto auto 1fr auto;
   gap: 10px;
   padding: 14px 16px;
+  background: url('assets/wallpaper.jpg') center/cover no-repeat;
+  border-radius: 34px;
+  overflow: hidden;
+}
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 120% at 50% 10%, rgba(255,255,255,0.06), rgba(0,0,0,0.25));
+  pointer-events: none;
 }
 
 /* Status bar */
