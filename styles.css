@@ -11,7 +11,7 @@ html, body { height: 100%; width: 100%; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, Arial, sans-serif;
   /* Using Apple's iOS 16 hero wallpaper URL; replace with your own if desired */
-  background: url('https://www.apple.com/v/ios/ios-16/h/images/overview/hero/hero_endframe__cvklg0xk3w6e_large.jpg') center/cover no-repeat;
+  background: url('assets/wallpaper.jpg') center/cover no-repeat;
   display: flex; justify-content: center; align-items: center;
   color: var(--text);
 }
