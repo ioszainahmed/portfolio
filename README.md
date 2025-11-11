@@ -1,6 +1,6 @@
-# iOS-Style Portfolio (Apple Theme)
+# iOS-Style Portfolio
 
-A single-page portfolio that looks like an iPhone Home Screen with two widgets (About + Blog) and an app grid.
+A single-page portfolio that looks like an iPhone Home Screen with two widgets and an app grid.
 
 ## Structure
 - `index.html` — markup
