@@ -42,28 +42,34 @@ const projects = {
     tech: ['Productivity', 'Organization', 'Notes'],
     link: '#'
   },
-  'Contact': {
-    title: 'Get in Touch',
-    description: 'Let\'s connect! Available for freelance projects, collaborations, and interesting opportunities.',
-    tech: ['Networking', 'Collaboration'],
+  'App Store': {
+    title: 'App Store',
+    description: 'Check out my published iOS applications on the App Store. Explore apps I\'ve developed and released to users worldwide.',
+    tech: ['iOS', 'App Store', 'Published Apps'],
     link: '#'
   },
-  'Tools': {
-    title: 'Developer Tools',
-    description: 'Collection of useful tools and utilities for iOS development and productivity.',
-    tech: ['Tools', 'Productivity', 'iOS'],
+  'Swift': {
+    title: 'Swift',
+    description: 'Building iOS applications with Swift. Expertise in modern Swift features, SwiftUI, and UIKit development.',
+    tech: ['Swift', 'iOS', 'SwiftUI'],
     link: '#'
   },
-  'Photos': {
-    title: 'Photo Gallery',
-    description: 'Personal photography collection featuring landscapes, portraits, and creative compositions.',
-    tech: ['Photography', 'Creative'],
+  'SwiftUI': {
+    title: 'SwiftUI',
+    description: 'Building modern, declarative user interfaces with SwiftUI. Creating beautiful and responsive iOS apps with Apple\'s latest UI framework.',
+    tech: ['SwiftUI', 'iOS', 'UI/UX'],
     link: '#'
   },
-  'Games': {
-    title: 'Game Development',
-    description: 'Side projects and experiments in game development. Exploring interactive experiences.',
-    tech: ['Game Dev', 'Swift', 'SpriteKit'],
+  'Xcode': {
+    title: 'Xcode',
+    description: 'Professional iOS development using Xcode. Creating, debugging, and optimizing apps with Apple\'s integrated development environment.',
+    tech: ['Xcode', 'iOS', 'Development'],
+    link: '#'
+  },
+  'Dev Stack': {
+    title: 'Dev Stack',
+    description: 'My development technology stack and tools. The technologies, frameworks, and tools I use to build iOS applications.',
+    tech: ['Swift', 'SwiftUI', 'Xcode', 'iOS'],
     link: '#'
   },
   'News': {

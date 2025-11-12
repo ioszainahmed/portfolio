@@ -216,15 +216,15 @@ body {
 
 .notes-header {
   background: linear-gradient(135deg, #ffd60a 0%, #ffcc00 100%);
-  padding: 10px 14px;
+  padding: 9px 13px 6px 13px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .notes-folder-icon {
-  width: 18px;
-  height: 16px;
+  width: 16px;
+  height: 14px;
   flex-shrink: 0;
   position: relative;
   display: inline-block;
@@ -233,8 +233,8 @@ body {
 .notes-folder-icon::before {
   content: '';
   position: absolute;
-  width: 16px;
-  height: 12px;
+  width: 14px;
+  height: 11px;
   border: 2px solid white;
   border-radius: 2px 2px 0 0;
   top: 2px;
@@ -245,7 +245,7 @@ body {
 .notes-folder-icon::after {
   content: '';
   position: absolute;
-  width: 8px;
+  width: 7px;
   height: 4px;
   border: 2px solid white;
   border-bottom: none;
@@ -257,7 +257,7 @@ body {
 }
 
 .notes h2 {
-  font-size: 14px;
+  font-size: 12.6px;
   color: #fff;
   margin: 0;
   font-weight: 700;
@@ -340,8 +340,24 @@ body {
   border-radius: 14px;
   transition: transform 0.2s ease;
 }
+.tile img[src*="xcode.png"] {
+  width: 106%;
+  height: 106%;
+  transform: translateY(-1px);
+}
+.tile img[src*="swiftui.png"] {
+  width: 108%;
+  height: 108%;
+  transform: translateY(-2px);
+}
 .icon:hover .tile img {
   transform: scale(1.05);
+}
+.icon:hover .tile img[src*="xcode.png"] {
+  transform: translateY(-1px) scale(1.05);
+}
+.icon:hover .tile img[src*="swiftui.png"] {
+  transform: translateY(-2px) scale(1.15);
 }
 .label { 
   font-size: 11px; 
