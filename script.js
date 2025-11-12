@@ -1,3 +1,79 @@
+// Project data
+const projects = {
+  'Marriott': {
+    title: 'Marriott Bonvoy',
+    description: 'A premium hotel booking and loyalty app experience. Built with modern iOS design principles and seamless user experience.',
+    tech: ['Swift', 'SwiftUI', 'iOS'],
+    link: '#'
+  },
+  'myQ': {
+    title: 'myQ Smart Garage',
+    description: 'Smart home integration for garage door control. Features real-time status monitoring and remote access capabilities.',
+    tech: ['Swift', 'IoT', 'HomeKit'],
+    link: '#'
+  },
+  'Community': {
+    title: 'Community App',
+    description: 'A social platform connecting local communities. Built with focus on engagement and meaningful connections.',
+    tech: ['Swift', 'Firebase', 'UIKit'],
+    link: '#'
+  },
+  'WanaSell': {
+    title: 'WanaSell',
+    description: 'Marketplace app for buying and selling locally. Features secure transactions and user verification.',
+    tech: ['Swift', 'Stripe', 'MapKit'],
+    link: '#'
+  },
+  'Media': {
+    title: 'Media Portfolio',
+    description: 'Collection of video and photography work. Showcasing creative projects and professional media content.',
+    tech: ['Video', 'Photography', 'Creative'],
+    link: '#'
+  },
+  'Travel': {
+    title: 'Travel Experiences',
+    description: 'Documenting adventures and travel stories from around the world. A personal travel journal and guide.',
+    tech: ['Travel', 'Documentation', 'Stories'],
+    link: '#'
+  },
+  'Insights': {
+    title: 'Tech Insights',
+    description: 'Blog and insights about iOS development, design patterns, and technology trends.',
+    tech: ['Writing', 'iOS', 'Tech'],
+    link: '#'
+  },
+  'Contact': {
+    title: 'Get in Touch',
+    description: 'Let\'s connect! Available for freelance projects, collaborations, and interesting opportunities.',
+    tech: ['Networking', 'Collaboration'],
+    link: '#'
+  },
+  'Tools': {
+    title: 'Developer Tools',
+    description: 'Collection of useful tools and utilities for iOS development and productivity.',
+    tech: ['Tools', 'Productivity', 'iOS'],
+    link: '#'
+  },
+  'Photos': {
+    title: 'Photo Gallery',
+    description: 'Personal photography collection featuring landscapes, portraits, and creative compositions.',
+    tech: ['Photography', 'Creative'],
+    link: '#'
+  },
+  'Games': {
+    title: 'Game Development',
+    description: 'Side projects and experiments in game development. Exploring interactive experiences.',
+    tech: ['Game Dev', 'Swift', 'SpriteKit'],
+    link: '#'
+  },
+  'News': {
+    title: 'Tech News',
+    description: 'Curated tech news and updates. Staying informed about the latest in iOS and technology.',
+    tech: ['News', 'Tech', 'Updates'],
+    link: '#'
+  }
+};
+
 // Update time display
 function updateTime() {
   const timeElement = document.getElementById('time');
@@ -17,10 +93,91 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 60000);
 
-// Optional: simple tap animation for tiles
+// Modal functionality
+function createModal(projectData) {
+  // Remove existing modal if any
+  const existingModal = document.querySelector('.modal-overlay');
+  if (existingModal) {
+    existingModal.remove();
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  
+  modal.innerHTML = `
+    <div class="modal-header">
+      <h2 class="modal-title">${projectData.title}</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-content">
+      <p>${projectData.description}</p>
+      <div class="modal-tech">
+        ${projectData.tech.map(tech => `<span>${tech}</span>`).join('')}
+      </div>
+      ${projectData.link !== '#' ? `<a href="${projectData.link}" target="_blank" class="modal-link">Learn More →</a>` : ''}
+    </div>
+  `;
+  
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  
+  // Trigger animation
+  setTimeout(() => {
+    overlay.classList.add('active');
+  }, 10);
+  
+  // Close handlers
+  const closeModal = () => {
+    overlay.classList.remove('active');
+    setTimeout(() => {
+      overlay.remove();
+    }, 300);
+  };
+  
+  overlay.querySelector('.modal-close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeModal();
+    }
+  });
+  
+  // Close on Escape key
+  const escapeHandler = (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      document.removeEventListener('keydown', escapeHandler);
+    }
+  };
+  document.addEventListener('keydown', escapeHandler);
+}
+
+// Add click handlers to app icons
+document.querySelectorAll('.apps .icon').forEach(icon => {
+  const label = icon.querySelector('.label');
+  if (label) {
+    const projectName = label.textContent.trim();
+    if (projects[projectName]) {
+      icon.addEventListener('click', (e) => {
+        e.preventDefault();
+        createModal(projects[projectName]);
+      });
+    }
+  }
+});
+
+// Enhanced tap animation for tiles
 document.querySelectorAll('.tile').forEach(t => {
-  t.addEventListener('click', () => {
+  t.addEventListener('click', (e) => {
+    // Don't trigger if clicking on a link
+    if (t.closest('a')) {
+      return;
+    }
     t.style.transform = 'scale(0.96)';
-    setTimeout(() => { t.style.transform = 'scale(1)'; }, 120);
+    setTimeout(() => { 
+      t.style.transform = ''; 
+    }, 120);
   });
 });
