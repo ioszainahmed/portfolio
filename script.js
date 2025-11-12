@@ -24,22 +24,22 @@ const projects = {
     tech: ['Swift', 'Stripe', 'MapKit'],
     link: '#'
   },
-  'Media': {
-    title: 'Media Portfolio',
-    description: 'Collection of video and photography work. Showcasing creative projects and professional media content.',
-    tech: ['Video', 'Photography', 'Creative'],
-    link: '#'
+  'LinkedIn': {
+    title: 'LinkedIn Profile',
+    description: 'Connect with me on LinkedIn to see my professional experience, projects, and network with me in the tech industry.',
+    tech: ['Networking', 'Professional', 'Career'],
+    link: 'https://www.linkedin.com/in/zainahmedios/'
   },
-  'Travel': {
-    title: 'Travel Experiences',
-    description: 'Documenting adventures and travel stories from around the world. A personal travel journal and guide.',
-    tech: ['Travel', 'Documentation', 'Stories'],
-    link: '#'
+  'GitHub': {
+    title: 'GitHub Profile',
+    description: 'Check out my code repositories, open source contributions, and side projects on GitHub.',
+    tech: ['Code', 'Open Source', 'Development'],
+    link: 'https://github.com/ioszainahmed'
   },
-  'Insights': {
-    title: 'Tech Insights',
-    description: 'Blog and insights about iOS development, design patterns, and technology trends.',
-    tech: ['Writing', 'iOS', 'Tech'],
+  'Notes': {
+    title: 'Notes',
+    description: 'Personal notes, thoughts, and reminders. Keeping track of ideas and important information.',
+    tech: ['Productivity', 'Organization', 'Notes'],
     link: '#'
   },
   'Contact': {
@@ -159,11 +159,21 @@ document.querySelectorAll('.apps .icon').forEach(icon => {
   const label = icon.querySelector('.label');
   if (label) {
     const projectName = label.textContent.trim();
-    if (projects[projectName]) {
-      icon.addEventListener('click', (e) => {
-        e.preventDefault();
-        createModal(projects[projectName]);
-      });
+    // Skip LinkedIn and GitHub - let them redirect directly
+    if (projects[projectName] && projectName !== 'LinkedIn' && projectName !== 'GitHub') {
+      // Prevent default link behavior and show modal instead
+      const link = icon.querySelector('a');
+      if (link) {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          createModal(projects[projectName]);
+        });
+      } else {
+        icon.addEventListener('click', (e) => {
+          e.preventDefault();
+          createModal(projects[projectName]);
+        });
+      }
     }
   }
 });
