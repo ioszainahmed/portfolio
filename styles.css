@@ -24,10 +24,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   padding: 20px;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: fit-content;
+  position: relative;
+}
+
+.phones-container.show-experience {
+  justify-content: center;
 }
 
 /* Phone frame */
@@ -48,22 +53,11 @@ body {
 
 .main-phone {
   transform: translateX(0);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.details-phone {
-  display: none;
-  opacity: 0;
-  transform: translateX(20px) scale(0.95);
-  pointer-events: none;
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.details-phone.visible {
-  display: flex;
-  opacity: 1;
-  transform: translateX(0) scale(1);
-  pointer-events: all;
+.phones-container.show-experience .main-phone {
+  transform: translateX(-100px);
 }
 
 @keyframes phoneFadeIn {
@@ -133,64 +127,6 @@ body {
   overflow: hidden;
   position: relative;
 }
-
-.details-phone .screen {
-  grid-template-rows: auto 1fr;
-  gap: 0;
-  padding: 0;
-}
-
-.details-phone .statusbar {
-  padding: 14px 16px 10px 16px;
-  z-index: 2;
-  position: relative;
-}
-
-.details-phone .statusbar > span {
-  color: rgba(0, 0, 0, 0.8);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-.details-phone .statusbar .signal .bar {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.details-phone .statusbar .battery {
-  border-color: rgba(0, 0, 0, 0.6);
-}
-
-.details-phone .statusbar .battery::before {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.details-phone .statusbar .battery::after {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.details-phone .screen::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--detail-bg-image);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: blur(30px) brightness(1.1);
-  mix-blend-mode: overlay;
-  opacity: 0.5;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.details-phone .screen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.9);
-  z-index: 0;
-  pointer-events: none;
-}
-
 
 .screen::before {
   content: "";
@@ -760,177 +696,198 @@ body {
   background: rgba(0, 0, 0, 0.03);
 }
 
-/* Detail page styles */
-.detail-content-wrapper {
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.detail-content {
-  background: transparent;
-  border-radius: 0;
-  padding: 20px;
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
+/* Experience content */
+.experience-content {
+  width: 0;
+  max-width: 90vw;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s ease, width 0.6s ease;
+  transform: translateX(20px);
   position: relative;
   z-index: 1;
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.experience-content.visible {
+  width: 500px;
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+
+.experience-content-inner {
+  color: rgba(255, 255, 255, 0.95);
+  transition: opacity 0.4s ease, transform 0.4s ease;
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
-.detail-content.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.detail-header {
+.exp-header {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.detail-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 14px;
-  background: rgba(0, 122, 255, 0.1);
+.exp-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   overflow: hidden;
+  backdrop-filter: blur(10px);
 }
 
-.detail-icon img {
+.exp-icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 16px;
 }
 
-.detail-title-section {
+.exp-title-section {
   flex: 1;
   min-width: 0;
 }
 
-.detail-title {
-  font-size: 18px;
+.exp-title {
+  font-size: 24px;
   font-weight: 700;
-  color: #000;
-  margin: 0 0 4px 0;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
   line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.detail-role {
-  font-size: 14px;
-  color: #333;
+.exp-role {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
-  margin-bottom: 2px;
+  margin: 0;
+  margin-top: 6px;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.detail-date {
-  font-size: 13px;
-  color: #666;
+.exp-date {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  margin: 0;
+  margin-top: 4px;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.exp-body {
+  color: rgba(255, 255, 255, 0.95);
+  flex: 1;
+}
+
+.exp-body p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 16px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.exp-bullet {
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12px;
+  padding-left: 20px;
+  margin-left: -20px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.exp-bullet::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 400;
 }
 
-.detail-body {
-  flex: 1;
-  color: #000;
-}
-
-.detail-body p {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #333;
-  margin-bottom: 16px;
-}
-
-.detail-bullet {
-  font-size: 14px;
-  line-height: 1.8;
-  color: #333;
-  margin-bottom: 12px;
-  padding-left: 4px;
-}
-
-.detail-link {
-  color: #007aff;
+.exp-link {
+  color: rgba(255, 255, 255, 0.95);
   text-decoration: none;
   font-weight: 500;
-  border-bottom: 1px solid rgba(0, 122, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   transition: border-color 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.detail-link:hover {
-  border-bottom-color: #007aff;
+.exp-link:hover {
+  border-bottom-color: rgba(255, 255, 255, 0.7);
 }
 
-.detail-tech {
+.exp-tech {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
-.detail-tech span {
-  background: rgba(0, 122, 255, 0.1);
-  color: #007aff;
-  padding: 6px 12px;
-  border-radius: 12px;
+.exp-tech span {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.95);
+  padding: 6px 14px;
+  border-radius: 14px;
   font-size: 12px;
   font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.detail-back-button {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 32px;
-  min-width: 120px;
-  height: 44px;
-  border-radius: 22px;
-  background: rgba(0, 122, 255, 0.15);
-  border: 1px solid rgba(0, 122, 255, 0.2);
+.exp-dismiss-button {
+  margin-top: 32px;
+  margin-bottom: 0;
+  padding: 8px 32px;
+  width: 100%;
+  height: 36px;
+  border-radius: 18px;
+  background: rgba(0, 122, 255, 0.2);
+  border: 1px solid rgba(0, 122, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #007aff;
-  font-size: 15px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 14px;
   font-weight: 600;
-  z-index: 10;
   letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, Arial, sans-serif;
+  align-self: stretch;
 }
 
-.detail-back-button:hover {
+.exp-dismiss-button:hover {
+  background: rgba(0, 122, 255, 0.3);
+  border-color: rgba(0, 122, 255, 0.4);
+  transform: scale(1.02);
+}
+
+.exp-dismiss-button:active {
+  transform: scale(0.98);
   background: rgba(0, 122, 255, 0.25);
-  border-color: rgba(0, 122, 255, 0.3);
-  transform: translateX(-50%) scale(1.02);
 }
 
-.detail-back-button:active {
-  transform: translateX(-50%) scale(0.98);
-  background: rgba(0, 122, 255, 0.2);
-}
-
-/* Update time for details phone */
-#time-details {
-  display: inline-block;
-}

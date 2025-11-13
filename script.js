@@ -95,7 +95,6 @@ const projects = {
 // Update time display
 function updateTime() {
   const timeElement = document.getElementById('time');
-  const timeDetailsElement = document.getElementById('time-details');
   const now = new Date();
   let hours = now.getHours();
   const minutes = now.getMinutes();
@@ -105,9 +104,6 @@ function updateTime() {
   const timeString = `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
   if (timeElement) {
     timeElement.textContent = timeString;
-  }
-  if (timeDetailsElement) {
-    timeDetailsElement.textContent = timeString;
   }
 }
 
@@ -176,31 +172,12 @@ function createModal(projectData) {
   document.addEventListener('keydown', escapeHandler);
 }
 
-// Detail page functionality
-function showDetailPage(projectData) {
-  const detailsPhone = document.querySelector('.details-phone');
-  const detailContentWrapper = detailsPhone.querySelector('.detail-content-wrapper');
-  const detailsScreen = detailsPhone.querySelector('.screen');
-  
-  // Set background image from app icon
-  const iconPath = projectData.icon || 'assets/bonvoy.png';
-  if (detailsScreen) {
-    detailsScreen.style.setProperty('--detail-bg-image', `url('${iconPath}')`);
-  }
-  
-  // Show details phone (set display first, then trigger transition)
-  detailsPhone.style.display = 'flex';
-  // Force reflow to ensure display is applied before opacity transition
-  void detailsPhone.offsetWidth;
-  detailsPhone.classList.add('visible');
-  
-  // Create or update detail content
-  let detailContent = detailContentWrapper.querySelector('.detail-content');
-  if (!detailContent) {
-    detailContent = document.createElement('div');
-    detailContent.className = 'detail-content';
-    detailContentWrapper.appendChild(detailContent);
-  }
+// Show experience content
+function showExperienceContent(projectData) {
+  const mainPhone = document.querySelector('.main-phone');
+  const phonesContainer = document.querySelector('.phones-container');
+  const experienceContent = document.querySelector('.experience-content');
+  const experienceContentInner = document.querySelector('.experience-content-inner');
   
   // Format description with bullet points and hyperlinks
   const formatDescription = (description) => {
@@ -215,69 +192,125 @@ function showDetailPage(projectData) {
           const url = hyperlinkMatch[1];
           const textWithoutHyperlink = trimmedLine.replace(/\s*\(hyperlink:\s*https?:\/\/[^\)]+\)/, '').trim();
           const bulletText = textWithoutHyperlink.replace('•', '').trim();
-          return `<div class="detail-bullet">• <a href="${url}" target="_blank" rel="noopener noreferrer" class="detail-link">${bulletText}</a></div>`;
+          return `<div class="exp-bullet"><a href="${url}" target="_blank" rel="noopener noreferrer" class="exp-link">${bulletText}</a></div>`;
         }
-        return `<div class="detail-bullet">${trimmedLine}</div>`;
+        const bulletText = trimmedLine.replace('•', '').trim();
+        return `<div class="exp-bullet">${bulletText}</div>`;
       }
       return trimmedLine ? `<p>${trimmedLine}</p>` : '';
     }).join('');
   };
   
-  // Update content
-  detailContent.innerHTML = `
-    <div class="detail-header">
-      <div class="detail-icon">
-        <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
-      </div>
-      <div class="detail-title-section">
-        <h1 class="detail-title">${projectData.title}</h1>
-        <div class="detail-role">${projectData.role || 'Developer'}</div>
-        <div class="detail-date">${projectData.dateRange || ''}</div>
-      </div>
-    </div>
-    <div class="detail-body">
-      ${formatDescription(projectData.description)}
-      <div class="detail-tech">
-        ${projectData.tech.map(tech => `<span>${tech}</span>`).join('')}
-      </div>
-    </div>
-    <button class="detail-back-button" aria-label="Dismiss">dismiss</button>
-  `;
+  // Check if content is already visible (switching between details)
+  const isAlreadyVisible = experienceContent.classList.contains('visible');
   
-  // Remove active class first to reset animation
-  detailContent.classList.remove('active');
-  
-  // Trigger animation
-  setTimeout(() => {
-    detailContent.classList.add('active');
-  }, 50);
-  
-  // Back button handler
-  const backButton = detailContent.querySelector('.detail-back-button');
-  if (backButton) {
-    // Remove existing listeners by cloning
-    const newBackButton = backButton.cloneNode(true);
-    backButton.parentNode.replaceChild(newBackButton, backButton);
-    newBackButton.addEventListener('click', hideDetailPage);
+  if (isAlreadyVisible) {
+    // Fade out current content first
+    experienceContentInner.style.opacity = '0';
+    experienceContentInner.style.transform = 'translateY(-20px)';
+    
+    // Wait for fade out, then update content and fade in
+    setTimeout(() => {
+      // Update content
+      experienceContentInner.innerHTML = `
+        <div class="exp-header">
+          <div class="exp-icon">
+            <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
+          </div>
+          <div class="exp-title-section">
+            <h1 class="exp-title">${projectData.title}</h1>
+            <div class="exp-role">${projectData.role || 'Developer'}</div>
+            <div class="exp-date">${projectData.dateRange || ''}</div>
+          </div>
+        </div>
+        <div class="exp-body">
+          ${formatDescription(projectData.description)}
+          <div class="exp-tech">
+            ${projectData.tech.map(tech => `<span>${tech}</span>`).join('')}
+          </div>
+        </div>
+        <button class="exp-dismiss-button" aria-label="Dismiss">dismiss</button>
+      `;
+      
+      // Reset animation state
+      experienceContentInner.style.opacity = '0';
+      experienceContentInner.style.transform = 'translateY(20px)';
+      
+      // Fade in new content
+      setTimeout(() => {
+        experienceContentInner.style.opacity = '1';
+        experienceContentInner.style.transform = 'translateY(0)';
+      }, 50);
+      
+      // Add dismiss button handler
+      const dismissButton = experienceContentInner.querySelector('.exp-dismiss-button');
+      if (dismissButton) {
+        dismissButton.addEventListener('click', hideExperienceContent);
+      }
+    }, 400); // Wait for fade out transition (matches CSS transition duration)
+  } else {
+    // First time showing content
+    // Update content
+    experienceContentInner.innerHTML = `
+      <div class="exp-header">
+        <div class="exp-icon">
+          <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
+        </div>
+        <div class="exp-title-section">
+          <h1 class="exp-title">${projectData.title}</h1>
+          <div class="exp-role">${projectData.role || 'Developer'}</div>
+          <div class="exp-date">${projectData.dateRange || ''}</div>
+        </div>
+      </div>
+      <div class="exp-body">
+        ${formatDescription(projectData.description)}
+        <div class="exp-tech">
+          ${projectData.tech.map(tech => `<span>${tech}</span>`).join('')}
+        </div>
+      </div>
+      <button class="exp-dismiss-button" aria-label="Dismiss">dismiss</button>
+    `;
+    
+    // Move phone to the left and show content
+    phonesContainer.classList.add('show-experience');
+    experienceContent.classList.add('visible');
+    
+    // Reset animation
+    experienceContentInner.style.opacity = '0';
+    experienceContentInner.style.transform = 'translateY(20px)';
+    
+    // Fade in animation
+    setTimeout(() => {
+      experienceContentInner.style.opacity = '1';
+      experienceContentInner.style.transform = 'translateY(0)';
+    }, 50);
+    
+    // Add dismiss button handler
+    const dismissButton = experienceContentInner.querySelector('.exp-dismiss-button');
+    if (dismissButton) {
+      dismissButton.addEventListener('click', hideExperienceContent);
+    }
   }
 }
 
-function hideDetailPage() {
-  const detailsPhone = document.querySelector('.details-phone');
-  const detailContent = detailsPhone.querySelector('.detail-content');
+function hideExperienceContent() {
+  const mainPhone = document.querySelector('.main-phone');
+  const phonesContainer = document.querySelector('.phones-container');
+  const experienceContent = document.querySelector('.experience-content');
+  const experienceContentInner = document.querySelector('.experience-content-inner');
   
-  // Remove active class from detail content
-  if (detailContent) {
-    detailContent.classList.remove('active');
-  }
+  // Fade out text content
+  experienceContentInner.style.opacity = '0';
+  experienceContentInner.style.transform = 'translateY(20px)';
   
-  // Hide details phone (remove visible class first, then hide after transition)
-  detailsPhone.classList.remove('visible');
-  
-  // Hide details phone after transition completes
+  // Wait for fade out, then move phone back and hide content
   setTimeout(() => {
-    detailsPhone.style.display = 'none';
-  }, 500);
+    phonesContainer.classList.remove('show-experience');
+    
+    setTimeout(() => {
+      experienceContent.classList.remove('visible');
+    }, 500);
+  }, 400);
 }
 
 // Add click handlers to app icons
@@ -286,31 +319,42 @@ document.querySelectorAll('.apps .icon').forEach(icon => {
   if (label) {
     const projectName = label.textContent.trim();
     // Skip LinkedIn and GitHub - let them redirect directly
-    if (projects[projectName] && projectName !== 'LinkedIn' && projectName !== 'GitHub') {
-      // Check if it's an experience item (first row)
-      const isExperience = icon.closest('.app-row')?.querySelector('.row-title')?.textContent === 'Experience';
-      
-      // Prevent default link behavior
+    const isExperience = icon.closest('.app-row')?.querySelector('.row-title')?.textContent === 'Experience';
+    
+    if (isExperience && projects[projectName]) {
+      // Experience row - show content on tap
+      icon.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showExperienceContent(projects[projectName]);
+      });
+    } else if (projects[projectName] && projectName !== 'LinkedIn' && projectName !== 'GitHub') {
+      // Other rows - show modal
       const link = icon.querySelector('a');
       if (link) {
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          if (isExperience) {
-            showDetailPage(projects[projectName]);
-          } else {
-            createModal(projects[projectName]);
-          }
+          createModal(projects[projectName]);
         });
       } else {
         icon.addEventListener('click', (e) => {
           e.preventDefault();
-          if (isExperience) {
-            showDetailPage(projects[projectName]);
-          } else {
-            createModal(projects[projectName]);
-          }
+          createModal(projects[projectName]);
         });
       }
+    }
+  }
+});
+
+// Close experience content when clicking outside
+document.addEventListener('click', (e) => {
+  const experienceContent = document.querySelector('.experience-content');
+  const phonesContainer = document.querySelector('.phones-container');
+  
+  if (phonesContainer.classList.contains('show-experience')) {
+    // Check if click is outside both phone and content
+    if (!e.target.closest('.phone-frame') && !e.target.closest('.experience-content')) {
+      hideExperienceContent();
     }
   }
 });
@@ -322,6 +366,7 @@ document.querySelectorAll('.tile').forEach(t => {
     if (t.closest('a')) {
       return;
     }
+    // Don't prevent event bubbling - let parent handlers work
     t.style.transform = 'scale(0.96)';
     setTimeout(() => { 
       t.style.transform = ''; 
