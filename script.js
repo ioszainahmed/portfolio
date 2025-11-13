@@ -2,27 +2,39 @@
 const projects = {
   'Marriott': {
     title: 'Marriott Bonvoy',
-    description: 'A premium hotel booking and loyalty app experience. Built with modern iOS design principles and seamless user experience.',
-    tech: ['Swift', 'SwiftUI', 'iOS'],
-    link: '#'
+    role: 'Software Engineer - iOS | Marriott International',
+    dateRange: 'January 2023 – Present',
+    description: '• Marriott Bonvoy App (hyperlink: https://apps.apple.com/us/app/marriott-bonvoy-book-hotels/id455004730)\n• Spearhead the redesign of legacy UIKit and Storyboard views into modern SwiftUI-based flows using Figma.\n• Migrate eAPI calls to GraphQL using Apollo Studio, enhancing performance and maintainability.\n• Enhance accessibility by customizing ADA-compliant experiences across key user flows and app interfaces.\n• Led the deprecation of legacy Objective-C modules in favor of SwiftUI-first architecture for modern development.\n• Collaborate with product, design and QA teams to define best practices for SwiftUI implementation and testing.\n• Deliver regular cross-team presentations and demos to showcase new features and technical advancements.',
+    tech: ['Swift', 'SwiftUI', 'GraphQL', 'Apollo Studio', 'Figma'],
+    link: '#',
+    icon: 'assets/bonvoy.png'
   },
   'myQ': {
     title: 'myQ Smart Garage',
-    description: 'Smart home integration for garage door control. Features real-time status monitoring and remote access capabilities.',
-    tech: ['Swift', 'IoT', 'HomeKit'],
-    link: '#'
+    role: 'Software Engineer II | Chamberlain Group',
+    dateRange: 'November 2021 – December 2022',
+    description: '• myQ Garage and Access App & myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-garage-access-control/id456282559)\n• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.\n• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.\n• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.\n• Documented, unit tested and contributed to the automation of existing code for usability and reliability.\n• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.',
+    tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile'],
+    link: '#',
+    icon: 'assets/myQ.png'
   },
   'Community': {
-    title: 'Community App',
-    description: 'A social platform connecting local communities. Built with focus on engagement and meaningful connections.',
-    tech: ['Swift', 'Firebase', 'UIKit'],
-    link: '#'
+    title: 'myQ Community',
+    role: 'Software Engineer II | Chamberlain Group',
+    dateRange: 'November 2021 – December 2022',
+    description: '• myQ Garage and Access App & myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-community/id1516518499)\n• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.\n• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.\n• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.\n• Documented, unit tested and contributed to the automation of existing code for usability and reliability.\n• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.',
+    tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile'],
+    link: '#',
+    icon: 'assets/community.png'
   },
   'WanaSell': {
     title: 'WanaSell',
-    description: 'Marketplace app for buying and selling locally. Features secure transactions and user verification.',
-    tech: ['Swift', 'Stripe', 'MapKit'],
-    link: '#'
+    role: 'iOS Developer | WanaSell',
+    dateRange: 'June 2019 – September 2021',
+    description: '• WanaSell App (hyperlink: https://apptopia.com/ios/app/1521338655/about)\n• Designed and built adaptive User Interface on Storyboards and Xibs using Auto-layout.\n• Implemented an object detection feature using AVKit and Apple\'s ResNet50 data model.\n• Used various instruments tools to identify memory leaks and improve the performance of the app.\n• Participated in the full iOS mobile application life cycle from conception to release to the App Store',
+    tech: ['Swift', 'UIKit', 'AVKit', 'ResNet50', 'Auto Layout'],
+    link: '#',
+    icon: 'assets/wanasell.png'
   },
   'LinkedIn': {
     title: 'LinkedIn Profile',
@@ -83,15 +95,19 @@ const projects = {
 // Update time display
 function updateTime() {
   const timeElement = document.getElementById('time');
+  const timeDetailsElement = document.getElementById('time-details');
+  const now = new Date();
+  let hours = now.getHours();
+  const minutes = now.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  const timeString = `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
   if (timeElement) {
-    const now = new Date();
-    let hours = now.getHours();
-    const minutes = now.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    const timeString = `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
     timeElement.textContent = timeString;
+  }
+  if (timeDetailsElement) {
+    timeDetailsElement.textContent = timeString;
   }
 }
 
@@ -160,6 +176,110 @@ function createModal(projectData) {
   document.addEventListener('keydown', escapeHandler);
 }
 
+// Detail page functionality
+function showDetailPage(projectData) {
+  const detailsPhone = document.querySelector('.details-phone');
+  const detailContentWrapper = detailsPhone.querySelector('.detail-content-wrapper');
+  const detailsScreen = detailsPhone.querySelector('.screen');
+  
+  // Set background image from app icon
+  const iconPath = projectData.icon || 'assets/bonvoy.png';
+  if (detailsScreen) {
+    detailsScreen.style.setProperty('--detail-bg-image', `url('${iconPath}')`);
+  }
+  
+  // Show details phone (set display first, then trigger transition)
+  detailsPhone.style.display = 'flex';
+  // Force reflow to ensure display is applied before opacity transition
+  void detailsPhone.offsetWidth;
+  detailsPhone.classList.add('visible');
+  
+  // Create or update detail content
+  let detailContent = detailContentWrapper.querySelector('.detail-content');
+  if (!detailContent) {
+    detailContent = document.createElement('div');
+    detailContent.className = 'detail-content';
+    detailContentWrapper.appendChild(detailContent);
+  }
+  
+  // Format description with bullet points and hyperlinks
+  const formatDescription = (description) => {
+    if (!description) return '';
+    
+    return description.split('\n').map(line => {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('•')) {
+        // Check for hyperlink pattern
+        const hyperlinkMatch = trimmedLine.match(/\(hyperlink:\s*(https?:\/\/[^\)]+)\)/);
+        if (hyperlinkMatch) {
+          const url = hyperlinkMatch[1];
+          const textWithoutHyperlink = trimmedLine.replace(/\s*\(hyperlink:\s*https?:\/\/[^\)]+\)/, '').trim();
+          const bulletText = textWithoutHyperlink.replace('•', '').trim();
+          return `<div class="detail-bullet">• <a href="${url}" target="_blank" rel="noopener noreferrer" class="detail-link">${bulletText}</a></div>`;
+        }
+        return `<div class="detail-bullet">${trimmedLine}</div>`;
+      }
+      return trimmedLine ? `<p>${trimmedLine}</p>` : '';
+    }).join('');
+  };
+  
+  // Update content
+  detailContent.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-icon">
+        <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
+      </div>
+      <div class="detail-title-section">
+        <h1 class="detail-title">${projectData.title}</h1>
+        <div class="detail-role">${projectData.role || 'Developer'}</div>
+        <div class="detail-date">${projectData.dateRange || ''}</div>
+      </div>
+    </div>
+    <div class="detail-body">
+      ${formatDescription(projectData.description)}
+      <div class="detail-tech">
+        ${projectData.tech.map(tech => `<span>${tech}</span>`).join('')}
+      </div>
+    </div>
+    <button class="detail-back-button" aria-label="Dismiss">dismiss</button>
+  `;
+  
+  // Remove active class first to reset animation
+  detailContent.classList.remove('active');
+  
+  // Trigger animation
+  setTimeout(() => {
+    detailContent.classList.add('active');
+  }, 50);
+  
+  // Back button handler
+  const backButton = detailContent.querySelector('.detail-back-button');
+  if (backButton) {
+    // Remove existing listeners by cloning
+    const newBackButton = backButton.cloneNode(true);
+    backButton.parentNode.replaceChild(newBackButton, backButton);
+    newBackButton.addEventListener('click', hideDetailPage);
+  }
+}
+
+function hideDetailPage() {
+  const detailsPhone = document.querySelector('.details-phone');
+  const detailContent = detailsPhone.querySelector('.detail-content');
+  
+  // Remove active class from detail content
+  if (detailContent) {
+    detailContent.classList.remove('active');
+  }
+  
+  // Hide details phone (remove visible class first, then hide after transition)
+  detailsPhone.classList.remove('visible');
+  
+  // Hide details phone after transition completes
+  setTimeout(() => {
+    detailsPhone.style.display = 'none';
+  }, 500);
+}
+
 // Add click handlers to app icons
 document.querySelectorAll('.apps .icon').forEach(icon => {
   const label = icon.querySelector('.label');
@@ -167,17 +287,28 @@ document.querySelectorAll('.apps .icon').forEach(icon => {
     const projectName = label.textContent.trim();
     // Skip LinkedIn and GitHub - let them redirect directly
     if (projects[projectName] && projectName !== 'LinkedIn' && projectName !== 'GitHub') {
-      // Prevent default link behavior and show modal instead
+      // Check if it's an experience item (first row)
+      const isExperience = icon.closest('.app-row')?.querySelector('.row-title')?.textContent === 'Experience';
+      
+      // Prevent default link behavior
       const link = icon.querySelector('a');
       if (link) {
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          createModal(projects[projectName]);
+          if (isExperience) {
+            showDetailPage(projects[projectName]);
+          } else {
+            createModal(projects[projectName]);
+          }
         });
       } else {
         icon.addEventListener('click', (e) => {
           e.preventDefault();
-          createModal(projects[projectName]);
+          if (isExperience) {
+            showDetailPage(projects[projectName]);
+          } else {
+            createModal(projects[projectName]);
+          }
         });
       }
     }
