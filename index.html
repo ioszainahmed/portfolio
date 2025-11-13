@@ -10,85 +10,101 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="phone-frame">
-    <div class="dynamic-island">
-      <div class="island-indicator"></div>
-      <div class="island-camera"></div>
+  <div class="phones-container">
+    <div class="phone-frame main-phone">
+      <div class="dynamic-island">
+        <div class="island-indicator"></div>
+        <div class="island-camera"></div>
+      </div>
+      <div class="screen">
+        <div class="statusbar">
+          <span id="time">9:41</span>
+          <span><span class="signal"><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></span> LTE <span class="battery"></span></span>
+        </div>
+
+        <div class="widgets">
+          <div class="widget about">
+            <h1>Zain Ahmed</h1>
+            <div class="subtitle">Software Engineer<br>iOS Developer<br>Creator</div>
+            <div class="tagline">Building clean, human-centered experiences.<br>One tap at a time.</div>
+          </div>
+          <div class="widget notes">
+            <div class="notes-header">
+              <span class="notes-folder-icon"></span>
+              <h2>Notes</h2>
+            </div>
+            <div class="notes-list">
+              <div class="note-item">
+                <div class="note-title">Voting information</div>
+                <div class="note-meta">11/21 • No additional text</div>
+              </div>
+              <div class="note-item">
+                <div class="note-title">Zoom Party invite list</div>
+                <div class="note-meta">11/20 • No additional text</div>
+              </div>
+              <div class="note-item">
+                <div class="note-title">Assignments for today</div>
+                <div class="note-meta">11/19 • No additional text</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="apps">
+          <div class="app-row">
+            <div class="row-title">Experience</div>
+            <div class="row-divider"></div>
+            <div class="row-apps">
+              <div class="icon"><div class="tile"><img src="assets/bonvoy.png" alt="Marriott"></div><div class="label">Marriott</div></div>
+              <div class="icon"><div class="tile"><img src="assets/myQ.png" alt="myQ"></div><div class="label">myQ</div></div>
+              <div class="icon"><div class="tile"><img src="assets/community.png" alt="Community"></div><div class="label">Community</div></div>
+              <div class="icon"><div class="tile"><img src="assets/wanasell.png" alt="WanaSell"></div><div class="label">WanaSell</div></div>
+            </div>
+          </div>
+          <div class="app-row">
+            <div class="row-title">Connect</div>
+            <div class="row-divider"></div>
+            <div class="row-apps">
+              <div class="icon"><a href="https://www.linkedin.com/in/zainahmedios/" target="_blank" rel="noopener noreferrer"><div class="tile"><img src="assets/linkedin.png" alt="LinkedIn"></div></a><div class="label">LinkedIn</div></div>
+              <div class="icon"><a href="https://github.com/ioszainahmed" target="_blank" rel="noopener noreferrer"><div class="tile"><img src="assets/github.png" alt="GitHub"></div></a><div class="label">GitHub</div></div>
+              <div class="icon"><div class="tile"><img src="assets/notes.png" alt="Notes"></div><div class="label">Notes</div></div>
+              <div class="icon"><div class="tile"><img src="assets/app-store.png" alt="App Store"></div><div class="label">App Store</div></div>
+            </div>
+          </div>
+          <div class="app-row">
+            <div class="row-title">Tools</div>
+            <div class="row-divider"></div>
+            <div class="row-apps">
+              <div class="icon"><div class="tile"><img src="assets/swift.png" alt="Swift"></div><div class="label">Swift</div></div>
+              <div class="icon"><div class="tile"><img src="assets/swiftui.png" alt="SwiftUI"></div><div class="label">SwiftUI</div></div>
+              <div class="icon"><div class="tile"><img src="assets/xcode.png" alt="Xcode"></div><div class="label">Xcode</div></div>
+              <div class="icon"><div class="tile"><img src="assets/developer.png" alt="Dev Stack"></div><div class="label">Dev Stack</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dock-section">
+          <div class="dock-title">CONTACT</div>
+          <div class="dock">
+            <a href="tel:+16302862042"><div class="tile"><img src="assets/phone.png" alt="Phone"></div></a>
+            <a href="mailto:ioszainahmed@gmail.com"><div class="tile"><img src="assets/email.png" alt="Email"></div></a>
+            <a href="sms:+16302862042"><div class="tile"><img src="assets/message.png" alt="Message"></div></a>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="screen">
-      <div class="statusbar">
-        <span id="time">9:41</span>
-        <span><span class="signal"><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></span> LTE <span class="battery"></span></span>
-      </div>
 
-      <div class="widgets">
-        <div class="widget about">
-          <h1>Zain Ahmed</h1>
-          <div class="subtitle">Software Engineer<br>iOS Developer<br>Creator</div>
-          <div class="tagline">Building clean, human-centered experiences.<br>One tap at a time.</div>
-        </div>
-        <div class="widget notes">
-          <div class="notes-header">
-            <span class="notes-folder-icon"></span>
-            <h2>Notes</h2>
-          </div>
-          <div class="notes-list">
-            <div class="note-item">
-              <div class="note-title">Voting information</div>
-              <div class="note-meta">11/21 • No additional text</div>
-            </div>
-            <div class="note-item">
-              <div class="note-title">Zoom Party invite list</div>
-              <div class="note-meta">11/20 • No additional text</div>
-            </div>
-            <div class="note-item">
-              <div class="note-title">Assignments for today</div>
-              <div class="note-meta">11/19 • No additional text</div>
-            </div>
-          </div>
-        </div>
+    <div class="phone-frame details-phone">
+      <div class="dynamic-island">
+        <div class="island-indicator"></div>
+        <div class="island-camera"></div>
       </div>
-
-      <div class="apps">
-        <div class="app-row">
-          <div class="row-title">Experience</div>
-          <div class="row-divider"></div>
-          <div class="row-apps">
-            <div class="icon"><div class="tile"><img src="assets/bonvoy.png" alt="Marriott"></div><div class="label">Marriott</div></div>
-            <div class="icon"><div class="tile"><img src="assets/myQ.png" alt="myQ"></div><div class="label">myQ</div></div>
-            <div class="icon"><div class="tile"><img src="assets/community.png" alt="Community"></div><div class="label">Community</div></div>
-            <div class="icon"><div class="tile"><img src="assets/wanasell.png" alt="WanaSell"></div><div class="label">WanaSell</div></div>
-          </div>
+      <div class="screen">
+        <div class="statusbar">
+          <span id="time-details">9:41</span>
+          <span><span class="signal"><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></span> LTE <span class="battery"></span></span>
         </div>
-        <div class="app-row">
-          <div class="row-title">Connect</div>
-          <div class="row-divider"></div>
-          <div class="row-apps">
-            <div class="icon"><a href="https://www.linkedin.com/in/zainahmedios/" target="_blank" rel="noopener noreferrer"><div class="tile"><img src="assets/linkedin.png" alt="LinkedIn"></div></a><div class="label">LinkedIn</div></div>
-            <div class="icon"><a href="https://github.com/ioszainahmed" target="_blank" rel="noopener noreferrer"><div class="tile"><img src="assets/github.png" alt="GitHub"></div></a><div class="label">GitHub</div></div>
-            <div class="icon"><div class="tile"><img src="assets/notes.png" alt="Notes"></div><div class="label">Notes</div></div>
-            <div class="icon"><div class="tile"><img src="assets/app-store.png" alt="App Store"></div><div class="label">App Store</div></div>
-          </div>
-        </div>
-        <div class="app-row">
-          <div class="row-title">Tools</div>
-          <div class="row-divider"></div>
-          <div class="row-apps">
-            <div class="icon"><div class="tile"><img src="assets/swift.png" alt="Swift"></div><div class="label">Swift</div></div>
-            <div class="icon"><div class="tile"><img src="assets/swiftui.png" alt="SwiftUI"></div><div class="label">SwiftUI</div></div>
-            <div class="icon"><div class="tile"><img src="assets/xcode.png" alt="Xcode"></div><div class="label">Xcode</div></div>
-            <div class="icon"><div class="tile"><img src="assets/developer.png" alt="Dev Stack"></div><div class="label">Dev Stack</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="dock-section">
-        <div class="dock-title">CONTACT</div>
-        <div class="dock">
-          <a href="tel:+16302862042"><div class="tile"><img src="assets/phone.png" alt="Phone"></div></a>
-          <a href="mailto:ioszainahmed@gmail.com"><div class="tile"><img src="assets/email.png" alt="Email"></div></a>
-          <a href="sms:+16302862042"><div class="tile"><img src="assets/message.png" alt="Message"></div></a>
-        </div>
+        <div class="detail-content-wrapper"></div>
       </div>
     </div>
   </div>
