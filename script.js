@@ -192,104 +192,57 @@ function showExperienceContent(projectData) {
           const url = hyperlinkMatch[1];
           const textWithoutHyperlink = trimmedLine.replace(/\s*\(hyperlink:\s*https?:\/\/[^\)]+\)/, '').trim();
           const bulletText = textWithoutHyperlink.replace('•', '').trim();
-          return `<div class="exp-bullet"><a href="${url}" target="_blank" rel="noopener noreferrer" class="exp-link">${bulletText}</a></div>`;
+          return `<div class="exp-bullet exp-line"><a href="${url}" target="_blank" rel="noopener noreferrer" class="exp-link">${bulletText}</a></div>`;
         }
         const bulletText = trimmedLine.replace('•', '').trim();
-        return `<div class="exp-bullet">${bulletText}</div>`;
+        return `<div class="exp-bullet exp-line">${bulletText}</div>`;
       }
-      return trimmedLine ? `<p>${trimmedLine}</p>` : '';
+      return trimmedLine ? `<p class="exp-line">${trimmedLine}</p>` : '';
     }).join('');
   };
   
-  // Check if content is already visible (switching between details)
-  const isAlreadyVisible = experienceContent.classList.contains('visible');
+  // Update content
+  experienceContentInner.innerHTML = `
+    <div class="exp-header">
+      <div class="exp-icon">
+        <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
+      </div>
+      <div class="exp-title-section">
+        <h1 class="exp-title exp-line">${projectData.title}</h1>
+        <div class="exp-role exp-line">${projectData.role || 'Developer'}</div>
+        <div class="exp-date exp-line">${projectData.dateRange || ''}</div>
+      </div>
+    </div>
+    <div class="exp-body">
+      ${formatDescription(projectData.description)}
+      <div class="exp-tech">
+        ${projectData.tech.map(tech => `<span class="exp-line">${tech}</span>`).join('')}
+      </div>
+    </div>
+    <button class="exp-dismiss-button exp-line" aria-label="Dismiss">dismiss</button>
+  `;
   
-  if (isAlreadyVisible) {
-    // Fade out current content first
-    experienceContentInner.style.opacity = '0';
-    experienceContentInner.style.transform = 'translateY(-20px)';
-    
-    // Wait for fade out, then update content and fade in
-    setTimeout(() => {
-      // Update content
-      experienceContentInner.innerHTML = `
-        <div class="exp-header">
-          <div class="exp-icon">
-            <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
-          </div>
-          <div class="exp-title-section">
-            <h1 class="exp-title">${projectData.title}</h1>
-            <div class="exp-role">${projectData.role || 'Developer'}</div>
-            <div class="exp-date">${projectData.dateRange || ''}</div>
-          </div>
-        </div>
-        <div class="exp-body">
-          ${formatDescription(projectData.description)}
-          <div class="exp-tech">
-            ${projectData.tech.map(tech => `<span>${tech}</span>`).join('')}
-          </div>
-        </div>
-        <button class="exp-dismiss-button" aria-label="Dismiss">dismiss</button>
-      `;
-      
-      // Reset animation state
-      experienceContentInner.style.opacity = '0';
-      experienceContentInner.style.transform = 'translateY(20px)';
-      
-      // Fade in new content
+  // Move phone to the left and show content instantly
+  phonesContainer.classList.add('show-experience');
+  experienceContent.classList.add('visible');
+  
+  // Animate each line with staggered delays
+  const animateLines = () => {
+    const lines = experienceContentInner.querySelectorAll('.exp-line');
+    lines.forEach((line, index) => {
       setTimeout(() => {
-        experienceContentInner.style.opacity = '1';
-        experienceContentInner.style.transform = 'translateY(0)';
-      }, 50);
-      
-      // Add dismiss button handler
-      const dismissButton = experienceContentInner.querySelector('.exp-dismiss-button');
-      if (dismissButton) {
-        dismissButton.addEventListener('click', hideExperienceContent);
-      }
-    }, 400); // Wait for fade out transition (matches CSS transition duration)
-  } else {
-    // First time showing content
-    // Update content
-    experienceContentInner.innerHTML = `
-      <div class="exp-header">
-        <div class="exp-icon">
-          <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
-        </div>
-        <div class="exp-title-section">
-          <h1 class="exp-title">${projectData.title}</h1>
-          <div class="exp-role">${projectData.role || 'Developer'}</div>
-          <div class="exp-date">${projectData.dateRange || ''}</div>
-        </div>
-      </div>
-      <div class="exp-body">
-        ${formatDescription(projectData.description)}
-        <div class="exp-tech">
-          ${projectData.tech.map(tech => `<span>${tech}</span>`).join('')}
-        </div>
-      </div>
-      <button class="exp-dismiss-button" aria-label="Dismiss">dismiss</button>
-    `;
-    
-    // Move phone to the left and show content
-    phonesContainer.classList.add('show-experience');
-    experienceContent.classList.add('visible');
-    
-    // Reset animation
-    experienceContentInner.style.opacity = '0';
-    experienceContentInner.style.transform = 'translateY(20px)';
-    
-    // Fade in animation
-    setTimeout(() => {
-      experienceContentInner.style.opacity = '1';
-      experienceContentInner.style.transform = 'translateY(0)';
-    }, 50);
-    
-    // Add dismiss button handler
-    const dismissButton = experienceContentInner.querySelector('.exp-dismiss-button');
-    if (dismissButton) {
-      dismissButton.addEventListener('click', hideExperienceContent);
-    }
+        line.classList.add('animate');
+      }, 100 + (index * 80)); // Stagger by 80ms per line
+    });
+  };
+  
+  // Start animations after a short delay
+  setTimeout(animateLines, 50);
+  
+  // Add dismiss button handler
+  const dismissButton = experienceContentInner.querySelector('.exp-dismiss-button');
+  if (dismissButton) {
+    dismissButton.addEventListener('click', hideExperienceContent);
   }
 }
 
@@ -299,18 +252,20 @@ function hideExperienceContent() {
   const experienceContent = document.querySelector('.experience-content');
   const experienceContentInner = document.querySelector('.experience-content-inner');
   
-  // Fade out text content
-  experienceContentInner.style.opacity = '0';
-  experienceContentInner.style.transform = 'translateY(20px)';
+  // Fade out all lines (reverse order for smooth exit)
+  const lines = experienceContentInner.querySelectorAll('.exp-line');
+  const lineArray = Array.from(lines).reverse();
+  lineArray.forEach((line, index) => {
+    setTimeout(() => {
+      line.classList.remove('animate');
+    }, index * 30); // Quick reverse stagger
+  });
   
-  // Wait for fade out, then move phone back and hide content
+  // Wait for fade-out transition, then move phone back and hide content
   setTimeout(() => {
     phonesContainer.classList.remove('show-experience');
-    
-    setTimeout(() => {
-      experienceContent.classList.remove('visible');
-    }, 500);
-  }, 400);
+    experienceContent.classList.remove('visible');
+  }, 500); // Match CSS transition duration
 }
 
 // Add click handlers to app icons
