@@ -172,12 +172,18 @@ function createModal(projectData) {
   document.addEventListener('keydown', escapeHandler);
 }
 
+// Check if device is mobile
+function isMobileDevice() {
+  return window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 // Show experience content
 function showExperienceContent(projectData) {
   const mainPhone = document.querySelector('.main-phone');
   const phonesContainer = document.querySelector('.phones-container');
   const experienceContent = document.querySelector('.experience-content');
   const experienceContentInner = document.querySelector('.experience-content-inner');
+  const isMobile = isMobileDevice();
   
   // Format description with bullet points and hyperlinks
   const formatDescription = (description) => {
@@ -222,9 +228,17 @@ function showExperienceContent(projectData) {
     <button class="exp-dismiss-button exp-line" aria-label="Dismiss">dismiss</button>
   `;
   
-  // Move phone to the left and show content instantly
-  phonesContainer.classList.add('show-experience');
-  experienceContent.classList.add('visible');
+  // On mobile, show fullscreen overlay; on desktop, move phone and show side panel
+  if (isMobile) {
+    // Mobile: fullscreen overlay
+    experienceContent.classList.add('visible');
+    // Prevent body scroll when overlay is open
+    document.body.style.overflow = 'hidden';
+  } else {
+    // Desktop: side panel
+    phonesContainer.classList.add('show-experience');
+    experienceContent.classList.add('visible');
+  }
   
   // Animate each line with staggered delays
   const animateLines = () => {
@@ -251,6 +265,7 @@ function hideExperienceContent() {
   const phonesContainer = document.querySelector('.phones-container');
   const experienceContent = document.querySelector('.experience-content');
   const experienceContentInner = document.querySelector('.experience-content-inner');
+  const isMobile = isMobileDevice();
   
   // Fade out all lines (reverse order for smooth exit)
   const lines = experienceContentInner.querySelectorAll('.exp-line');
@@ -261,10 +276,14 @@ function hideExperienceContent() {
     }, index * 30); // Quick reverse stagger
   });
   
-  // Wait for fade-out transition, then move phone back and hide content
+  // Wait for fade-out transition, then hide content
   setTimeout(() => {
-    phonesContainer.classList.remove('show-experience');
+    if (!isMobile) {
+      phonesContainer.classList.remove('show-experience');
+    }
     experienceContent.classList.remove('visible');
+    // Restore body scroll
+    document.body.style.overflow = '';
   }, 500); // Match CSS transition duration
 }
 
@@ -304,12 +323,28 @@ document.querySelectorAll('.apps .icon').forEach(icon => {
 // Close experience content when clicking outside
 document.addEventListener('click', (e) => {
   const experienceContent = document.querySelector('.experience-content');
+  const experienceContentInner = document.querySelector('.experience-content-inner');
   const phonesContainer = document.querySelector('.phones-container');
+  const isMobile = isMobileDevice();
   
-  if (phonesContainer.classList.contains('show-experience')) {
-    // Check if click is outside both phone and content
-    if (!e.target.closest('.phone-frame') && !e.target.closest('.experience-content')) {
-      hideExperienceContent();
+  if (isMobile) {
+    // Mobile: close when clicking on backdrop
+    if (experienceContent && experienceContent.classList.contains('visible')) {
+      // Check if click is on the backdrop (experience-content) but not on the inner modal
+      const clickedOnBackdrop = e.target === experienceContent || 
+                                (experienceContent.contains(e.target) && 
+                                 !experienceContentInner.contains(e.target));
+      
+      if (clickedOnBackdrop) {
+        hideExperienceContent();
+      }
+    }
+  } else {
+    // Desktop: close when clicking outside both phone and content
+    if (phonesContainer.classList.contains('show-experience')) {
+      if (!e.target.closest('.phone-frame') && !e.target.closest('.experience-content')) {
+        hideExperienceContent();
+      }
     }
   }
 });
