@@ -1083,7 +1083,7 @@ body {
   /* App grid - 4 columns matching iOS native layout */
   .apps {
     gap: clamp(12px, 4vw, 16px);
-    margin-top: -40px; /* Move app stack up */
+    margin-top: -60px; /* Move app stack up closer to widgets */
   }
 
   .row-apps {
@@ -1197,6 +1197,10 @@ body {
     margin-top: 2px;
   }
 
+  .exp-body {
+    margin-bottom: 20px;
+  }
+
   .exp-body p {
     font-size: 14px;
     line-height: 1.6;
@@ -1215,6 +1219,7 @@ body {
   .exp-tech {
     gap: 6px;
     margin-top: 16px;
+    margin-bottom: 20px;
   }
 
   .exp-tech span {
@@ -1223,14 +1228,15 @@ body {
   }
 
   .exp-dismiss-button {
-    margin-top: 32px;
+    margin-top: 24px;
     margin-bottom: 16px;
     height: 48px; /* Minimum touch target */
     font-size: 16px;
     font-weight: 700;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     border: 1.5px solid rgba(255, 255, 255, 0.3);
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   /* Modal - full screen bottom sheet */
@@ -1337,8 +1343,14 @@ body {
 
   .exp-dismiss-button:hover {
     transform: none;
-    background: rgba(0, 122, 255, 0.2);
-    border-color: rgba(0, 122, 255, 0.3);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .exp-dismiss-button:active {
+    transform: scale(0.96);
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
   }
 
   .modal-close:hover {

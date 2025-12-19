@@ -486,6 +486,14 @@ showExperienceContent = function(projectData) {
     
     // Setup swipe to dismiss
     setupSwipeToDismiss(experienceContent, hideExperienceContent);
+    
+    // Add tap-to-dismiss functionality
+    experienceContent.addEventListener('click', (e) => {
+      // Only dismiss if clicking directly on the background, not on content
+      if (e.target === experienceContent) {
+        hideExperienceContent();
+      }
+    });
   }
 };
 
