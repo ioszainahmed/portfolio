@@ -328,3 +328,251 @@ document.querySelectorAll('.tile').forEach(t => {
     }, 120);
   });
 });
+
+// ============================================
+// MOBILE OPTIMIZATIONS & SWIPE GESTURES
+// ============================================
+
+// Detect if device is mobile
+const isMobile = () => {
+  return window.innerWidth <= 767 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
+// Prevent body scroll when experience content or modal is open on mobile
+function preventBodyScroll(prevent) {
+  if (!isMobile()) return;
+  
+  if (prevent) {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+  } else {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+  }
+}
+
+// Swipe gesture handler for experience content
+function setupSwipeToDismiss(element, dismissCallback) {
+  let touchStartY = 0;
+  let touchStartX = 0;
+  let touchEndY = 0;
+  let touchEndX = 0;
+  let isDragging = false;
+  let currentTranslateY = 0;
+
+  const handleTouchStart = (e) => {
+    if (!isMobile()) return;
+    
+    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+    isDragging = true;
+    element.style.transition = 'none';
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isMobile() || !isDragging) return;
+
+    touchEndY = e.touches[0].clientY;
+    touchEndX = e.touches[0].clientX;
+    
+    const deltaY = touchEndY - touchStartY;
+    const deltaX = Math.abs(touchEndX - touchStartX);
+    
+    // Only allow vertical swipe (prevent horizontal scrolling interference)
+    if (deltaY > 0 && deltaY > deltaX) {
+      currentTranslateY = Math.max(0, deltaY);
+      element.style.transform = `translateY(${currentTranslateY}px)`;
+      
+      // Add opacity fade as user drags down
+      const opacity = 1 - (currentTranslateY / 300);
+      element.style.opacity = Math.max(0.3, opacity);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isMobile() || !isDragging) return;
+    
+    isDragging = false;
+    element.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease';
+    
+    const deltaY = touchEndY - touchStartY;
+    const swipeThreshold = 100; // Minimum swipe distance to dismiss
+    
+    if (deltaY > swipeThreshold) {
+      // Dismiss on swipe down
+      dismissCallback();
+    } else {
+      // Snap back to original position
+      currentTranslateY = 0;
+      element.style.transform = 'translateY(0)';
+      element.style.opacity = '1';
+    }
+  };
+
+  // Add touch event listeners with passive option for better performance
+  element.addEventListener('touchstart', handleTouchStart, { passive: true });
+  element.addEventListener('touchmove', handleTouchMove, { passive: true });
+  element.addEventListener('touchend', handleTouchEnd, { passive: true });
+  element.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+}
+
+// Swipe gesture handler for modals
+function setupModalSwipeToDismiss(overlay, modal, dismissCallback) {
+  if (!isMobile()) return;
+  
+  let touchStartY = 0;
+  let touchEndY = 0;
+  let isDragging = false;
+  let currentTranslateY = 0;
+
+  const handleTouchStart = (e) => {
+    touchStartY = e.touches[0].clientY;
+    isDragging = true;
+    modal.style.transition = 'none';
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+
+    touchEndY = e.touches[0].clientY;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Only allow downward swipe
+    if (deltaY > 0) {
+      currentTranslateY = deltaY;
+      modal.style.transform = `translateY(${currentTranslateY}px)`;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    
+    isDragging = false;
+    modal.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    
+    const deltaY = touchEndY - touchStartY;
+    const swipeThreshold = 100;
+    
+    if (deltaY > swipeThreshold) {
+      dismissCallback();
+    } else {
+      currentTranslateY = 0;
+      modal.style.transform = 'translateY(0)';
+    }
+  };
+
+  modal.addEventListener('touchstart', handleTouchStart, { passive: true });
+  modal.addEventListener('touchmove', handleTouchMove, { passive: true });
+  modal.addEventListener('touchend', handleTouchEnd, { passive: true });
+  modal.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+}
+
+// Wrap showExperienceContent to add mobile features
+const originalShowExperienceContent = showExperienceContent;
+showExperienceContent = function(projectData) {
+  if (isMobile()) {
+    preventBodyScroll(true);
+  }
+  
+  originalShowExperienceContent(projectData);
+  
+  const experienceContent = document.querySelector('.experience-content');
+  if (experienceContent && isMobile()) {
+    // Reset transform and opacity
+    experienceContent.style.transform = '';
+    experienceContent.style.opacity = '';
+    
+    // Setup swipe to dismiss
+    setupSwipeToDismiss(experienceContent, hideExperienceContent);
+  }
+};
+
+// Wrap hideExperienceContent to restore body scroll
+const originalHideExperienceContent = hideExperienceContent;
+hideExperienceContent = function() {
+  if (isMobile()) {
+    preventBodyScroll(false);
+  }
+  originalHideExperienceContent();
+};
+
+// Wrap createModal to add mobile features
+const originalCreateModal = createModal;
+createModal = function(projectData) {
+  originalCreateModal(projectData);
+  
+  const overlay = document.querySelector('.modal-overlay');
+  const modal = overlay?.querySelector('.modal');
+  
+  if (overlay && isMobile()) {
+    preventBodyScroll(true);
+    
+    if (modal) {
+      // Reset transform
+      modal.style.transform = '';
+      
+      const mobileCloseModal = () => {
+        preventBodyScroll(false);
+        overlay.classList.remove('active');
+        setTimeout(() => {
+          overlay.remove();
+        }, 400);
+      };
+      
+      // Setup swipe to dismiss
+      setupModalSwipeToDismiss(overlay, modal, mobileCloseModal);
+      
+      // Add observer to detect when modal is removed/closed and restore scroll
+      const observer = new MutationObserver(() => {
+        if (!document.body.contains(overlay)) {
+          preventBodyScroll(false);
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.body, { childList: true });
+    }
+  }
+};
+
+// Optimize touch interactions for mobile
+if (isMobile()) {
+  // Use touchstart for faster response on mobile
+  document.querySelectorAll('.icon').forEach(icon => {
+    icon.addEventListener('touchstart', function(e) {
+      // Add visual feedback
+      this.style.opacity = '0.7';
+      setTimeout(() => {
+        this.style.opacity = '';
+      }, 150);
+    }, { passive: true });
+  });
+  
+  // Improve tap targets for note items
+  document.querySelectorAll('.note-item').forEach(item => {
+    item.addEventListener('touchstart', function() {
+      this.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+    }, { passive: true });
+    
+    item.addEventListener('touchend', function() {
+      setTimeout(() => {
+        this.style.backgroundColor = '';
+      }, 150);
+    }, { passive: true });
+  });
+}
+
+// Handle orientation change
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    // Reset any transforms on resize
+    const experienceContent = document.querySelector('.experience-content');
+    if (experienceContent) {
+      experienceContent.style.transform = '';
+      experienceContent.style.opacity = '';
+    }
+  }, 250);
+}, { passive: true });
