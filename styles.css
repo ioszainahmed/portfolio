@@ -1065,15 +1065,14 @@ body {
     font-size: clamp(11px, 3vw, 13px);
   }
 
-  /* App grid - 3 columns with larger icons - scales with viewport */
+  /* App grid - 4 columns matching iOS native layout */
   .apps {
     gap: clamp(12px, 4vw, 16px);
   }
 
   .row-apps {
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(12px, 3.5vw, 16px) 0;
-    column-gap: 0;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px 8px;
     justify-items: center;
     padding-left: 0;
     padding-right: 0;
@@ -1082,10 +1081,7 @@ body {
   .icon {
     min-width: 0;
     width: 100%;
-    min-height: clamp(70px, 20vw, 80px);
-    padding: clamp(2px, 1vw, 4px) 0;
-    padding-left: 0;
-    padding-right: 0;
+    padding: 4px 0;
     margin: 0;
     justify-items: center;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
@@ -1093,9 +1089,9 @@ body {
 
   .tile {
     width: 100%;
-    height: auto;
-    aspect-ratio: 1;
-    margin: 0;
+    max-width: 70px;
+    height: 70px;
+    margin: 0 auto;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -1104,8 +1100,8 @@ body {
   }
 
   .label {
-    font-size: clamp(11px, 3.2vw, 12px);
-    margin-top: clamp(1px, 0.5vw, 2px);
+    font-size: 11px;
+    margin-top: 2px;
   }
 
   /* Dock adjustments */
@@ -1115,8 +1111,8 @@ body {
   }
 
   .dock .tile {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
   }
 
   .dock a {
