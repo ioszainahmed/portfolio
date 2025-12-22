@@ -2,7 +2,7 @@
 const projects = {
   'Marriott': {
     title: 'Marriott Bonvoy',
-    role: 'Software Engineer - iOS | Marriott International',
+    role: 'Software Engineer',
     dateRange: 'January 2023 – Present',
     description: '• Marriott Bonvoy App (hyperlink: https://apps.apple.com/us/app/marriott-bonvoy-book-hotels/id455004730)\n• Spearhead the redesign of legacy UIKit and Storyboard views into modern SwiftUI-based flows using Figma.\n• Migrate eAPI calls to GraphQL using Apollo Studio, enhancing performance and maintainability.\n• Enhance accessibility by customizing ADA-compliant experiences across key user flows and app interfaces.\n• Led the deprecation of legacy Objective-C modules in favor of SwiftUI-first architecture for modern development.\n• Collaborate with product, design and QA teams to define best practices for SwiftUI implementation and testing.\n• Deliver regular cross-team presentations and demos to showcase new features and technical advancements.',
     tech: ['Swift', 'SwiftUI', 'GraphQL', 'Apollo Studio', 'Figma'],
@@ -11,7 +11,7 @@ const projects = {
   },
   'myQ': {
     title: 'myQ Smart Garage',
-    role: 'Software Engineer II | Chamberlain Group',
+    role: 'Software Engineer II',
     dateRange: 'November 2021 – December 2022',
     description: '• myQ Garage and Access App & myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-garage-access-control/id456282559)\n• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.\n• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.\n• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.\n• Documented, unit tested and contributed to the automation of existing code for usability and reliability.\n• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.',
     tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile'],
@@ -20,7 +20,7 @@ const projects = {
   },
   'Community': {
     title: 'myQ Community',
-    role: 'Software Engineer II | Chamberlain Group',
+    role: 'Software Engineer II',
     dateRange: 'November 2021 – December 2022',
     description: '• myQ Garage and Access App & myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-community/id1516518499)\n• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.\n• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.\n• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.\n• Documented, unit tested and contributed to the automation of existing code for usability and reliability.\n• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.',
     tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile'],
@@ -29,7 +29,7 @@ const projects = {
   },
   'WanaSell': {
     title: 'WanaSell',
-    role: 'iOS Developer | WanaSell',
+    role: 'iOS Developer',
     dateRange: 'June 2019 – September 2021',
     description: '• WanaSell App (hyperlink: https://apptopia.com/ios/app/1521338655/about)\n• Designed and built adaptive User Interface on Storyboards and Xibs using Auto-layout.\n• Implemented an object detection feature using AVKit and Apple\'s ResNet50 data model.\n• Used various instruments tools to identify memory leaks and improve the performance of the app.\n• Participated in the full iOS mobile application life cycle from conception to release to the App Store',
     tech: ['Swift', 'UIKit', 'AVKit', 'ResNet50', 'Auto Layout'],
@@ -487,10 +487,11 @@ showExperienceContent = function(projectData) {
     // Setup swipe to dismiss
     setupSwipeToDismiss(experienceContent, hideExperienceContent);
     
-    // Add tap-to-dismiss functionality
+    // Add tap-to-dismiss functionality - dismiss when tapping on background or content area
     experienceContent.addEventListener('click', (e) => {
-      // Only dismiss if clicking directly on the background, not on content
-      if (e.target === experienceContent) {
+      // Dismiss unless clicking on interactive elements (links, buttons, tech tags)
+      const isInteractive = e.target.closest('a, button, .exp-tech span');
+      if (!isInteractive) {
         hideExperienceContent();
       }
     });
