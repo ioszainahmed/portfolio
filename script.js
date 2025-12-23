@@ -203,6 +203,7 @@ function showExperienceContent(projectData) {
   
   // Update content
   experienceContentInner.innerHTML = `
+    <button class="exp-close-button" type="button" aria-label="Close">×</button>
     <div class="exp-header">
       <div class="exp-icon">
         <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
@@ -243,6 +244,16 @@ function showExperienceContent(projectData) {
   const dismissButton = experienceContentInner.querySelector('.exp-dismiss-button');
   if (dismissButton) {
     dismissButton.addEventListener('click', hideExperienceContent);
+  }
+
+  // Add close (X) handler
+  const closeButton = experienceContentInner.querySelector('.exp-close-button');
+  if (closeButton) {
+    closeButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      hideExperienceContent();
+    });
   }
 }
 
@@ -479,13 +490,18 @@ showExperienceContent = function(projectData) {
   originalShowExperienceContent(projectData);
   
   const experienceContent = document.querySelector('.experience-content');
+  const experiencePanel = document.querySelector('.experience-content-inner');
   if (experienceContent && isMobile()) {
-    // Reset transform and opacity
-    experienceContent.style.transform = '';
-    experienceContent.style.opacity = '';
+    // Reset panel transform/opacity (in case a swipe-dismiss was in progress)
+    if (experiencePanel) {
+      experiencePanel.style.transform = '';
+      experiencePanel.style.opacity = '';
+    }
     
     // Setup swipe to dismiss
-    setupSwipeToDismiss(experienceContent, hideExperienceContent);
+    if (experiencePanel) {
+      setupSwipeToDismiss(experiencePanel, hideExperienceContent);
+    }
     
     // Add tap-to-dismiss functionality - dismiss when tapping on background or content area
     experienceContent.addEventListener('click', (e) => {
@@ -578,10 +594,10 @@ window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
     // Reset any transforms on resize
-    const experienceContent = document.querySelector('.experience-content');
-    if (experienceContent) {
-      experienceContent.style.transform = '';
-      experienceContent.style.opacity = '';
+    const experiencePanel = document.querySelector('.experience-content-inner');
+    if (experiencePanel) {
+      experiencePanel.style.transform = '';
+      experiencePanel.style.opacity = '';
     }
   }, 250);
 }, { passive: true });

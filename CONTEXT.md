@@ -31,8 +31,13 @@ iOS-themed portfolio website for Zain Ahmed. Mimics iPhone interface on desktop,
 
 ### Experience Content Panel
 - **Desktop**: Slides in from right (500px width), phone shifts left
-- **Mobile**: Full-screen overlay, slides up from bottom, swipe-down to dismiss
-- **Content**: Project details, role, dates, bullet points, tech tags, dismiss button
+- **Mobile**: Full-screen frosted-glass overlay (Option B), panel slides up from bottom, swipe-down to dismiss
+- **Content**: Project details, role, dates, bullet points, tech tags, dismiss button (in-flow) + top-right close (X)
+- **Dismiss actions (mobile)**:
+  - Tap **X** (top-right)
+  - Tap **dismiss** (bottom CTA inside content)
+  - Swipe down on the panel
+  - Tap on non-interactive area (dismisses unless tap is on `a`, `button`, or `.exp-tech span`)
 
 ### Modals
 - **Desktop**: Centered modal (320px max-width)
@@ -44,6 +49,7 @@ iOS-themed portfolio website for Zain Ahmed. Mimics iPhone interface on desktop,
 - **Body Scroll Lock**: Prevents background scroll when overlays open
 - **Touch Feedback**: Visual feedback on all interactive elements
 - **Safe Area Support**: iOS safe area insets for notched devices
+- **Performance/Smoothness**: Backdrop blur layer fades (opacity), content panel slides (transform) to reduce iOS jitter
 
 ## CSS Architecture
 
@@ -52,7 +58,9 @@ iOS-themed portfolio website for Zain Ahmed. Mimics iPhone interface on desktop,
 - `.screen` - Main content container (grid layout)
 - `.widgets` - 2-column grid, responsive scaling
 - `.apps` - App icon grid (3-col mobile, 4-col desktop)
-- `.experience-content` - Project detail panel/overlay
+- `.experience-content` - Project detail container (desktop side panel / mobile overlay backdrop)
+- `.experience-content-inner` - Experience details panel content (mobile slide animation target)
+- `.exp-close-button` - Mobile close (X) button (top-right, safe-area aware)
 - `.modal-overlay` - Modal container
 
 ### Responsive Strategy
@@ -75,6 +83,9 @@ iOS-themed portfolio website for Zain Ahmed. Mimics iPhone interface on desktop,
 - `setupSwipeToDismiss()` - Adds swipe gesture handlers
 - `preventBodyScroll()` - Locks/unlocks body scroll
 - Touch event handlers for visual feedback
+- **Experience overlay behavior (mobile)**:
+  - Swipe-to-dismiss is attached to `.experience-content-inner` (panel), not the blurred overlay
+  - Backdrop uses opacity transition; panel uses transform transition for smoother dismiss
 
 ### Project Data
 - `projects` object contains all project information
@@ -97,6 +108,12 @@ iOS-themed portfolio website for Zain Ahmed. Mimics iPhone interface on desktop,
 - Widgets can grow vertically and push content down
 - Screen has `height: auto` with `min-height: 100vh`
 - Overflow scrolling enabled for long content
+
+### Mobile Experience Details (UX polish)
+- **Dismiss button** moved into the normal content stack (no longer fixed), with safe-area-friendly bottom spacing
+- Added a **top-right close (X)** button (mobile only)
+- Updated **Option B frosted glass** styling for the mobile experience overlay
+- Smoothed dismiss by **fading the backdrop** and **sliding the panel**, reducing iOS blur/transform jitter
 
 ## Design System
 
