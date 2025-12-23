@@ -50,38 +50,38 @@ const projects = {
   },
   'Notes': {
     title: 'Notes',
-    description: 'Personal notes, thoughts, and reminders. Keeping track of ideas and important information.',
-    tech: ['Productivity', 'Organization', 'Notes'],
+    description: 'A space for in-progress thoughts, technical notes, and ideas I\'m actively refining. This section is evolving and will be published soon.',
+    tech: ['Drafts', 'Ideas', 'In Progress'],
     link: '#'
   },
   'App Store': {
     title: 'App Store',
-    description: 'Check out my published iOS applications on the App Store. Explore apps I\'ve developed and released to users worldwide.',
-    tech: ['iOS', 'App Store', 'Published Apps'],
+    description: 'A curated list of iOS applications I\'ve built and shipped. App links and release details will be added as they go live.',
+    tech: ['Shipping Soon', 'Production', 'iOS'],
     link: '#'
   },
   'Swift': {
     title: 'Swift',
     description: 'Building iOS applications with Swift. Expertise in modern Swift features, SwiftUI, and UIKit development.',
-    tech: ['Swift', 'iOS', 'SwiftUI'],
+    tech: ['async/await', 'actors', 'tasks', 'generics', 'protocols', 'extensions', 'ARC', 'error-handling'],
     link: '#'
   },
   'SwiftUI': {
     title: 'SwiftUI',
     description: 'Building modern, declarative user interfaces with SwiftUI. Creating beautiful and responsive iOS apps with Apple\'s latest UI framework.',
-    tech: ['SwiftUI', 'iOS', 'UI/UX'],
+    tech: ['views', 'modifiers', 'state', 'bindings', 'environment', 'navigation', 'stacks', 'lists', 'animations', 'accessibility'],
     link: '#'
   },
   'Xcode': {
     title: 'Xcode',
     description: 'Professional iOS development using Xcode. Creating, debugging, and optimizing apps with Apple\'s integrated development environment.',
-    tech: ['Xcode', 'iOS', 'Development'],
+    tech: ['debugging', 'instruments', 'profiling', 'memory-leaks', 'breakpoints', 'simulators', 'test-plans', 'coverage'],
     link: '#'
   },
   'Dev Stack': {
     title: 'Dev Stack',
     description: 'My development technology stack and tools. The technologies, frameworks, and tools I use to build iOS applications.',
-    tech: ['Swift', 'SwiftUI', 'Xcode', 'iOS'],
+    tech: ['GraphQL', 'Apollo', 'REST', 'Git', 'Python', 'automation', 'Figma', 'CI', 'analytics', 'Cursor', 'Claude'],
     link: '#'
   },
   'News': {

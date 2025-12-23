@@ -1467,6 +1467,13 @@ body {
     opacity: 0.9;
   }
 
+  /* Modal: occupy a quarter of the viewport height on mobile */
+  .modal {
+    height: 25vh;
+    max-height: 25vh;
+    min-height: 25vh;
+  }
+
   .modal-close:hover {
     transform: none;
     background: rgba(0, 0, 0, 0.05);
