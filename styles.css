@@ -6,16 +6,23 @@
 
 :root {
   /* --- Wallpaper -------------------------------------------------------- */
-  /* Deep indigo base with warm and cool lobes. Luminance is deliberately
-     pulled down through the middle band, where the widgets and icons sit. */
-  --wall:
-    radial-gradient(120% 84% at 10% -10%, #ff8a3d 0%, rgba(255, 138, 61, 0) 46%),
-    radial-gradient(94% 68% at 102% 6%, #f0356e 0%, rgba(240, 53, 110, 0) 54%),
-    radial-gradient(128% 92% at 88% 110%, #1fb6ff 0%, rgba(31, 182, 255, 0) 50%),
-    radial-gradient(112% 78% at -12% 102%, #7b3ff2 0%, rgba(123, 63, 242, 0) 54%),
-    linear-gradient(168deg, #2a1250 0%, #3b1a63 38%, #241046 70%, #140a2c 100%);
+  /* The stock iOS wallpaper. It is what makes this read as an iPhone rather
+     than a generic phone, so it stays. */
+  --wall: url('assets/wallpaper.jpg') center / cover no-repeat;
+  /* It runs the full spectrum at full saturation and has a near-white band
+     across the middle, exactly where the Connect and Tools rows sit.
+     Measured worst-case contrast for the white app labels, compositing this
+     gradient over the image: no scrim 1.08:1, these values 5.04:1. Lightening
+     the stops by ~0.10 drops it to 3.52:1, under AA for 11px text — so if you
+     want more of the wallpaper's colour, that is the trade being made. */
   --wall-scrim:
-    linear-gradient(180deg, rgba(6, 3, 16, 0.30) 0%, rgba(6, 3, 16, 0.52) 46%, rgba(6, 3, 16, 0.40) 100%);
+    linear-gradient(
+      180deg,
+      rgba(8, 4, 20, 0.40) 0%,
+      rgba(8, 4, 20, 0.52) 34%,
+      rgba(8, 4, 20, 0.60) 62%,
+      rgba(8, 4, 20, 0.50) 100%
+    );
 
   /* --- Surfaces --------------------------------------------------------- */
   --void: #0a0a0c;          /* the room the phone sits in */

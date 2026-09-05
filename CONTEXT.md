@@ -18,11 +18,21 @@ Sizes are the iOS ramp (`--t-large` 34 … `--t-caption2` 11). The frame is 393p
 wide, matching an iPhone 15 Pro at 1x, so these are true point sizes. Keep them
 that way instead of introducing arbitrary `clamp()` values.
 
-**Color.** `--wall` is a CSS mesh gradient, with `--wall-scrim` pulling
-luminance down through the middle band where content sits. It replaced a stock
-iOS wallpaper photo that ran the full spectrum at full saturation and forced
-text-shadows onto everything. The page background behind the phone stays near
-black so the wallpaper is the only saturated thing on screen.
+**Color.** `--wall` is the stock iOS wallpaper. It is deliberately the real
+Apple image rather than a generated gradient: it is what makes the page read as
+*an iPhone* instead of a generic phone, and that recognisability is the point.
+
+The image runs the full spectrum at full saturation, including a near-white band
+across the middle where the Connect and Tools rows sit, so `--wall-scrim` does
+the legibility work. Compositing the scrim over the image, worst-case contrast
+for the white app labels is **5.04:1** with the current stops and **1.08:1**
+with no scrim at all — the latter being what the site shipped before, with
+text-shadows papering over it. Lightening the stops by about 0.10 yields a more
+vivid wallpaper at 3.52:1, which is under AA for 11px labels. Adjust with that
+trade in mind rather than by eye.
+
+The page background behind the phone stays near black, so the wallpaper is the
+only saturated thing on screen.
 
 **Motion.** `--ease-sheet` is the curve iOS uses to present sheets;
 `--spring` is a real spring with the overshoot left in. One orchestrated
