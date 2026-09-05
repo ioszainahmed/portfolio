@@ -1,603 +1,487 @@
-// Project data
+/* ==========================================================================
+   Zain Ahmed — iOS-style portfolio
+   ========================================================================== */
+
+'use strict';
+
+/* --- Content -------------------------------------------------------------
+   Bullets starting with "•" render as a list. A trailing "(hyperlink: URL)"
+   turns that bullet into a link.
+   ------------------------------------------------------------------------ */
+
 const projects = {
   'Marriott': {
     title: 'Marriott Bonvoy',
     role: 'Software Engineer',
     dateRange: 'January 2023 – Present',
-    description: '• Marriott Bonvoy App (hyperlink: https://apps.apple.com/us/app/marriott-bonvoy-book-hotels/id455004730)\n• Spearhead the redesign of legacy UIKit and Storyboard views into modern SwiftUI-based flows using Figma.\n• Migrate eAPI calls to GraphQL using Apollo Studio, enhancing performance and maintainability.\n• Enhance accessibility by customizing ADA-compliant experiences across key user flows and app interfaces.\n• Led the deprecation of legacy Objective-C modules in favor of SwiftUI-first architecture for modern development.\n• Collaborate with product, design and QA teams to define best practices for SwiftUI implementation and testing.\n• Deliver regular cross-team presentations and demos to showcase new features and technical advancements.',
-    tech: ['Swift', 'SwiftUI', 'GraphQL', 'Apollo Studio', 'Figma'],
-    link: '#',
-    icon: 'assets/bonvoy.png'
+    icon: 'assets/bonvoy.png',
+    description: [
+      '• Marriott Bonvoy App (hyperlink: https://apps.apple.com/us/app/marriott-bonvoy-book-hotels/id455004730)',
+      '• Spearhead the redesign of legacy UIKit and Storyboard views into modern SwiftUI-based flows using Figma.',
+      '• Migrate eAPI calls to GraphQL using Apollo Studio, enhancing performance and maintainability.',
+      '• Enhance accessibility by customizing ADA-compliant experiences across key user flows and app interfaces.',
+      '• Led the deprecation of legacy Objective-C modules in favor of SwiftUI-first architecture for modern development.',
+      '• Collaborate with product, design and QA teams to define best practices for SwiftUI implementation and testing.',
+      '• Deliver regular cross-team presentations and demos to showcase new features and technical advancements.'
+    ].join('\n'),
+    tech: ['Swift', 'SwiftUI', 'GraphQL', 'Apollo Studio', 'Figma']
   },
+
   'myQ': {
     title: 'myQ Smart Garage',
     role: 'Software Engineer II',
     dateRange: 'November 2021 – December 2022',
-    description: '• myQ Garage and Access App & myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-garage-access-control/id456282559)\n• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.\n• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.\n• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.\n• Documented, unit tested and contributed to the automation of existing code for usability and reliability.\n• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.',
-    tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile'],
-    link: '#',
-    icon: 'assets/myQ.png'
+    icon: 'assets/myQ.png',
+    description: [
+      '• myQ Garage and Access App (hyperlink: https://apps.apple.com/us/app/myq-garage-access-control/id456282559)',
+      '• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.',
+      '• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.',
+      '• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.',
+      '• Documented, unit tested and contributed to the automation of existing code for usability and reliability.',
+      '• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.'
+    ].join('\n'),
+    tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile']
   },
+
   'Community': {
     title: 'myQ Community',
     role: 'Software Engineer II',
     dateRange: 'November 2021 – December 2022',
-    description: '• myQ Garage and Access App & myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-community/id1516518499)\n• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.\n• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.\n• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.\n• Documented, unit tested and contributed to the automation of existing code for usability and reliability.\n• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.',
-    tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile'],
-    link: '#',
-    icon: 'assets/community.png'
+    icon: 'assets/community.png',
+    description: [
+      '• myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-community/id1516518499)',
+      '• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.',
+      '• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.',
+      '• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.',
+      '• Documented, unit tested and contributed to the automation of existing code for usability and reliability.',
+      '• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.'
+    ].join('\n'),
+    tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile']
   },
+
   'WanaSell': {
     title: 'WanaSell',
     role: 'iOS Developer',
     dateRange: 'June 2019 – September 2021',
-    description: '• WanaSell App (hyperlink: https://apptopia.com/ios/app/1521338655/about)\n• Designed and built adaptive User Interface on Storyboards and Xibs using Auto-layout.\n• Implemented an object detection feature using AVKit and Apple\'s ResNet50 data model.\n• Used various instruments tools to identify memory leaks and improve the performance of the app.\n• Participated in the full iOS mobile application life cycle from conception to release to the App Store',
-    tech: ['Swift', 'UIKit', 'AVKit', 'ResNet50', 'Auto Layout'],
-    link: '#',
-    icon: 'assets/wanasell.png'
+    icon: 'assets/wanasell.png',
+    description: [
+      '• WanaSell App (hyperlink: https://apptopia.com/ios/app/1521338655/about)',
+      '• Designed and built adaptive User Interface on Storyboards and Xibs using Auto-layout.',
+      "• Implemented an object detection feature using AVKit and Apple's ResNet50 data model.",
+      '• Used various instruments tools to identify memory leaks and improve the performance of the app.',
+      '• Participated in the full iOS mobile application life cycle from conception to release to the App Store.'
+    ].join('\n'),
+    tech: ['Swift', 'UIKit', 'AVKit', 'ResNet50', 'Auto Layout']
   },
-  'LinkedIn': {
-    title: 'LinkedIn Profile',
-    description: 'Connect with me on LinkedIn to see my professional experience, projects, and network with me in the tech industry.',
-    tech: ['Networking', 'Professional', 'Career'],
-    link: 'https://www.linkedin.com/in/zainahmedios/'
-  },
-  'GitHub': {
-    title: 'GitHub Profile',
-    description: 'Check out my code repositories, open source contributions, and side projects on GitHub.',
-    tech: ['Code', 'Open Source', 'Development'],
-    link: 'https://github.com/ioszainahmed'
-  },
+
   'Notes': {
     title: 'Notes',
-    description: 'A space for in-progress thoughts, technical notes, and ideas I\'m actively refining. This section is evolving and will be published soon.',
-    tech: ['Drafts', 'Ideas', 'In Progress'],
-    link: '#'
+    description: "A space for in-progress thoughts, technical notes, and ideas I'm actively refining. This section is evolving and will be published soon.",
+    tech: ['Drafts', 'Ideas', 'In Progress']
   },
+
   'App Store': {
     title: 'App Store',
-    description: 'A curated list of iOS applications I\'ve built and shipped. App links and release details will be added as they go live.',
-    tech: ['Shipping Soon', 'Production', 'iOS'],
-    link: '#'
+    description: "A curated list of iOS applications I've built and shipped. App links and release details will be added as they go live.",
+    tech: ['Shipping Soon', 'Production', 'iOS']
   },
+
   'Swift': {
     title: 'Swift',
     description: 'Building iOS applications with Swift. Expertise in modern Swift features, SwiftUI, and UIKit development.',
-    tech: ['async/await', 'actors', 'tasks', 'generics', 'protocols', 'extensions', 'ARC', 'error-handling'],
-    link: '#'
+    tech: ['async/await', 'actors', 'tasks', 'generics', 'protocols', 'extensions', 'ARC', 'error-handling']
   },
+
   'SwiftUI': {
     title: 'SwiftUI',
-    description: 'Building modern, declarative user interfaces with SwiftUI. Creating beautiful and responsive iOS apps with Apple\'s latest UI framework.',
-    tech: ['views', 'modifiers', 'state', 'bindings', 'environment', 'navigation', 'stacks', 'lists', 'animations', 'accessibility'],
-    link: '#'
+    description: "Building modern, declarative user interfaces with SwiftUI. Creating beautiful and responsive iOS apps with Apple's latest UI framework.",
+    tech: ['views', 'modifiers', 'state', 'bindings', 'environment', 'navigation', 'stacks', 'lists', 'animations', 'accessibility']
   },
+
   'Xcode': {
     title: 'Xcode',
-    description: 'Professional iOS development using Xcode. Creating, debugging, and optimizing apps with Apple\'s integrated development environment.',
-    tech: ['debugging', 'instruments', 'profiling', 'memory-leaks', 'breakpoints', 'simulators', 'test-plans', 'coverage'],
-    link: '#'
+    description: "Professional iOS development using Xcode. Creating, debugging, and optimizing apps with Apple's integrated development environment.",
+    tech: ['debugging', 'instruments', 'profiling', 'memory-leaks', 'breakpoints', 'simulators', 'test-plans', 'coverage']
   },
+
   'Dev Stack': {
     title: 'Dev Stack',
     description: 'My development technology stack and tools. The technologies, frameworks, and tools I use to build iOS applications.',
-    tech: ['GraphQL', 'Apollo', 'REST', 'Git', 'Python', 'automation', 'Figma', 'CI', 'analytics', 'Cursor', 'Claude'],
-    link: '#'
-  },
-  'News': {
-    title: 'Tech News',
-    description: 'Curated tech news and updates. Staying informed about the latest in iOS and technology.',
-    tech: ['News', 'Tech', 'Updates'],
-    link: '#'
+    tech: ['GraphQL', 'Apollo', 'REST', 'Git', 'Python', 'automation', 'Figma', 'CI', 'analytics', 'Cursor', 'Claude']
   }
 };
 
-// Update time display
-function updateTime() {
-  const timeElement = document.getElementById('time');
+/* --- Helpers ------------------------------------------------------------- */
+
+/* Matches the CSS breakpoint exactly, so layout and behaviour never disagree
+   (the old user-agent sniff treated an iPad on a wide viewport as mobile). */
+const mobileQuery = window.matchMedia('(max-width: 767px)');
+const isMobile = () => mobileQuery.matches;
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const SHEET_MS = 480; /* keep in sync with --dur-sheet */
+const exitDuration = () => (reduceMotion.matches ? 0 : SHEET_MS);
+
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
+  { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+));
+
+/* --- Status bar clock ---------------------------------------------------- */
+
+const timeEl = document.getElementById('time');
+
+function tickClock() {
+  if (!timeEl) return;
   const now = new Date();
-  let hours = now.getHours();
-  const minutes = now.getMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  const timeString = `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-  if (timeElement) {
-    timeElement.textContent = timeString;
-  }
+  const hours = now.getHours() % 12 || 12;
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  timeEl.textContent = `${hours}:${minutes}`;
+
+  /* Re-arm on the minute boundary rather than every 60s from load, which
+     otherwise drifts by up to 59 seconds. */
+  const ms = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+  window.setTimeout(tickClock, ms);
 }
 
-// Update time immediately and then every minute
-updateTime();
-setInterval(updateTime, 60000);
+tickClock();
 
-// Modal functionality
-function createModal(projectData) {
-  // Remove existing modal if any
-  const existingModal = document.querySelector('.modal-overlay');
-  if (existingModal) {
-    existingModal.remove();
-  }
+/* --- Scroll lock ---------------------------------------------------------
+   Reference-counted, and it restores the scroll position on release — the
+   previous version dropped you back at the top of the page.
+   ------------------------------------------------------------------------ */
 
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-  
-  modal.innerHTML = `
-    <div class="modal-header">
-      <h2 class="modal-title">${projectData.title}</h2>
-      <button class="modal-close" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-content">
-      <p>${projectData.description}</p>
-      <div class="modal-tech">
-        ${projectData.tech.map(tech => `<span>${tech}</span>`).join('')}
-      </div>
-      ${projectData.link !== '#' ? `<a href="${projectData.link}" target="_blank" class="modal-link">Learn More →</a>` : ''}
-    </div>
-  `;
-  
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-  
-  // Trigger animation
-  setTimeout(() => {
-    overlay.classList.add('active');
-  }, 10);
-  
-  // Close handlers
-  const closeModal = () => {
-    overlay.classList.remove('active');
-    setTimeout(() => {
-      overlay.remove();
-    }, 300);
-  };
-  
-  overlay.querySelector('.modal-close').addEventListener('click', closeModal);
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      closeModal();
-    }
-  });
-  
-  // Close on Escape key
-  const escapeHandler = (e) => {
-    if (e.key === 'Escape') {
-      closeModal();
-      document.removeEventListener('keydown', escapeHandler);
-    }
-  };
-  document.addEventListener('keydown', escapeHandler);
+let lockCount = 0;
+let lockedAt = 0;
+
+function lockScroll() {
+  if (lockCount++ > 0) return;
+  lockedAt = window.scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${lockedAt}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
 }
 
-// Show experience content
-function showExperienceContent(projectData) {
-  const mainPhone = document.querySelector('.main-phone');
-  const phonesContainer = document.querySelector('.phones-container');
-  const experienceContent = document.querySelector('.experience-content');
-  const experienceContentInner = document.querySelector('.experience-content-inner');
-  
-  // Format description with bullet points and hyperlinks
-  const formatDescription = (description) => {
-    if (!description) return '';
-    
-    return description.split('\n').map(line => {
-      const trimmedLine = line.trim();
-      if (trimmedLine.startsWith('•')) {
-        // Check for hyperlink pattern
-        const hyperlinkMatch = trimmedLine.match(/\(hyperlink:\s*(https?:\/\/[^\)]+)\)/);
-        if (hyperlinkMatch) {
-          const url = hyperlinkMatch[1];
-          const textWithoutHyperlink = trimmedLine.replace(/\s*\(hyperlink:\s*https?:\/\/[^\)]+\)/, '').trim();
-          const bulletText = textWithoutHyperlink.replace('•', '').trim();
-          return `<div class="exp-bullet exp-line"><a href="${url}" target="_blank" rel="noopener noreferrer" class="exp-link">${bulletText}</a></div>`;
-        }
-        const bulletText = trimmedLine.replace('•', '').trim();
-        return `<div class="exp-bullet exp-line">${bulletText}</div>`;
-      }
-      return trimmedLine ? `<p class="exp-line">${trimmedLine}</p>` : '';
-    }).join('');
-  };
-  
-  // Update content
-  experienceContentInner.innerHTML = `
-    <button class="exp-close-button" type="button" aria-label="Close">×</button>
-    <div class="exp-header">
-      <div class="exp-icon">
-        <img src="${projectData.icon || 'assets/bonvoy.png'}" alt="${projectData.title}">
-      </div>
-      <div class="exp-title-section">
-        <h1 class="exp-title exp-line">${projectData.title}</h1>
-        <div class="exp-role exp-line">${projectData.role || 'Developer'}</div>
-        <div class="exp-date exp-line">${projectData.dateRange || ''}</div>
-      </div>
-    </div>
-    <div class="exp-body">
-      ${formatDescription(projectData.description)}
-      <div class="exp-tech">
-        ${projectData.tech.map(tech => `<span class="exp-line">${tech}</span>`).join('')}
-      </div>
-    </div>
-    <button class="exp-dismiss-button exp-line" aria-label="Dismiss">dismiss</button>
-  `;
-  
-  // Move phone to the left and show content instantly
-  phonesContainer.classList.add('show-experience');
-  experienceContent.classList.add('visible');
-  
-  // Animate each line with staggered delays
-  const animateLines = () => {
-    const lines = experienceContentInner.querySelectorAll('.exp-line');
-    lines.forEach((line, index) => {
-      setTimeout(() => {
-        line.classList.add('animate');
-      }, 100 + (index * 80)); // Stagger by 80ms per line
-    });
-  };
-  
-  // Start animations after a short delay
-  setTimeout(animateLines, 50);
-  
-  // Add dismiss button handler
-  const dismissButton = experienceContentInner.querySelector('.exp-dismiss-button');
-  if (dismissButton) {
-    dismissButton.addEventListener('click', hideExperienceContent);
-  }
+function unlockScroll() {
+  lockCount = Math.max(0, lockCount - 1);
+  if (lockCount > 0) return;
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  window.scrollTo(0, lockedAt);
+}
 
-  // Add close (X) handler
-  const closeButton = experienceContentInner.querySelector('.exp-close-button');
-  if (closeButton) {
-    closeButton.addEventListener('click', (e) => {
+/* --- Focus management ---------------------------------------------------- */
+
+const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+function trapFocus(container) {
+  const onKeydown = (e) => {
+    if (e.key !== 'Tab') return;
+    const items = Array.from(container.querySelectorAll(FOCUSABLE));
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
       e.preventDefault();
-      e.stopPropagation();
-      hideExperienceContent();
-    });
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+  container.addEventListener('keydown', onKeydown);
+  return () => container.removeEventListener('keydown', onKeydown);
+}
+
+/* --- Layer stack ---------------------------------------------------------
+   One Escape listener for the whole page, closing whatever is on top. The
+   old code added a listener per modal and only removed it if you actually
+   pressed Escape.
+   ------------------------------------------------------------------------ */
+
+const layers = [];
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && layers.length) {
+    e.preventDefault();
+    layers[layers.length - 1]();
   }
+});
+
+/* --- Swipe to dismiss ----------------------------------------------------- */
+
+function swipeToDismiss(el, onDismiss, { scrollHost = el } = {}) {
+  let startY = 0;
+  let startX = 0;
+  let delta = 0;
+  let dragging = false;
+  let axisLocked = false;
+
+  const reset = () => {
+    el.style.transition = '';
+    el.style.transform = '';
+  };
+
+  el.addEventListener('touchstart', (e) => {
+    if (!isMobile() || e.touches.length !== 1) return;
+    /* Only start a drag from the top of the scroll area, so the gesture does
+       not fight the panel's own scrolling. */
+    if (scrollHost.scrollTop > 0) return;
+    startY = e.touches[0].clientY;
+    startX = e.touches[0].clientX;
+    delta = 0;
+    dragging = true;
+    axisLocked = false;
+    el.style.transition = 'none';
+  }, { passive: true });
+
+  el.addEventListener('touchmove', (e) => {
+    if (!dragging) return;
+    const dy = e.touches[0].clientY - startY;
+    const dx = Math.abs(e.touches[0].clientX - startX);
+
+    if (!axisLocked) {
+      if (Math.abs(dy) < 6 && dx < 6) return;
+      if (dx > Math.abs(dy)) { dragging = false; reset(); return; }
+      axisLocked = true;
+    }
+
+    if (dy > 0) {
+      delta = dy;
+      /* Rubber-band past 200px instead of tracking the finger 1:1. */
+      const eased = delta > 200 ? 200 + (delta - 200) * 0.35 : delta;
+      el.style.transform = `translateY(${eased}px)`;
+    }
+  }, { passive: true });
+
+  const end = () => {
+    if (!dragging) return;
+    dragging = false;
+    el.style.transition = '';
+    if (delta > 110) {
+      onDismiss();
+    } else {
+      el.style.transform = '';
+    }
+  };
+
+  el.addEventListener('touchend', end, { passive: true });
+  el.addEventListener('touchcancel', end, { passive: true });
 }
 
-function hideExperienceContent() {
-  const mainPhone = document.querySelector('.main-phone');
-  const phonesContainer = document.querySelector('.phones-container');
-  const experienceContent = document.querySelector('.experience-content');
-  const experienceContentInner = document.querySelector('.experience-content-inner');
-  
-  // Fade out all lines (reverse order for smooth exit)
-  const lines = experienceContentInner.querySelectorAll('.exp-line');
-  const lineArray = Array.from(lines).reverse();
-  lineArray.forEach((line, index) => {
-    setTimeout(() => {
-      line.classList.remove('animate');
-    }, index * 30); // Quick reverse stagger
-  });
-  
-  // Wait for fade-out transition, then move phone back and hide content
-  setTimeout(() => {
-    phonesContainer.classList.remove('show-experience');
-    experienceContent.classList.remove('visible');
-  }, 500); // Match CSS transition duration
-}
+/* --- Description rendering ------------------------------------------------ */
 
-// Add click handlers to app icons
-document.querySelectorAll('.apps .icon').forEach(icon => {
-  const label = icon.querySelector('.label');
-  if (label) {
-    const projectName = label.textContent.trim();
-    // Skip LinkedIn and GitHub - let them redirect directly
-    const isExperience = icon.closest('.app-row')?.querySelector('.row-title')?.textContent === 'Experience';
-    
-    if (isExperience && projects[projectName]) {
-      // Experience row - show content on tap
-      icon.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        showExperienceContent(projects[projectName]);
-      });
-    } else if (projects[projectName] && projectName !== 'LinkedIn' && projectName !== 'GitHub') {
-      // Other rows - show modal
-      const link = icon.querySelector('a');
+function renderDescription(description) {
+  if (!description) return '';
+
+  return description.split('\n').map((raw) => {
+    const line = raw.trim();
+    if (!line) return '';
+
+    if (line.startsWith('•')) {
+      const link = line.match(/\(hyperlink:\s*(https?:\/\/[^)]+)\)/);
+      const text = line
+        .replace(/\s*\(hyperlink:\s*https?:\/\/[^)]+\)/, '')
+        .replace(/^•\s*/, '')
+        .trim();
+
       if (link) {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          createModal(projects[projectName]);
-        });
-      } else {
-        icon.addEventListener('click', (e) => {
-          e.preventDefault();
-          createModal(projects[projectName]);
-        });
+        return `<div class="detail-bullet"><a class="detail-link" href="${esc(link[1])}" target="_blank" rel="noopener noreferrer">${esc(text)}</a></div>`;
       }
+      return `<div class="detail-bullet">${esc(text)}</div>`;
     }
+
+    return `<p>${esc(line)}</p>`;
+  }).join('');
+}
+
+/* --- Detail panel --------------------------------------------------------- */
+
+const stage = document.querySelector('.stage');
+const detail = document.getElementById('detail');
+const detailPanel = detail.querySelector('.detail-panel');
+
+let detailOpen = false;
+let detailReturnFocus = null;
+let releaseDetailFocus = null;
+let detailCloseTimer = 0;
+
+function openDetail(key) {
+  const data = projects[key];
+  if (!data) return;
+
+  window.clearTimeout(detailCloseTimer);
+
+  detailPanel.innerHTML = `
+    <div class="detail-grabber" aria-hidden="true"></div>
+    <button class="detail-close" type="button" aria-label="Close">&#10005;</button>
+    <div class="detail-head">
+      ${data.icon ? `<div class="detail-icon"><img src="${esc(data.icon)}" alt="" width="128" height="128"></div>` : ''}
+      <div>
+        <h2 class="detail-title" id="detail-title">${esc(data.title)}</h2>
+        ${data.role ? `<div class="detail-role">${esc(data.role)}</div>` : ''}
+        ${data.dateRange ? `<div class="detail-date">${esc(data.dateRange)}</div>` : ''}
+      </div>
+    </div>
+    <div class="detail-body">
+      ${renderDescription(data.description)}
+      <div class="detail-tech">
+        ${data.tech.map((t) => `<span>${esc(t)}</span>`).join('')}
+      </div>
+    </div>
+    <button class="detail-dismiss" type="button">Close</button>
+  `;
+
+  detailPanel.scrollTop = 0;
+  detailPanel.style.transform = '';
+
+  if (!detailOpen) {
+    detailOpen = true;
+    detailReturnFocus = document.activeElement;
+    detail.removeAttribute('inert');
+    stage.classList.add('detail-open');
+    if (isMobile()) lockScroll();
+    releaseDetailFocus = trapFocus(detail);
+    layers.push(closeDetail);
   }
+
+  detailPanel.querySelector('.detail-close').focus({ preventScroll: true });
+}
+
+function closeDetail() {
+  if (!detailOpen) return;
+  detailOpen = false;
+
+  stage.classList.remove('detail-open');
+  detail.setAttribute('inert', '');
+
+  const i = layers.indexOf(closeDetail);
+  if (i !== -1) layers.splice(i, 1);
+
+  if (releaseDetailFocus) { releaseDetailFocus(); releaseDetailFocus = null; }
+  unlockScroll();
+
+  if (detailReturnFocus && document.contains(detailReturnFocus)) {
+    detailReturnFocus.focus({ preventScroll: true });
+  }
+  detailReturnFocus = null;
+
+  /* Clear the panel only after it has animated out. */
+  detailCloseTimer = window.setTimeout(() => {
+    if (!detailOpen) {
+      detailPanel.innerHTML = '';
+      detailPanel.style.transform = '';
+    }
+  }, exitDuration());
+}
+
+swipeToDismiss(detailPanel, closeDetail);
+
+detailPanel.addEventListener('click', (e) => {
+  if (e.target.closest('.detail-close, .detail-dismiss')) closeDetail();
 });
 
-// Close experience content when clicking outside
+/* Tapping the dimmed backdrop closes the sheet on mobile. */
+detail.addEventListener('click', (e) => {
+  if (e.target === detail) closeDetail();
+});
+
+/* --- Modal sheet ---------------------------------------------------------- */
+
+function openSheet(key) {
+  const data = projects[key];
+  if (!data) return;
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'sheet-backdrop';
+
+  const sheet = document.createElement('div');
+  sheet.className = 'sheet';
+  sheet.setAttribute('role', 'dialog');
+  sheet.setAttribute('aria-modal', 'true');
+  sheet.setAttribute('aria-labelledby', 'sheet-title');
+
+  const href = data.link && data.link !== '#' ? data.link : null;
+
+  sheet.innerHTML = `
+    <div class="sheet-head">
+      <h2 class="sheet-title" id="sheet-title">${esc(data.title)}</h2>
+      <button class="detail-close" type="button" aria-label="Close" style="position:static">&#10005;</button>
+    </div>
+    <p>${esc(data.description)}</p>
+    <div class="detail-tech">
+      ${data.tech.map((t) => `<span>${esc(t)}</span>`).join('')}
+    </div>
+    ${href ? `<a class="sheet-cta" href="${esc(href)}" target="_blank" rel="noopener noreferrer">Open ${esc(data.title)}</a>` : ''}
+  `;
+
+  backdrop.appendChild(sheet);
+  document.body.appendChild(backdrop);
+
+  const returnFocus = document.activeElement;
+  lockScroll();
+  const releaseFocus = trapFocus(sheet);
+
+  let closed = false;
+  const close = () => {
+    if (closed) return;
+    closed = true;
+
+    backdrop.classList.remove('open');
+    const i = layers.indexOf(close);
+    if (i !== -1) layers.splice(i, 1);
+
+    releaseFocus();
+    unlockScroll();
+    if (returnFocus && document.contains(returnFocus)) {
+      returnFocus.focus({ preventScroll: true });
+    }
+    window.setTimeout(() => backdrop.remove(), exitDuration());
+  };
+
+  layers.push(close);
+
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop || e.target.closest('.detail-close')) close();
+  });
+
+  swipeToDismiss(sheet, close);
+
+  requestAnimationFrame(() => {
+    backdrop.classList.add('open');
+    sheet.querySelector('.detail-close').focus({ preventScroll: true });
+  });
+}
+
+/* --- Dispatch ------------------------------------------------------------
+   One delegated listener, driven by data attributes, replacing the previous
+   per-icon binding that read the label text and matched on the row heading.
+   ------------------------------------------------------------------------ */
+
 document.addEventListener('click', (e) => {
-  const experienceContent = document.querySelector('.experience-content');
-  const phonesContainer = document.querySelector('.phones-container');
-  
-  if (phonesContainer.classList.contains('show-experience')) {
-    // Check if click is outside both phone and content
-    if (!e.target.closest('.phone-frame') && !e.target.closest('.experience-content')) {
-      hideExperienceContent();
-    }
+  const trigger = e.target.closest('[data-action]');
+  if (trigger) {
+    const { action, project } = trigger.dataset;
+    if (action === 'experience') openDetail(project);
+    else if (action === 'modal') openSheet(project);
+    return;
+  }
+
+  /* Desktop: clicking away from both the phone and the panel closes it.
+     On mobile the backdrop is `.detail` itself and is handled above. */
+  if (detailOpen && !isMobile() && !e.target.closest('.phone-frame, .detail')) {
+    closeDetail();
   }
 });
 
-// Enhanced tap animation for tiles
-document.querySelectorAll('.tile').forEach(t => {
-  t.addEventListener('click', (e) => {
-    // Don't trigger if clicking on a link
-    if (t.closest('a')) {
-      return;
-    }
-    // Don't prevent event bubbling - let parent handlers work
-    t.style.transform = 'scale(0.96)';
-    setTimeout(() => { 
-      t.style.transform = ''; 
-    }, 120);
-  });
+/* Crossing the breakpoint mid-session leaves the scroll lock and any in-flight
+   drag transform in an inconsistent state, so reset both. */
+mobileQuery.addEventListener('change', () => {
+  detailPanel.style.transform = '';
+  if (detailOpen) {
+    if (isMobile() && lockCount === 0) lockScroll();
+    if (!isMobile() && lockCount > 0) unlockScroll();
+  }
 });
-
-// ============================================
-// MOBILE OPTIMIZATIONS & SWIPE GESTURES
-// ============================================
-
-// Detect if device is mobile
-const isMobile = () => {
-  return window.innerWidth <= 767 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-};
-
-// Prevent body scroll when experience content or modal is open on mobile
-function preventBodyScroll(prevent) {
-  if (!isMobile()) return;
-  
-  if (prevent) {
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-  } else {
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.width = '';
-  }
-}
-
-// Swipe gesture handler for experience content
-function setupSwipeToDismiss(element, dismissCallback) {
-  let touchStartY = 0;
-  let touchStartX = 0;
-  let touchEndY = 0;
-  let touchEndX = 0;
-  let isDragging = false;
-  let currentTranslateY = 0;
-
-  const handleTouchStart = (e) => {
-    if (!isMobile()) return;
-    
-    touchStartY = e.touches[0].clientY;
-    touchStartX = e.touches[0].clientX;
-    isDragging = true;
-    element.style.transition = 'none';
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isMobile() || !isDragging) return;
-
-    touchEndY = e.touches[0].clientY;
-    touchEndX = e.touches[0].clientX;
-    
-    const deltaY = touchEndY - touchStartY;
-    const deltaX = Math.abs(touchEndX - touchStartX);
-    
-    // Only allow vertical swipe (prevent horizontal scrolling interference)
-    if (deltaY > 0 && deltaY > deltaX) {
-      currentTranslateY = Math.max(0, deltaY);
-      element.style.transform = `translateY(${currentTranslateY}px)`;
-      
-      // Add opacity fade as user drags down
-      const opacity = 1 - (currentTranslateY / 300);
-      element.style.opacity = Math.max(0.3, opacity);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (!isMobile() || !isDragging) return;
-    
-    isDragging = false;
-    element.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease';
-    
-    const deltaY = touchEndY - touchStartY;
-    const swipeThreshold = 100; // Minimum swipe distance to dismiss
-    
-    if (deltaY > swipeThreshold) {
-      // Dismiss on swipe down
-      dismissCallback();
-    } else {
-      // Snap back to original position
-      currentTranslateY = 0;
-      element.style.transform = 'translateY(0)';
-      element.style.opacity = '1';
-    }
-  };
-
-  // Add touch event listeners with passive option for better performance
-  element.addEventListener('touchstart', handleTouchStart, { passive: true });
-  element.addEventListener('touchmove', handleTouchMove, { passive: true });
-  element.addEventListener('touchend', handleTouchEnd, { passive: true });
-  element.addEventListener('touchcancel', handleTouchEnd, { passive: true });
-}
-
-// Swipe gesture handler for modals
-function setupModalSwipeToDismiss(overlay, modal, dismissCallback) {
-  if (!isMobile()) return;
-  
-  let touchStartY = 0;
-  let touchEndY = 0;
-  let isDragging = false;
-  let currentTranslateY = 0;
-
-  const handleTouchStart = (e) => {
-    touchStartY = e.touches[0].clientY;
-    isDragging = true;
-    modal.style.transition = 'none';
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isDragging) return;
-
-    touchEndY = e.touches[0].clientY;
-    const deltaY = touchEndY - touchStartY;
-    
-    // Only allow downward swipe
-    if (deltaY > 0) {
-      currentTranslateY = deltaY;
-      modal.style.transform = `translateY(${currentTranslateY}px)`;
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (!isDragging) return;
-    
-    isDragging = false;
-    modal.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-    
-    const deltaY = touchEndY - touchStartY;
-    const swipeThreshold = 100;
-    
-    if (deltaY > swipeThreshold) {
-      dismissCallback();
-    } else {
-      currentTranslateY = 0;
-      modal.style.transform = 'translateY(0)';
-    }
-  };
-
-  modal.addEventListener('touchstart', handleTouchStart, { passive: true });
-  modal.addEventListener('touchmove', handleTouchMove, { passive: true });
-  modal.addEventListener('touchend', handleTouchEnd, { passive: true });
-  modal.addEventListener('touchcancel', handleTouchEnd, { passive: true });
-}
-
-// Wrap showExperienceContent to add mobile features
-const originalShowExperienceContent = showExperienceContent;
-showExperienceContent = function(projectData) {
-  if (isMobile()) {
-    preventBodyScroll(true);
-  }
-  
-  originalShowExperienceContent(projectData);
-  
-  const experienceContent = document.querySelector('.experience-content');
-  const experiencePanel = document.querySelector('.experience-content-inner');
-  if (experienceContent && isMobile()) {
-    // Reset panel transform/opacity (in case a swipe-dismiss was in progress)
-    if (experiencePanel) {
-      experiencePanel.style.transform = '';
-      experiencePanel.style.opacity = '';
-    }
-    
-    // Setup swipe to dismiss
-    if (experiencePanel) {
-      setupSwipeToDismiss(experiencePanel, hideExperienceContent);
-    }
-    
-    // Add tap-to-dismiss functionality - dismiss when tapping on background or content area
-    experienceContent.addEventListener('click', (e) => {
-      // Dismiss unless clicking on interactive elements (links, buttons, tech tags)
-      const isInteractive = e.target.closest('a, button, .exp-tech span');
-      if (!isInteractive) {
-        hideExperienceContent();
-      }
-    });
-  }
-};
-
-// Wrap hideExperienceContent to restore body scroll
-const originalHideExperienceContent = hideExperienceContent;
-hideExperienceContent = function() {
-  if (isMobile()) {
-    preventBodyScroll(false);
-  }
-  originalHideExperienceContent();
-};
-
-// Wrap createModal to add mobile features
-const originalCreateModal = createModal;
-createModal = function(projectData) {
-  originalCreateModal(projectData);
-  
-  const overlay = document.querySelector('.modal-overlay');
-  const modal = overlay?.querySelector('.modal');
-  
-  if (overlay && isMobile()) {
-    preventBodyScroll(true);
-    
-    if (modal) {
-      // Reset transform
-      modal.style.transform = '';
-      
-      const mobileCloseModal = () => {
-        preventBodyScroll(false);
-        overlay.classList.remove('active');
-        setTimeout(() => {
-          overlay.remove();
-        }, 400);
-      };
-      
-      // Setup swipe to dismiss
-      setupModalSwipeToDismiss(overlay, modal, mobileCloseModal);
-      
-      // Add observer to detect when modal is removed/closed and restore scroll
-      const observer = new MutationObserver(() => {
-        if (!document.body.contains(overlay)) {
-          preventBodyScroll(false);
-          observer.disconnect();
-        }
-      });
-      observer.observe(document.body, { childList: true });
-    }
-  }
-};
-
-// Optimize touch interactions for mobile
-if (isMobile()) {
-  // Use touchstart for faster response on mobile
-  document.querySelectorAll('.icon').forEach(icon => {
-    icon.addEventListener('touchstart', function(e) {
-      // Add visual feedback
-      this.style.opacity = '0.7';
-      setTimeout(() => {
-        this.style.opacity = '';
-      }, 150);
-    }, { passive: true });
-  });
-  
-  // Improve tap targets for note items
-  document.querySelectorAll('.note-item').forEach(item => {
-    item.addEventListener('touchstart', function() {
-      this.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
-    }, { passive: true });
-    
-    item.addEventListener('touchend', function() {
-      setTimeout(() => {
-        this.style.backgroundColor = '';
-      }, 150);
-    }, { passive: true });
-  });
-}
-
-// Handle orientation change
-let resizeTimer;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
-    // Reset any transforms on resize
-    const experiencePanel = document.querySelector('.experience-content-inner');
-    if (experiencePanel) {
-      experiencePanel.style.transform = '';
-      experiencePanel.style.opacity = '';
-    }
-  }, 250);
-}, { passive: true });

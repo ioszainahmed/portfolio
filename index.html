@@ -2,101 +2,186 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>zain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Zain Ahmed — iOS Engineer</title>
+  <meta name="description" content="Zain Ahmed is an iOS software engineer building native apps in Swift and SwiftUI. Currently at Marriott, previously myQ and WanaSell." />
+  <link rel="canonical" href="https://iosza.in/" />
+  <meta name="theme-color" content="#0a0a0c" />
+  <meta name="color-scheme" content="dark" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://iosza.in/" />
+  <meta property="og:title" content="Zain Ahmed — iOS Engineer" />
+  <meta property="og:description" content="Building native apps in Swift and SwiftUI. Currently at Marriott, previously myQ and WanaSell." />
+  <meta property="og:image" content="https://iosza.in/assets/og-card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Zain Ahmed, iOS Engineer" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Zain Ahmed — iOS Engineer" />
+  <meta name="twitter:description" content="Building native apps in Swift and SwiftUI. Currently at Marriott, previously myQ and WanaSell." />
+  <meta name="twitter:image" content="https://iosza.in/assets/og-card.png" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Zain Ahmed",
+    "url": "https://iosza.in/",
+    "jobTitle": "iOS Software Engineer",
+    "email": "mailto:ioszainahmed@gmail.com",
+    "sameAs": [
+      "https://www.linkedin.com/in/zainahmedios/",
+      "https://github.com/ioszainahmed"
+    ],
+    "knowsAbout": ["Swift", "SwiftUI", "UIKit", "iOS Development", "GraphQL"]
+  }
+  </script>
 </head>
 <body>
-  <div class="phones-container">
-    <div class="phone-frame main-phone">
-      <div class="dynamic-island">
-        <div class="island-indicator"></div>
-        <div class="island-camera"></div>
+  <div class="stage">
+    <div class="phone-frame">
+      <div class="dynamic-island" aria-hidden="true">
+        <span class="island-camera"></span>
       </div>
-      <div class="screen">
-        <div class="statusbar">
-          <span id="time">9:41</span>
-          <span><span class="signal"><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></span> LTE <span class="battery"></span></span>
+
+      <main class="screen">
+        <div class="statusbar" aria-hidden="true">
+          <span class="clock" id="time">9:41</span>
+          <span class="status-right">
+            <span class="signal"><i></i><i></i><i></i><i></i></span>
+            <span class="carrier">LTE</span>
+            <span class="battery"></span>
+          </span>
         </div>
 
         <div class="widgets">
-          <div class="widget about">
-            <h1>Zain Ahmed</h1>
-            <div class="subtitle">Software Engineer<br>iOS Developer<br>Creator</div>
-            <div class="tagline">Building clean, human-centered experiences.<br>One tap at a time.</div>
-          </div>
-          <div class="widget notes">
+          <section class="widget about" aria-labelledby="about-name">
+            <h1 id="about-name">Zain Ahmed</h1>
+            <p class="role">Software&nbsp;Engineer<br>iOS&nbsp;Developer<br>Creator</p>
+            <p class="tagline">Building clean, human-centered experiences. One tap at a time.</p>
+          </section>
+
+          <section class="widget notes" aria-labelledby="notes-heading">
             <div class="notes-header">
-              <span class="notes-folder-icon"></span>
-              <h2>Notes</h2>
+              <span class="notes-glyph" aria-hidden="true"></span>
+              <h2 id="notes-heading">Notes</h2>
             </div>
-            <div class="notes-list">
-              <div class="note-item">
-                <div class="note-title">MVVM vs MVC vs VIPER</div>
-                <div class="note-meta">11/21 • No additional text</div>
-              </div>
-              <div class="note-item">
-                <div class="note-title">Prompting for mobile dev</div>
-                <div class="note-meta">11/20 • No additional text</div>
-              </div>
-              <div class="note-item">
-                <div class="note-title">Favorite motivational quotes</div>
-                <div class="note-meta">11/19 • No additional text</div>
-              </div>
-            </div>
-          </div>
+            <ul class="notes-list">
+              <li class="note-item">
+                <span class="note-title">MVVM vs MVC vs VIPER</span>
+                <span class="note-meta">11/21&nbsp; No additional text</span>
+              </li>
+              <li class="note-item">
+                <span class="note-title">Prompting for mobile dev</span>
+                <span class="note-meta">11/20&nbsp; No additional text</span>
+              </li>
+              <li class="note-item">
+                <span class="note-title">Favorite motivational quotes</span>
+                <span class="note-meta">11/19&nbsp; No additional text</span>
+              </li>
+            </ul>
+          </section>
         </div>
 
         <div class="apps">
-          <div class="app-row">
-            <div class="row-title">Experience</div>
-            <div class="row-divider"></div>
+          <section class="app-row" aria-labelledby="row-experience">
+            <h2 class="row-title" id="row-experience">Experience</h2>
             <div class="row-apps">
-              <div class="icon"><div class="tile"><img src="assets/bonvoy.png" alt="Marriott"></div><div class="label">Marriott</div></div>
-              <div class="icon"><div class="tile"><img src="assets/myQ.png" alt="myQ"></div><div class="label">myQ</div></div>
-              <div class="icon"><div class="tile"><img src="assets/community.png" alt="Community"></div><div class="label">Community</div></div>
-              <div class="icon"><div class="tile"><img src="assets/wanasell.png" alt="WanaSell"></div><div class="label">WanaSell</div></div>
+              <button class="icon" type="button" data-action="experience" data-project="Marriott">
+                <span class="tile"><img src="assets/bonvoy.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">Marriott</span>
+              </button>
+              <button class="icon" type="button" data-action="experience" data-project="myQ">
+                <span class="tile"><img src="assets/myQ.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">myQ</span>
+              </button>
+              <button class="icon" type="button" data-action="experience" data-project="Community">
+                <span class="tile"><img src="assets/community.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">Community</span>
+              </button>
+              <button class="icon" type="button" data-action="experience" data-project="WanaSell">
+                <span class="tile"><img src="assets/wanasell.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">WanaSell</span>
+              </button>
             </div>
-          </div>
-          <div class="app-row">
-            <div class="row-title">Connect</div>
-            <div class="row-divider"></div>
+          </section>
+
+          <section class="app-row" aria-labelledby="row-connect">
+            <h2 class="row-title" id="row-connect">Connect</h2>
             <div class="row-apps">
-              <div class="icon"><a href="https://www.linkedin.com/in/zainahmedios/" target="_blank" rel="noopener noreferrer"><div class="tile"><img src="assets/linkedin.png" alt="LinkedIn"></div></a><div class="label">LinkedIn</div></div>
-              <div class="icon"><a href="https://github.com/ioszainahmed" target="_blank" rel="noopener noreferrer"><div class="tile"><img src="assets/github.png" alt="GitHub"></div></a><div class="label">GitHub</div></div>
-              <div class="icon"><div class="tile"><img src="assets/notes.png" alt="Notes"></div><div class="label">Notes</div></div>
-              <div class="icon"><div class="tile"><img src="assets/app-store.png" alt="App Store"></div><div class="label">App Store</div></div>
+              <a class="icon" href="https://www.linkedin.com/in/zainahmedios/" target="_blank" rel="noopener noreferrer">
+                <span class="tile"><img src="assets/linkedin.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">LinkedIn</span>
+              </a>
+              <a class="icon" href="https://github.com/ioszainahmed" target="_blank" rel="noopener noreferrer">
+                <span class="tile"><img src="assets/github.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">GitHub</span>
+              </a>
+              <button class="icon" type="button" data-action="modal" data-project="Notes">
+                <span class="tile"><img src="assets/notes.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">Notes</span>
+              </button>
+              <button class="icon" type="button" data-action="modal" data-project="App Store">
+                <span class="tile"><img src="assets/app-store.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">App Store</span>
+              </button>
             </div>
-          </div>
-          <div class="app-row">
-            <div class="row-title">Tools</div>
-            <div class="row-divider"></div>
+          </section>
+
+          <section class="app-row" aria-labelledby="row-tools">
+            <h2 class="row-title" id="row-tools">Tools</h2>
             <div class="row-apps">
-              <div class="icon"><div class="tile"><img src="assets/swift.png" alt="Swift"></div><div class="label">Swift</div></div>
-              <div class="icon"><div class="tile"><img src="assets/swiftui.png" alt="SwiftUI"></div><div class="label">SwiftUI</div></div>
-              <div class="icon"><div class="tile"><img src="assets/xcode.png" alt="Xcode"></div><div class="label">Xcode</div></div>
-              <div class="icon"><div class="tile"><img src="assets/developer.png" alt="Dev Stack"></div><div class="label">Dev Stack</div></div>
+              <button class="icon" type="button" data-action="modal" data-project="Swift">
+                <span class="tile"><img src="assets/swift.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">Swift</span>
+              </button>
+              <button class="icon" type="button" data-action="modal" data-project="SwiftUI">
+                <span class="tile"><img src="assets/swiftui.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">SwiftUI</span>
+              </button>
+              <button class="icon" type="button" data-action="modal" data-project="Xcode">
+                <span class="tile"><img src="assets/xcode.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">Xcode</span>
+              </button>
+              <button class="icon" type="button" data-action="modal" data-project="Dev Stack">
+                <span class="tile"><img src="assets/developer.png" alt="" width="180" height="180" decoding="async"></span>
+                <span class="label">Dev Stack</span>
+              </button>
             </div>
-          </div>
+          </section>
         </div>
 
-        <div class="dock-section">
-          <div class="dock-title">CONTACT</div>
+        <nav class="dock-section" aria-label="Contact">
+          <h2 class="dock-title">Contact</h2>
           <div class="dock">
-            <a href="tel:+16302862042"><div class="tile"><img src="assets/phone.png" alt="Phone"></div></a>
-            <a href="mailto:ioszainahmed@gmail.com"><div class="tile"><img src="assets/email.png" alt="Email"></div></a>
-            <a href="sms:+16302862042"><div class="tile"><img src="assets/message.png" alt="Message"></div></a>
+            <a href="tel:+16302862042" aria-label="Call Zain">
+              <span class="tile"><img src="assets/phone.png" alt="" width="180" height="180" decoding="async"></span>
+            </a>
+            <a href="mailto:ioszainahmed@gmail.com" aria-label="Email Zain">
+              <span class="tile"><img src="assets/email.png" alt="" width="180" height="180" decoding="async"></span>
+            </a>
+            <a href="sms:+16302862042" aria-label="Text Zain">
+              <span class="tile"><img src="assets/message.png" alt="" width="180" height="180" decoding="async"></span>
+            </a>
           </div>
-        </div>
-      </div>
+        </nav>
+      </main>
     </div>
-    
-    <div class="experience-content">
-      <div class="experience-content-inner"></div>
-    </div>
+
+    <aside class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title" inert>
+      <div class="detail-panel"></div>
+    </aside>
   </div>
 
   <script src="script.js"></script>
