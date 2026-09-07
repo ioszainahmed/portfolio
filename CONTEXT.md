@@ -48,6 +48,22 @@ Below 768px the frame is removed, `.detail` becomes a fixed bottom sheet, and
 the wallpaper pseudo-elements switch to `position: fixed` so they do not slide
 away as the page scrolls.
 
+### Widget arrangement
+
+The two widgets are sized against real iOS widget proportions: small is 1:1,
+medium is about 2.15:1. Side by side inside the desktop frame they land at
+0.86 — near enough to a pair of small widgets. On a phone the same two columns
+collapse to 0.51, which is no iOS size at all and wraps the name, the tagline
+and every note title, so they stack below 449px and land at 2.19 (medium) with
+every string on one line.
+
+Stacking costs height rather than saving it — 285px to 358px, taking the page
+from 844 to 966 at iPhone 14 width. That is deliberate. Safari's chrome leaves
+roughly 734px of viewport on that device, so the dock sits below the fold
+either way and the fold is not a reason to prefer one arrangement. Vertical
+space is only genuinely scarce on desktop, where the frame is a fixed 892px and
+does not scroll — which is why the columns stay side by side there.
+
 ### Geometry constraints
 
 The offsets in the breakpoints are computed, not eyeballed. Two things make them
