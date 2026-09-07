@@ -962,12 +962,11 @@ a {
     padding:
       max(12px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
       max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
-    /* Three rows, not the four in the base rule: the status bar is hidden
-       below, which takes it out of the grid entirely and shifts the remaining
-       children up a row. Without this the dock inherits the 1fr, stretches to
-       fill the leftover height, and leaves a gap beneath itself instead of
-       sitting at the bottom. The free space belongs to the app grid. */
-    grid-template-rows: auto 1fr auto;
+    /* Four rows, same as the base rule — status bar, widgets, apps, dock.
+       The 1fr must land on the app grid: if a child above it is ever removed
+       from the grid (display:none rather than hidden), the rows shift up, the
+       dock inherits the 1fr and stretches, and a gap opens beneath it. */
+    grid-template-rows: auto auto 1fr auto;
   }
 
   /* The wallpaper is fixed so it does not slide away as the page scrolls. */
@@ -977,7 +976,12 @@ a {
     inset: 0;
   }
 
-  .statusbar { display: none; }
+  /* Kept on mobile, as it was originally: the clock and indicators are what
+     make the page read as a phone once the frame is gone. */
+  .statusbar {
+    padding: 2px 4px 0;
+    font-size: var(--t-subhead);
+  }
 
   .widgets { gap: 12px; }
   .widget { padding: 16px; border-radius: 22px; }
