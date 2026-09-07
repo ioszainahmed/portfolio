@@ -344,26 +344,48 @@ a {
   backdrop-filter: blur(20px) saturate(180%);
 }
 
+/* Widgets on a real home screen do not match each other — each one carries its
+   own app's design language. Notes keeps the white paper of the real Notes
+   widget; this one takes the dark vibrancy material, which separates the two
+   and lets the name carry the weight its heading rank deserves. */
+.about {
+  color: var(--ink);
+  /* Opaque enough to read as a deliberate dark widget. At lower alpha it
+     muddled into the maroon top of the wallpaper and the white Notes card
+     pulled the eye first, which inverts the hierarchy — the name outranks a
+     decorative list. */
+  background:
+    linear-gradient(158deg, rgba(42, 38, 60, 0.94) 0%, rgba(13, 11, 22, 0.96) 100%);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.20) inset,
+    0 1px 0 rgba(255, 255, 255, 0.14) inset,
+    0 12px 30px -12px rgba(0, 0, 0, 0.9);
+}
+
 .about h1 {
-  font-size: var(--t-title3);
+  font-size: var(--t-title2);
   font-weight: 700;
-  letter-spacing: -0.4px;
-  line-height: 1.1;
+  letter-spacing: -0.5px;
+  line-height: 1.08;
 }
 
 .about .role {
-  margin-top: 6px;
+  margin-top: 7px;
   font-size: var(--t-caption);
   font-weight: 600;
   line-height: 1.45;
-  color: var(--blue);
+  /* iOS system blue is tuned for near-black, not for this card's lifted
+     surface, where it sits at about 4.1:1. Lightened to clear AA. */
+  color: #57a9ff;
 }
 
 .about .tagline {
   margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   font-size: var(--t-caption);
-  line-height: 1.35;
-  color: var(--ink-dark-2);
+  line-height: 1.4;
+  color: var(--ink-2);
   text-wrap: pretty;
 }
 
