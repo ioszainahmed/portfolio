@@ -366,11 +366,13 @@ a {
     0 12px 30px -14px rgba(0, 0, 0, 0.8);
 }
 
+/* Short and lowercase, so it can carry real size — a four-letter name at the
+   old 22px just left the card looking empty. */
 .about h1 {
-  font-size: var(--t-title2);
+  font-size: var(--t-large);
   font-weight: 700;
-  letter-spacing: -0.5px;
-  line-height: 1.08;
+  letter-spacing: -1.4px;
+  line-height: 1;
 }
 
 .about .role {
