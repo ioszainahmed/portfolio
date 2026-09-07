@@ -350,16 +350,20 @@ a {
    and lets the name carry the weight its heading rank deserves. */
 .about {
   color: var(--ink);
-  /* Opaque enough to read as a deliberate dark widget. At lower alpha it
-     muddled into the maroon top of the wallpaper and the white Notes card
-     pulled the eye first, which inverts the hierarchy — the name outranks a
-     decorative list. */
+  /* A dark vibrancy material, so it stays translucent and lets the wallpaper
+     through the blur — that is what separates it from the wallpaper, not
+     opacity. An earlier pass at 0.94 alpha was effectively solid: it sat only
+     1.5x lighter than the band behind it, which read as a flat dark slab and
+     made the backdrop-filter pointless. These values land 3.4-4.3x lighter
+     than that band, keeping white at 9.3:1 and the tagline at 4.6:1. */
   background:
-    linear-gradient(158deg, rgba(42, 38, 60, 0.94) 0%, rgba(13, 11, 22, 0.96) 100%);
+    linear-gradient(158deg, rgba(104, 100, 140, 0.56) 0%, rgba(88, 84, 122, 0.58) 100%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  backdrop-filter: blur(30px) saturate(200%);
   box-shadow:
-    0 0 0 0.5px rgba(255, 255, 255, 0.20) inset,
-    0 1px 0 rgba(255, 255, 255, 0.14) inset,
-    0 12px 30px -12px rgba(0, 0, 0, 0.9);
+    0 0 0 0.5px rgba(255, 255, 255, 0.22) inset,
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 12px 30px -14px rgba(0, 0, 0, 0.8);
 }
 
 .about h1 {
@@ -374,9 +378,9 @@ a {
   font-size: var(--t-caption);
   font-weight: 600;
   line-height: 1.45;
-  /* iOS system blue is tuned for near-black, not for this card's lifted
-     surface, where it sits at about 4.1:1. Lightened to clear AA. */
-  color: #57a9ff;
+  /* iOS system blue is tuned for near-black. On this lifted, translucent
+     surface it measures 2.55:1 — lightened until it clears AA at 4.9:1. */
+  color: #82c2ff;
 }
 
 .about .tagline {
