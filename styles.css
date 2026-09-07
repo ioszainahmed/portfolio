@@ -395,42 +395,68 @@ a {
 
 /* --- Notes -------------------------------------------------------------- */
 
-.notes { display: flex; flex-direction: column; }
+/* The real Notes widget: a yellow header band with a white folder mark, a
+   perforated edge under it, then the note list on white. The header bleeds to
+   the widget edges, so the padding lives on the sections rather than the card.
+   `.widget.notes` outranks the plain `.widget` padding at every breakpoint. */
+.widget.notes {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
 
 .notes-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 7px;
+  padding: 9px 13px 7px;
+  background: linear-gradient(135deg, #ffd60a 0%, #ffcc00 100%);
+  border-bottom: 1.5px dotted rgba(0, 0, 0, 0.22);
 }
 
+/* Filled white folder: a tab, then the body. */
 .notes-glyph {
-  width: 15px;
-  height: 12px;
-  border-radius: 2px 3px 3px 3px;
-  background: var(--yellow);
   position: relative;
+  width: 17px;
+  height: 14px;
   flex-shrink: 0;
 }
 
 .notes-glyph::before {
   content: "";
   position: absolute;
-  top: -3px;
+  top: 0;
   left: 0;
-  width: 7px;
-  height: 3px;
-  border-radius: 2px 2px 0 0;
-  background: var(--yellow);
+  width: 7.5px;
+  height: 3.5px;
+  border-radius: 1.5px 1.5px 0 0;
+  background: #fff;
+}
+
+.notes-glyph::after {
+  content: "";
+  position: absolute;
+  top: 2.5px;
+  left: 0;
+  width: 17px;
+  height: 11.5px;
+  border-radius: 1.5px;
+  background: #fff;
 }
 
 .notes h2 {
   font-size: var(--t-footnote);
   font-weight: 700;
   letter-spacing: -0.1px;
+  color: #fff;
 }
 
-.notes-list { display: flex; flex-direction: column; }
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0 13px 10px;
+}
 
 .note-item {
   display: flex;
