@@ -937,6 +937,12 @@ a {
     padding:
       max(12px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
       max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+    /* Three rows, not the four in the base rule: the status bar is hidden
+       below, which takes it out of the grid entirely and shifts the remaining
+       children up a row. Without this the dock inherits the 1fr, stretches to
+       fill the leftover height, and leaves a gap beneath itself instead of
+       sitting at the bottom. The free space belongs to the app grid. */
+    grid-template-rows: auto 1fr auto;
   }
 
   /* The wallpaper is fixed so it does not slide away as the page scrolls. */
