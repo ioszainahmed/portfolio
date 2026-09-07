@@ -432,12 +432,15 @@ a {
    App grid
    ========================================================================== */
 
-/* The rows distribute across the free space rather than clustering in the
-   middle, which otherwise leaves a slack gap under the widgets. */
+/* A real home screen grid has a fixed pitch: the rows sit at a constant spacing
+   under the widgets and do not stretch to fill the screen. iPad uses a larger
+   pitch than iPhone, but it is still fixed. Any spare height collects between
+   the last row and the dock, which is why this is flex-start and not
+   space-evenly or center. */
 .apps {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   gap: 18px;
 }
 
