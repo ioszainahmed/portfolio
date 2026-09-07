@@ -34,11 +34,12 @@ const projects = {
     icon: 'assets/myQ.png',
     description: [
       '• myQ Garage and Access App (hyperlink: https://apps.apple.com/us/app/myq-garage-access-control/id456282559)',
-      '• Configured iOS communication with IoT devices: garage openers, cameras, intercoms, using CoreBluetooth, MQTT, and WebSocket-based state sync.',
-      '• Migrated Storyboard views to programmatic UI and SwiftUI, adopting Combine for reactive state management.',
-      '• Built and deployed a shared analytics package via Carthage, enabling consistent event logging across multiple apps.'
+      '• Configured iOS communication with garage openers, gates and smart cameras, using CoreBluetooth for device onboarding and MQTT with WebSocket state sync for live door status.',
+      '• Built live camera viewing and motion-alert handling, including stored clip playback for reviewing entry events.',
+      '• Shipped shared access and auto-close scheduling, letting owners grant entry to family and service providers.',
+      '• Built and deployed a shared analytics package via Carthage, enabling consistent event logging across both myQ apps.'
     ].join('\n'),
-    tech: ['Swift', 'SwiftUI', 'Combine', 'CoreBluetooth', 'MQTT', 'WebSocket', 'Carthage']
+    tech: ['Swift', 'SwiftUI', 'CoreBluetooth', 'MQTT', 'WebSocket', 'IoT', 'Carthage']
   },
 
   'Community': {
@@ -48,11 +49,11 @@ const projects = {
     icon: 'assets/community.png',
     description: [
       '• myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-community/id1516518499)',
-      '• Configured iOS communication with IoT devices: garage openers, cameras, intercoms, using CoreBluetooth, MQTT, and WebSocket-based state sync.',
-      '• Migrated Storyboard views to programmatic UI and SwiftUI, adopting Combine for reactive state management.',
-      '• Built and deployed a shared analytics package via Carthage, enabling consistent event logging across multiple apps.'
+      '• Built the resident video intercom flow, letting residents answer a call from the main entrance and grant entry from the same screen.',
+      '• Implemented guest passes for visitors, deliveries and service providers, with time-bound access to shared community doors and gates.',
+      '• Migrated Storyboard views to programmatic UI and SwiftUI, adopting Combine for reactive state management across multi-tenant access flows.'
     ].join('\n'),
-    tech: ['Swift', 'SwiftUI', 'Combine', 'CoreBluetooth', 'MQTT', 'WebSocket', 'Carthage']
+    tech: ['Swift', 'SwiftUI', 'Combine', 'Video Intercom', 'Access Control', 'Programmatic UI']
   },
 
   'WanaSell': {
