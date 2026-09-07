@@ -1,1568 +1,1162 @@
-/* Apple-themed iOS-style portfolio */
+/* ==========================================================================
+   Zain Ahmed — iOS-style portfolio
+   The phone frame is 393px wide, matching an iPhone 15 Pro at 1x, so the
+   iOS type ramp below is used at its true point sizes rather than rescaled.
+   ========================================================================== */
+
 :root {
-  --text: rgba(255,255,255,0.95);
-  --muted: rgba(255,255,255,0.75);
-  --accent: #007aff;
+  /* --- Wallpaper -------------------------------------------------------- */
+  /* The stock iOS wallpaper. It is what makes this read as an iPhone rather
+     than a generic phone, so it stays. */
+  --wall: url('assets/wallpaper.jpg') center / cover no-repeat;
+  /* The image has a near-white band across the middle, exactly where the
+     Connect and Tools rows sit, and that band sets the legibility floor.
+
+     Most of the taming is done by the filter rather than the scrim, because a
+     black scrim desaturates as it darkens — it washes the wallpaper toward
+     grey — whereas contrast() compresses the bright band while lifting the
+     shadows, and saturate() puts the colour back. Measured against the source
+     image, this combination is 35% brighter and 26% more colourful than a flat
+     scrim alone, at the same worst-case contrast.
+
+     White app labels sit at 4.57:1 here (AA is 4.5:1). Raising brightness or
+     dropping the scrim goes under it — re-measure rather than adjusting by
+     eye. */
+  --wall-filter: saturate(1.45) contrast(0.8) brightness(0.72);
+  --wall-scrim:
+    linear-gradient(
+      180deg,
+      rgba(8, 4, 20, 0.20) 0%,
+      rgba(8, 4, 20, 0.26) 34%,
+      rgba(8, 4, 20, 0.30) 62%,
+      rgba(8, 4, 20, 0.24) 100%
+    );
+
+  /* --- Surfaces --------------------------------------------------------- */
+  --void: #0a0a0c;          /* the room the phone sits in */
+  --void-lift: #131317;
+  --widget-bg: rgba(255, 255, 255, 0.94);
+  --widget-line: rgba(0, 0, 0, 0.07);
+  --panel-bg: rgba(22, 20, 30, 0.72);
+  --panel-line: rgba(255, 255, 255, 0.10);
+  --sheet-bg: rgba(30, 28, 38, 0.86);
+
+  /* --- Ink -------------------------------------------------------------- */
+  --ink: #ffffff;
+  --ink-2: rgba(255, 255, 255, 0.72);
+  --ink-3: rgba(255, 255, 255, 0.46);
+  --ink-dark: #16161a;
+  --ink-dark-2: rgba(22, 22, 26, 0.62);
+  --ink-dark-3: rgba(22, 22, 26, 0.42);
+
+  /* iOS dark-mode system colors, not the light-mode ones. */
+  --blue: #0a84ff;
+  --yellow: #ffd60a;
+  --focus: #0a84ff;
+
+  /* --- Type ramp (iOS) -------------------------------------------------- */
+  --t-large: 34px;
+  --t-title2: 22px;
+  --t-title3: 20px;
+  --t-headline: 17px;
+  --t-body: 17px;
+  --t-callout: 16px;
+  --t-subhead: 15px;
+  --t-footnote: 13px;
+  --t-caption: 12px;
+  --t-caption2: 11px;
+
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+          "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+
+  /* --- Geometry --------------------------------------------------------- */
+  --r-tile: 22%;            /* percentage keeps the squircle proportional */
+  --r-widget: 20px;
+  --r-panel: 26px;
+  --r-screen: 42px;
+  --r-frame: 54px;
+
+  /* --- Motion ----------------------------------------------------------- */
+  /* The curve iOS uses to present sheets. */
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* A real spring, with the overshoot left in. */
+  --spring: linear(
+    0, 0.0088 1.9%, 0.0344 3.9%, 0.1163 7.2%, 0.4213 16.6%, 0.5399 20.7%,
+    0.6408 24.9%, 0.7255 29.2%, 0.7962 33.7%, 0.8548 38.5%, 0.9028 43.6%,
+    0.9419 49.3%, 0.9718 55.4%, 0.9937 62.5%, 1.0074 70.4%, 1.0129 80.4%,
+    1.0084 94.4%, 1
+  );
+  --dur-sheet: 480ms;
+  --dur-tap: 140ms;
 }
 
-/* Reset & base */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; width: 100%; }
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, Arial, sans-serif;
-  background: 
-    radial-gradient(ellipse at top left, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom right, rgba(0, 0, 0, 0.4) 0%, transparent 50%),
-    linear-gradient(135deg, #1a1d2e 0%, #0f1118 100%);
-  display: flex; justify-content: center; align-items: center;
-  color: var(--text);
-  overflow-x: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: var(--sans);
+  font-size: var(--t-body);
+  line-height: 1.4;
+  color: var(--ink);
+  background: var(--void);
+  background-image: radial-gradient(80% 60% at 50% 0%, var(--void-lift) 0%, var(--void) 70%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Phones container */
-.phones-container {
+img { display: block; max-width: 100%; height: auto; }
+ul { list-style: none; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ==========================================================================
+   Stage — the room the phone is staged in
+   ========================================================================== */
+
+.stage {
+  position: relative;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
-  transition: none;
-  min-width: fit-content;
-  position: relative;
-}
-
-.phones-container.show-experience {
   justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 24px;
 }
 
-/* Phone frame */
+/* A soft pool of light under the phone, so it reads as sitting in a space
+   rather than floating on a flat background. */
+.stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: max(8px, 4vh);
+  width: min(620px, 70vw);
+  height: 120px;
+  transform: translateX(-50%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(123, 63, 242, 0.22) 0%, rgba(123, 63, 242, 0) 70%);
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 700ms var(--ease-sheet);
+}
+
+.stage.detail-open::after { transform: translateX(calc(-50% - 250px)); }
+
+/* ==========================================================================
+   Phone
+   ========================================================================== */
+
 .phone-frame {
-  background: #000;
-  border-radius: 50px;
-  padding: 20px;
-  width: 396px;
-  height: 836px;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.05), 0 20px 60px rgba(0,0,0,0.8), 0 0 100px rgba(0,0,0,0.4);
-  display: flex; justify-content: center; align-items: center;
-  animation: phoneFadeIn 0.6s ease-out;
-  flex-shrink: 0;
-  backface-visibility: hidden;
-  transform: translateZ(0);
+  z-index: 1;
+  width: 433px;              /* 393 screen + 20 bezel each side */
+  height: 892px;
+  max-height: calc(100dvh - 48px);
+  padding: 20px;
+  border-radius: var(--r-frame);
+  background: linear-gradient(150deg, #3a3a40 0%, #0d0d10 22%, #08080a 55%, #2c2c33 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.10),
+    0 2px 3px rgba(255, 255, 255, 0.06) inset,
+    0 50px 90px -20px rgba(0, 0, 0, 0.85),
+    0 0 120px -30px rgba(123, 63, 242, 0.35);
+  transition: transform 700ms var(--ease-sheet);
 }
 
-.main-phone {
-  transform: translate3d(0, 0, 0);
-  transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
-  will-change: transform;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-}
-
-.phones-container.show-experience .main-phone {
-  transform: translate3d(-80px, 0, 0);
-}
-
-@keyframes phoneFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+.stage.detail-open .phone-frame { transform: translateX(-250px); }
 
 .dynamic-island {
   position: absolute;
-  top: 8px; 
-  left: 50%; 
+  top: 32px;
+  left: 50%;
   transform: translateX(-50%);
-  width: 126px; 
-  height: 37px; 
+  width: 126px;
+  height: 36px;
+  border-radius: 18px;
   background: #000;
-  border-radius: 19px;
+  z-index: 5;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  z-index: 10;
-}
-
-.island-indicator {
-  width: 6px;
-  height: 6px;
-  background: #ff9500;
-  border-radius: 50%;
-  flex-shrink: 0;
+  justify-content: flex-end;
+  padding-right: 12px;
 }
 
 .island-camera {
-  width: 12px;
-  height: 12px;
-  background: #1a1a1a;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0;
-  position: relative;
+  background: radial-gradient(circle at 32% 30%, #2b3a55 0%, #0a0d16 62%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-.island-camera::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 4px;
-  height: 4px;
-  background: #000;
-  border-radius: 50%;
-}
+/* --- Screen ------------------------------------------------------------- */
 
-/* Screen layout */
 .screen {
-  width: 100%; height: 100%; border-radius: 34px;
-  display: grid; grid-template-rows: auto auto 1fr auto;
-  gap: 10px;
-  padding: 14px 16px;
-  border-radius: 34px;
-  overflow: hidden;
   position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  padding: 14px 18px 16px;
+  border-radius: var(--r-screen);
+  overflow: hidden;
+  isolation: isolate;
 }
 
 .screen::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: url('assets/wallpaper.jpg') center/cover no-repeat;
-  background-size: cover;
-  filter: blur(1px);
-  z-index: 0;
-  pointer-events: none;
+  background: var(--wall);
+  filter: var(--wall-filter);
+  z-index: -2;
 }
+
 .screen::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 120% at 50% 10%, rgba(255,255,255,0.06), rgba(0,0,0,0.05));
-  pointer-events: none;
-  z-index: 1;
-}
-.screen > * {
-  position: relative;
-  z-index: 1;
+  background: var(--wall-scrim);
+  z-index: -1;
 }
 
-/* Status bar */
-.statusbar { 
-  display: flex; 
-  justify-content: space-between; 
-  font-size: 13px; 
-  opacity: 0.95; 
-  align-items: center; 
-  position: relative;
-  z-index: 2;
-  padding: 0 10px;
-  color: rgba(255,255,255,0.95);
-}
-.statusbar > span {
-  color: rgba(255,255,255,0.95);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-.statusbar > span:last-child {
-  display: inline-flex;
+/* ==========================================================================
+   Status bar
+   ========================================================================== */
+
+.statusbar {
+  display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
+  padding: 6px 12px 0;
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  letter-spacing: 0.1px;
 }
-.statusbar .signal {
-  display: inline-flex;
+
+/* Tabular figures so the clock does not reflow as the digits change. */
+.clock { font-variant-numeric: tabular-nums; }
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.signal {
+  display: flex;
   align-items: flex-end;
   gap: 2px;
-  height: 10px;
+  height: 11px;
 }
-.statusbar .signal .bar {
-  width: 2.5px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 0.5px;
-}
-.statusbar .signal .bar:nth-child(1) {
-  height: 3px;
-}
-.statusbar .signal .bar:nth-child(2) {
-  height: 4px;
-}
-.statusbar .signal .bar:nth-child(3) {
-  height: 6px;
-}
-.statusbar .signal .bar:nth-child(4) {
-  height: 8px;
-}
-.statusbar .battery {
-  display: inline-block;
-  width: 20px;
-  height: 10px;
-  border: 1px solid rgba(255,255,255,0.9);
-  border-radius: 1.5px;
-  position: relative;
-  background: transparent;
-  flex-shrink: 0;
-}
-.statusbar .battery::before {
-  content: '';
-  position: absolute;
-  right: -2px;
-  top: 2px;
-  width: 1.5px;
-  height: 5px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 0 0.75px 0.75px 0;
-}
-.statusbar .battery::after {
-  content: '';
-  position: absolute;
-  left: 1px;
-  top: 1px;
-  bottom: 1px;
-  width: 13.5px;
-  background: rgba(255,255,255,0.9);
+
+.signal i {
+  width: 3px;
   border-radius: 1px;
+  background: var(--ink);
 }
 
-/* Widgets */
-.widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 10px; }
+.signal i:nth-child(1) { height: 4px; }
+.signal i:nth-child(2) { height: 6px; }
+.signal i:nth-child(3) { height: 9px; }
+.signal i:nth-child(4) { height: 11px; }
+
+.carrier { font-size: var(--t-caption2); font-weight: 600; }
+
+.battery {
+  position: relative;
+  width: 25px;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 3.5px;
+}
+
+.battery::before {
+  content: "";
+  position: absolute;
+  inset: 1.5px;
+  width: 68%;
+  border-radius: 1.5px;
+  background: var(--ink);
+}
+
+.battery::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -3px;
+  width: 2px;
+  height: 4px;
+  transform: translateY(-50%);
+  border-radius: 0 1px 1px 0;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* ==========================================================================
+   Widgets
+   ========================================================================== */
+
+.widgets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
 .widget {
-  background: rgba(255,255,255,0.85);
-  border-radius: 18px;
   padding: 14px;
-  color: #000;
-  font-size: 13px;
-  font-weight: 500;
-  backdrop-filter: blur(18px);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  border-radius: var(--r-widget);
+  background: var(--widget-bg);
+  color: var(--ink-dark);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 8px 22px -10px rgba(0, 0, 0, 0.65);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
 }
-.about h1 { font-size: 16px; margin-bottom: 6px; }
-.about .subtitle { color: var(--accent); font-weight: 400; font-size: 10px; text-align: left; line-height: 1.4; }
-.about .tagline { color: #333; font-size: 11px; margin-top: 4px; }
 
-/* Notes widget - iOS Notes style */
-.notes {
-  background: #fff;
-  border-radius: 18px;
+/* Widgets on a real home screen do not match each other — each one carries its
+   own app's design language. Notes keeps the white paper of the real Notes
+   widget; this one takes the dark vibrancy material, which separates the two
+   and lets the name carry the weight its heading rank deserves. */
+.about {
+  color: var(--ink);
+  /* A dark vibrancy material, so it stays translucent and lets the wallpaper
+     through the blur — that is what separates it from the wallpaper, not
+     opacity. An earlier pass at 0.94 alpha was effectively solid: it sat only
+     1.5x lighter than the band behind it, which read as a flat dark slab and
+     made the backdrop-filter pointless. These values land 3.4-4.3x lighter
+     than that band, keeping white at 9.3:1 and the tagline at 4.6:1. */
+  background:
+    linear-gradient(158deg, rgba(104, 100, 140, 0.56) 0%, rgba(88, 84, 122, 0.58) 100%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  backdrop-filter: blur(30px) saturate(200%);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.22) inset,
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 12px 30px -14px rgba(0, 0, 0, 0.8);
+}
+
+.about h1 {
+  font-size: var(--t-title2);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.08;
+}
+
+.about .role {
+  margin-top: 7px;
+  font-size: var(--t-caption);
+  font-weight: 600;
+  line-height: 1.45;
+  /* iOS system blue is tuned for near-black. On this lifted, translucent
+     surface it measures 2.55:1 — lightened until it clears AA at 4.9:1. */
+  color: #82c2ff;
+}
+
+.about .tagline {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: var(--t-caption);
+  line-height: 1.4;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+/* --- Notes -------------------------------------------------------------- */
+
+/* The real Notes widget: a yellow header band with a white folder mark, a
+   perforated edge under it, then the note list on white. The header bleeds to
+   the widget edges, so the padding lives on the sections rather than the card.
+   `.widget.notes` outranks the plain `.widget` padding at every breakpoint. */
+.widget.notes {
+  display: flex;
+  flex-direction: column;
   padding: 0;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  max-width: 100%;
 }
 
 .notes-header {
-  background: linear-gradient(135deg, #ffd60a 0%, #ffcc00 100%);
-  padding: 9px 13px 6px 13px;
   display: flex;
   align-items: center;
   gap: 7px;
+  padding: 9px 13px 7px;
+  background: linear-gradient(135deg, #ffd60a 0%, #ffcc00 100%);
+  border-bottom: 1.5px dotted rgba(0, 0, 0, 0.22);
 }
 
-.notes-folder-icon {
-  width: 16px;
+/* Filled white folder: a tab, then the body. */
+.notes-glyph {
+  position: relative;
+  width: 17px;
   height: 14px;
   flex-shrink: 0;
-  position: relative;
-  display: inline-block;
 }
 
-.notes-folder-icon::before {
-  content: '';
+.notes-glyph::before {
+  content: "";
   position: absolute;
-  width: 14px;
-  height: 11px;
-  border: 2px solid white;
-  border-radius: 2px 2px 0 0;
-  top: 2px;
-  left: 0;
-  box-sizing: border-box;
-}
-
-.notes-folder-icon::after {
-  content: '';
-  position: absolute;
-  width: 7px;
-  height: 4px;
-  border: 2px solid white;
-  border-bottom: none;
-  border-right: none;
-  border-radius: 2px 0 0 0;
   top: 0;
-  left: 2px;
-  box-sizing: border-box;
-}
-
-.notes h2 {
-  font-size: 12.6px;
-  color: #fff;
-  margin: 0;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-}
-
-.notes-list {
-  padding: 0;
+  left: 0;
+  width: 7.5px;
+  height: 3.5px;
+  border-radius: 1.5px 1.5px 0 0;
   background: #fff;
 }
 
-.note-item {
-  padding: 8px 14px;
-  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+.notes-glyph::after {
+  content: "";
+  position: absolute;
+  top: 2.5px;
+  left: 0;
+  width: 17px;
+  height: 11.5px;
+  border-radius: 1.5px;
+  background: #fff;
 }
 
-.note-item:last-child {
-  border-bottom: none;
+.notes h2 {
+  font-size: var(--t-footnote);
+  font-weight: 700;
+  letter-spacing: -0.1px;
+  color: #fff;
 }
+
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0 13px 10px;
+}
+
+.note-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--widget-line);
+}
+
+.note-item:last-child { border-bottom: 0; padding-bottom: 0; }
 
 .note-title {
-  font-size: 10px;
+  font-size: var(--t-caption);
   font-weight: 600;
-  color: #000;
-  margin-bottom: 2px;
+  line-height: 1.25;
 }
 
 .note-meta {
-  font-size: 9px;
-  color: #666;
-  font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 10px;
+  color: var(--ink-dark-3);
+  line-height: 1.2;
 }
 
-/* App grid */
+/* ==========================================================================
+   App grid
+   ========================================================================== */
+
+/* A real home screen grid has a fixed pitch: the rows sit at a constant spacing
+   under the widgets and do not stretch to fill the screen. iPad uses a larger
+   pitch than iPhone, but it is still fixed. Any spare height collects between
+   the last row and the dock, which is why this is flex-start and not
+   space-evenly or center. */
 .apps {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  align-content: start;
-}
-
-.app-row {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: flex-start;
+  gap: 18px;
 }
 
 .row-title {
-  font-size: 11px;
+  position: relative;
+  margin-bottom: 12px;
+  padding: 0 4px 8px;
+  font-size: var(--t-footnote);
   font-weight: 600;
-  color: rgba(255,255,255,0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 0 4px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  letter-spacing: -0.08px;
+  color: var(--ink-2);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
-.row-divider {
+/* A hairline under each section heading. It fades out to the right rather than
+   from both ends: the headings are left-aligned, so a symmetric fade would
+   imply centred content. The dark line beneath the light one keeps it visible
+   where the wallpaper runs pale. */
+.row-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 1px;
-  width: 100%;
-  margin: 2px 0 4px 0;
   background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(255,255,255,0.15) 20%,
-    rgba(255,255,255,0.25) 50%,
-    rgba(255,255,255,0.15) 80%,
-    transparent 100%
+    90deg,
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0.14) 48%,
+    rgba(255, 255, 255, 0) 100%
   );
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
 }
 
 .row-apps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px 10px;
-  justify-items: center;
-}
-.icon { 
-  display: grid; 
-  justify-items: center; 
-  gap: 3px; 
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-.icon a {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-}
-.icon:hover {
-  transform: translateY(-2px);
-}
-.icon:hover .tile {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-.tile {
-  width: 60px; height: 60px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.95);
-  display: grid; place-items: center;
-  font-size: 28px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  overflow: hidden;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.2s ease;
-  cursor: pointer;
-}
-.tile:active {
-  transform: scale(0.95);
-}
-.tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 14px;
-  transition: transform 0.2s ease;
-}
-.tile img[src*="xcode.png"] {
-  width: 106%;
-  height: 106%;
-  transform: translateY(-1px);
-}
-.tile img[src*="swiftui.png"] {
-  width: 108%;
-  height: 108%;
-  transform: translateY(-2px);
-}
-.icon:hover .tile img {
-  transform: scale(1.05);
-}
-.icon:hover .tile img[src*="xcode.png"] {
-  transform: translateY(-1px) scale(1.05);
-}
-.icon:hover .tile img[src*="swiftui.png"] {
-  transform: translateY(-2px) scale(1.15);
-}
-.label { 
-  font-size: 11px; 
-  color: rgba(255,255,255,0.9); 
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  transition: opacity 0.2s ease;
-}
-.icon:hover .label {
-  opacity: 0.8;
+  gap: 10px 4px;
 }
 
-/* Dock */
-.dock-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.dock-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-
-.dock {
-  display: flex; justify-content: space-around;
-  background: rgba(255,255,255,0.3);
-  border-radius: 20px; padding: 8px 12px;
-  backdrop-filter: blur(25px);
-}
-.dock a {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-}
-.dock .tile { 
-  background: rgba(255,255,255,0.85); 
-  width: 57px; 
-  height: 57px; 
-  font-size: 22px; 
-  border-radius: 14px; 
-  overflow: hidden;
-}
-.dock .tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 14px;
-  display: block;
-}
-.dock .tile img[src*="email.png"] {
-  width: 105%;
-  height: 105%;
-}
-.dock .tile {
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.dock a:hover .tile {
-  transform: scale(1.1);
-}
-.dock a:active .tile {
-  transform: scale(0.95);
-}
-
-/* Modal styles */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.modal-overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.modal {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(30px);
-  border-radius: 24px;
-  padding: 24px;
-  max-width: 320px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  transform: scale(0.9) translateY(20px);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #000;
-}
-
-.modal-overlay.active .modal {
-  transform: scale(1) translateY(0);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.modal-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #000;
-  margin: 0;
-}
-
-.modal-close {
-  background: rgba(0, 0, 0, 0.05);
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 18px;
-  transition: background 0.2s ease, transform 0.2s ease;
-  color: #000;
-}
-
-.modal-close:hover {
-  background: rgba(0, 0, 0, 0.1);
-  transform: rotate(90deg);
-}
-
-.modal-close:active {
-  transform: rotate(90deg) scale(0.95);
-}
-
-.modal-content {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #333;
-}
-
-.modal-content p {
-  margin-bottom: 12px;
-}
-
-.modal-content strong {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.modal-tech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.modal-tech span {
-  background: rgba(0, 122, 255, 0.1);
-  color: var(--accent);
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.modal-link {
-  display: inline-block;
-  margin-top: 16px;
-  padding: 10px 20px;
-  background: var(--accent);
-  color: white;
-  text-decoration: none;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.modal-link:hover {
-  background: #0056cc;
-  transform: translateY(-1px);
-}
-
-.modal-link:active {
-  transform: translateY(0);
-}
-
-/* Widget animations */
-.widget {
-  animation: fadeInUp 0.5s ease-out;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.widget:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* App icon animations */
 .icon {
-  animation: fadeInScale 0.4s ease-out backwards;
-}
-
-.icon:nth-child(1) { animation-delay: 0.05s; }
-.icon:nth-child(2) { animation-delay: 0.1s; }
-.icon:nth-child(3) { animation-delay: 0.15s; }
-.icon:nth-child(4) { animation-delay: 0.2s; }
-.icon:nth-child(5) { animation-delay: 0.25s; }
-.icon:nth-child(6) { animation-delay: 0.3s; }
-.icon:nth-child(7) { animation-delay: 0.35s; }
-.icon:nth-child(8) { animation-delay: 0.4s; }
-.icon:nth-child(9) { animation-delay: 0.45s; }
-.icon:nth-child(10) { animation-delay: 0.5s; }
-.icon:nth-child(11) { animation-delay: 0.55s; }
-.icon:nth-child(12) { animation-delay: 0.6s; }
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Notes item hover */
-.note-item {
-  transition: background 0.2s ease;
-  cursor: pointer;
-}
-
-.note-item:hover {
-  background: rgba(0, 0, 0, 0.03);
-}
-
-/* Experience content */
-.experience-content {
-  width: 0;
-  max-width: 90vw;
-  opacity: 0;
-  pointer-events: none;
-  transition: none;
-  transform: translateX(20px);
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  margin-left: 0;
-  padding-left: 0;
-}
-
-.experience-content.visible {
-  width: 500px;
-  opacity: 1;
-  pointer-events: all;
-  transform: translateX(0);
-}
-
-.experience-content-inner {
-  color: rgba(255, 255, 255, 0.95);
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-}
-
-.exp-line {
-  opacity: 0;
-  transform: translateY(15px);
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.exp-line.animate {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.exp-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.exp-icon {
-  width: 70px;
-  height: 70px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-}
-
-.exp-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 16px;
-}
-
-.exp-title-section {
-  flex: 1;
+  gap: 6px;
   min-width: 0;
 }
 
-.exp-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0;
-  line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.exp-role {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
-  margin: 0;
-  margin-top: 6px;
-  line-height: 1.2;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.exp-date {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 400;
-  margin: 0;
-  margin-top: 4px;
-  line-height: 1.2;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.exp-body {
-  color: rgba(255, 255, 255, 0.95);
-  flex: 1;
-}
-
-.exp-body p {
-  font-size: 15px;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 16px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.exp-bullet {
-  font-size: 15px;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 12px;
-  padding-left: 20px;
-  margin-left: -20px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+.tile {
   position: relative;
+  display: block;
+  width: 60px;
+  aspect-ratio: 1;
+  border-radius: var(--r-tile);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.14),
+    0 6px 14px -6px rgba(0, 0, 0, 0.7);
+  transition: transform var(--dur-tap) var(--ease-out);
 }
 
-.exp-bullet::before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 400;
-}
+.tile img { width: 100%; height: 100%; object-fit: cover; }
 
-.exp-link {
-  color: rgba(255, 255, 255, 0.95);
-  text-decoration: none;
+/* Two source icons ship with their own padding baked in; scale them up so
+   every tile reads at the same optical size. */
+.tile img[src*="xcode"],
+.tile img[src*="swiftui"] { transform: scale(1.08); }
+
+.label {
+  font-size: var(--t-caption2);
   font-weight: 500;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  transition: border-color 0.2s ease;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.05px;
+  color: var(--ink);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.exp-link:hover {
-  border-bottom-color: rgba(255, 255, 255, 0.7);
+/* Touch and pointer feedback: iOS scales the icon, it does not fade it. */
+.icon:active .tile { transform: scale(0.9); }
+
+@media (hover: hover) {
+  .icon:hover .tile { transform: scale(1.06); }
+  .icon:active .tile { transform: scale(0.9); }
 }
 
-.exp-tech {
+.icon:focus-visible { outline: none; }
+.icon:focus-visible .tile {
+  outline: 2.5px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Dock
+   ========================================================================== */
+
+.dock-section { display: flex; flex-direction: column; gap: 8px; }
+
+.dock-title {
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--ink-2);
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.dock {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 20px;
+  justify-content: center;
+  gap: 22px;
+  padding: 12px 20px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.10) inset;
 }
 
-.exp-tech span {
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.95);
-  padding: 6px 14px;
-  border-radius: 14px;
-  font-size: 12px;
-  font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+.dock .tile { width: 56px; }
+.dock a:active .tile { transform: scale(0.9); }
+
+@media (hover: hover) {
+  .dock a:hover .tile { transform: scale(1.06); }
 }
 
-.exp-dismiss-button {
-  margin-top: 32px;
-  margin-bottom: 0;
-  padding: 8px 32px;
-  width: 100%;
-  height: 36px;
-  border-radius: 18px;
-  background: rgba(0, 122, 255, 0.2);
-  border: 1px solid rgba(0, 122, 255, 0.3);
+.dock a:focus-visible { outline: none; }
+.dock a:focus-visible .tile {
+  outline: 2.5px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Detail panel — desktop: a card beside the phone; mobile: a bottom sheet
+   ========================================================================== */
+
+.detail {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: 460px;
+  /* Shrink-wraps the content so a short entry is a compact card rather than a
+     full-height column with dead space under the button. */
+  height: auto;
+  max-height: min(892px, calc(100dvh - 48px));
+  /* The resting offset stays close to the open one: a hidden element still
+     counts toward scrollWidth, and parking it far right gave the page a
+     phantom horizontal scrollbar at narrower desktop widths. */
+  transform: translate(calc(-50% + 264px), -50%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform var(--dur-sheet) var(--ease-sheet),
+    opacity 300ms var(--ease-out),
+    visibility 0s linear var(--dur-sheet);
+}
+
+.stage.detail-open .detail {
+  transform: translate(calc(-50% + 240px), -50%);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    transform var(--dur-sheet) var(--ease-sheet),
+    opacity 300ms var(--ease-out),
+    visibility 0s;
+}
+
+.detail-panel {
+  position: relative;
+  height: auto;
+  max-height: min(892px, calc(100dvh - 48px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 34px 32px 32px;
+  border-radius: var(--r-panel);
+  background: var(--panel-bg);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  box-shadow:
+    0 0 0 1px var(--panel-line),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 40px 80px -30px rgba(0, 0, 0, 0.9);
+}
+
+/* --- Panel content ------------------------------------------------------ */
+
+.detail-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1;
+  transition: background var(--dur-tap) var(--ease-out);
+}
+
+.detail-close:hover { background: rgba(255, 255, 255, 0.22); color: var(--ink); }
+.detail-close:active { transform: scale(0.92); }
+
+.detail-head {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: rgba(255, 255, 255, 0.95);
-  font-size: 14px;
+  gap: 16px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--panel-line);
+}
+
+.detail-icon {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: var(--r-tile);
+  overflow: hidden;
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.16), 0 8px 18px -8px rgba(0, 0, 0, 0.8);
+}
+
+.detail-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+.detail-title {
+  font-size: var(--t-title2);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.detail-role {
+  margin-top: 3px;
+  font-size: var(--t-subhead);
+  font-weight: 500;
+  color: var(--blue);
+}
+
+.detail-date {
+  margin-top: 1px;
+  font-size: var(--t-footnote);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-body p { font-size: var(--t-subhead); color: var(--ink-2); }
+
+.detail-bullet {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 11px;
+  font-size: var(--t-subhead);
+  line-height: 1.45;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.detail-bullet::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.detail-link {
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: rgba(10, 132, 255, 0.4);
+  text-underline-offset: 3px;
+}
+
+.detail-link:hover { text-decoration-color: var(--blue); }
+
+.detail-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 22px;
+}
+
+.detail-tech span {
+  padding: 5px 11px;
+  border-radius: 100px;
+  font-size: var(--t-caption);
+  font-weight: 500;
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.10);
+}
+
+.detail-dismiss {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  padding: 13px;
+  border-radius: 14px;
+  font-size: var(--t-headline);
   font-weight: 600;
-  letter-spacing: 0.3px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, Arial, sans-serif;
-  align-self: stretch;
+  color: var(--blue);
+  background: rgba(10, 132, 255, 0.12);
+  transition: background var(--dur-tap) var(--ease-out);
 }
 
-.exp-dismiss-button:hover {
-  background: rgba(0, 122, 255, 0.3);
-  border-color: rgba(0, 122, 255, 0.4);
-  transform: scale(1.02);
+.detail-dismiss:hover { background: rgba(10, 132, 255, 0.2); }
+.detail-dismiss:active { transform: scale(0.985); }
+
+/* The grabber only means anything on a sheet, so it is hidden on desktop. */
+.detail-grabber { display: none; }
+
+/* ==========================================================================
+   Modal sheet
+   ========================================================================== */
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(4, 2, 10, 0.5);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 260ms var(--ease-out);
 }
 
-.exp-dismiss-button:active {
-  transform: scale(0.98);
-  background: rgba(0, 122, 255, 0.25);
+.sheet-backdrop.open { opacity: 1; }
+
+.sheet {
+  position: relative;
+  width: min(360px, 100%);
+  max-height: min(560px, 85dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 26px 24px 24px;
+  border-radius: var(--r-panel);
+  background: var(--sheet-bg);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  box-shadow:
+    0 0 0 1px var(--panel-line),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 40px 80px -30px rgba(0, 0, 0, 0.9);
+  transform: scale(0.92);
+  opacity: 0;
+  transition:
+    transform var(--dur-sheet) var(--spring),
+    opacity 220ms var(--ease-out);
 }
 
-.exp-close-button {
-  display: none; /* mobile-only */
+.sheet-backdrop.open .sheet { transform: scale(1); opacity: 1; }
+
+.sheet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-/* ============================================
-   MOBILE-FIRST RESPONSIVE STYLES
-   ============================================ */
+.sheet-title {
+  font-size: var(--t-title3);
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
 
-/* Mobile: < 768px */
+.sheet p {
+  font-size: var(--t-subhead);
+  line-height: 1.45;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.sheet-cta {
+  display: block;
+  margin-top: 20px;
+  padding: 13px;
+  border-radius: 14px;
+  font-size: var(--t-headline);
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+  background: var(--blue);
+  transition: filter var(--dur-tap) var(--ease-out);
+}
+
+.sheet-cta:hover { filter: brightness(1.1); }
+.sheet-cta:active { transform: scale(0.985); }
+
+/* ==========================================================================
+   Entrance — one orchestrated page load, then motion only on interaction
+   ========================================================================== */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes power-on {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* `backwards`, not `both`: a forwards-filling animation keeps ownership of
+   `transform` after it ends, which would beat the .detail-open rule that
+   slides the phone aside. */
+.phone-frame { animation: power-on 900ms var(--ease-sheet) backwards; }
+
+.widgets > *,
+.app-row,
+.dock-section {
+  animation: rise 620ms var(--ease-sheet) backwards;
+  animation-delay: calc(160ms + var(--i, 0) * 70ms);
+}
+
+.widgets > *:nth-child(1) { --i: 0; }
+.widgets > *:nth-child(2) { --i: 1; }
+.apps .app-row:nth-child(1) { --i: 2; }
+.apps .app-row:nth-child(2) { --i: 3; }
+.apps .app-row:nth-child(3) { --i: 4; }
+.dock-section { --i: 5; }
+
+/* ==========================================================================
+   Tablet
+   ========================================================================== */
+
+@media (max-width: 1180px) and (min-width: 768px) {
+  .stage.detail-open .phone-frame { transform: translateX(-205px); }
+  .stage.detail-open::after { transform: translateX(calc(-50% - 205px)); }
+  .detail {
+    width: 380px;
+    transform: translate(calc(-50% + 249px), -50%);
+  }
+  .stage.detail-open .detail { transform: translate(calc(-50% + 225px), -50%); }
+  .detail-panel { padding: 30px 24px 26px; }
+}
+
+/* The phone is scaled here, but a transform does not change its layout box, so
+   the offsets below are figured from its visual half-width (433 * 0.84 / 2). */
+@media (max-width: 900px) and (min-width: 768px) {
+  .phone-frame { transform: scale(0.84); transform-origin: center; }
+  .stage.detail-open .phone-frame { transform: translateX(-182px) scale(0.84); }
+  .stage.detail-open::after { transform: translateX(calc(-50% - 182px)); }
+  .detail {
+    width: 340px;
+    transform: translate(calc(-50% + 210px), -50%);
+  }
+  .stage.detail-open .detail { transform: translate(calc(-50% + 194px), -50%); }
+  .detail-panel { padding: 26px 20px 22px; }
+}
+
+/* ==========================================================================
+   Mobile — the frame comes off and the page becomes the phone
+   ========================================================================== */
+
 @media (max-width: 767px) {
-  /* Body and container adjustments */
-  body {
-    overflow-x: hidden;
-    align-items: flex-start;
+  .stage {
+    display: block;
+    min-height: 100dvh;
     padding: 0;
   }
 
-  .phones-container {
-    padding: 0;
-    gap: 0;
-    width: 100%;
-    min-width: 100%;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-
-  .phones-container.show-experience .main-phone {
-    transform: translate3d(0, 0, 0);
-  }
-
-  /* Remove phone frame styling - show native mobile UI */
-  .phone-frame {
-    width: 100vw;
-    height: 100vh;
-    min-height: 100vh;
-    min-height: -webkit-fill-available; /* iOS Safari fix */
-    border-radius: 0;
-    padding: 0;
-    box-shadow: none;
-    background: transparent;
-    animation: none;
-  }
-
-  /* Hide dynamic island on mobile */
-  .dynamic-island {
-    display: none;
-  }
-
-  /* Screen adjustments */
-  .screen {
-    border-radius: 0;
-    padding: max(14px, env(safe-area-inset-top) + 8px) 16px max(14px, env(safe-area-inset-bottom) + 8px);
-    gap: clamp(8px, 2.5vw, 12px);
-    height: auto; /* Allow screen to grow with content */
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    overflow-y: auto; /* Allow scrolling if content exceeds viewport */
-    -webkit-overflow-scrolling: touch;
-    grid-template-rows: auto auto auto auto; /* All rows auto to allow natural sizing */
-  }
-
-  /* Make background cover entire viewport on mobile */
-  .screen::before {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    background-size: cover;
-    background-position: center;
-  }
-
-  /* Status bar - keep but make minimal */
-  .statusbar {
-    font-size: 15.84px;
-    padding: 0 4px;
-  }
-
-  /* Keep widgets horizontal but flexible - scale both dimensions */
-  .widgets {
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(6px, 2vw, 12px);
-    padding-top: clamp(6px, 2vw, 10px);
-    align-items: stretch; /* Allow widgets to match height */
-  }
-
-  .widget {
-    padding: clamp(10px, 3vw, 16px);
-    backdrop-filter: blur(20px);
-    min-width: 0; /* Allow flex shrinking */
-    min-height: 0; /* Allow vertical shrinking */
-    width: 100%;
-    height: auto; /* Allow natural height growth */
-    max-height: 70%; /* Cut 30% from bottom */
-    overflow: hidden; /* Hide content that exceeds max-height */
-    /* Natural scaling through responsive units */
-    box-sizing: border-box;
-    transform: scale(1); /* Enable transform scaling */
-    transition: transform 0.2s ease;
-  }
-
-  .about h1 {
-    font-size: clamp(18px, 5vw, 22px);
-    margin-bottom: clamp(4px, 1.2vw, 6px);
-  }
-
-  .about .subtitle {
-    font-size: clamp(11px, 3.5vw, 13px);
-    line-height: clamp(1.3, 3.5vw, 1.5);
-  }
-
-  .about .tagline {
-    font-size: clamp(12px, 3.5vw, 14px);
-    margin-top: clamp(2px, 1vw, 4px);
-  }
-
-  /* Notes widget adjustments - scale with viewport */
-  .notes {
-    min-height: auto;
-    height: auto; /* Allow natural height */
-  }
-
-  .notes-header {
-    position: relative;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    padding-top: clamp(7px, 2.5vw, 9px);
-    padding-bottom: clamp(5px, 1.8vw, 6px);
-    padding-left: clamp(13px, 4vw, 16px);
-    padding-right: clamp(13px, 4vw, 16px);
-    gap: clamp(5px, 2vw, 7px);
-    border-radius: 18px 18px 0 0;
-    width: 100%;
-    box-sizing: border-box;
-    background: transparent;
-  }
-
-  .notes-header::before {
-    content: '';
-    position: absolute;
-    top: calc(-1 * clamp(7px, 2.5vw, 9px) - 7px);
-    left: calc(-1 * clamp(13px, 4vw, 16px));
-    right: calc(-1 * clamp(13px, 4vw, 16px));
-    bottom: 0;
-    background: linear-gradient(135deg, #ffd60a 0%, #ffcc00 100%);
-    border-radius: 18px 18px 0 0;
-    z-index: -1;
-  }
-
-  .notes-folder-icon {
-    width: clamp(14px, 4.5vw, 16px);
-    height: clamp(12px, 4vw, 14px);
-    transform: translateY(-25%);
-  }
-
-  .notes h2 {
-    font-size: clamp(13px, 4vw, 15px);
-    transform: translateY(-25%);
-  }
-
-  .note-item {
-    padding: clamp(8px, 2.5vw, 12px) clamp(10px, 3vw, 14px);
-    min-height: clamp(40px, 12vw, 44px); /* Touch target scales */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .note-title {
-    font-size: clamp(10px, 3vw, 12px);
-  }
-
-  .note-meta {
-    font-size: clamp(9px, 2.5vw, 11px);
-  }
-
-  /* App grid - 4 columns matching iOS native layout */
-  .apps {
-    gap: clamp(12px, 4vw, 16px);
-    margin-top: -60px; /* Move app stack up closer to widgets */
-  }
-
-  .row-apps {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px 8px;
-    justify-items: center;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .icon {
-    min-width: 0;
-    width: 100%;
-    padding: 4px 0;
-    margin: 0;
-    justify-items: center;
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .tile {
-    width: 100%;
-    max-width: 70px;
-    height: 70px;
-    margin: 0 auto;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .tile:active {
-    transform: scale(0.92);
-  }
-
-  .label {
-    font-size: 11px;
-    margin-top: 2px;
-  }
-
-  /* Dock adjustments */
-  .dock {
-    padding: 10px 16px;
-    border-radius: 24px;
-  }
-
-  .dock .tile {
-    width: 60px;
-    height: 60px;
-  }
-
-  .dock a {
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-  }
-
-  /* Experience content - full screen overlay (App Store style) */
-  .experience-content {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    max-width: 100vw;
-    z-index: 1000;
-    /* Option B: frosted glass sheet over the wallpaper */
-    background: rgba(20, 22, 30, 0.72);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
-    backdrop-filter: blur(20px) saturate(140%);
-    opacity: 0;
-    pointer-events: none;
-    /* Fade the blurred backdrop (avoid transforming the backdrop-filter layer on dismiss) */
-    transition: opacity 0.28s ease;
-    margin: 0;
-    padding: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .experience-content.visible {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .experience-content-inner {
-    /* Natural flow layout: header + body + dismiss button in the same stack */
-    padding: max(56px, env(safe-area-inset-top) + 56px) 20px max(48px, env(safe-area-inset-bottom) + 48px);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    /* Slide the panel, not the blurred backdrop */
-    transform: translateY(100%);
-    transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-    will-change: transform;
-  }
-
-  .experience-content.visible .experience-content-inner {
-    transform: translateY(0);
-  }
-
-  .exp-close-button {
-    display: flex;
-    position: fixed;
-    top: max(12px, env(safe-area-inset-top) + 12px);
-    right: 12px;
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.08);
-    z-index: 1010;
-  }
-
-  .exp-close-button:active {
-    transform: scale(0.96);
-  }
-
-  .exp-header {
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    /* Subtle divider on dark glass */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-  }
-
-  .exp-icon {
-    width: 90px;
-    height: 90px;
-    border-radius: 20px;
-    align-self: flex-start;
-    flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    background: #fff;
-    border: none;
-    backdrop-filter: none;
-  }
-
-  .exp-title-section {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .exp-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0;
-    line-height: 1.2;
-    text-shadow: none;
-    margin-bottom: 2px;
-  }
-
-  .exp-role {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: 400;
-    margin: 0;
-    margin-top: 2px;
-    line-height: 1.3;
-    text-shadow: none;
-  }
-
-  .exp-date {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.65);
-    font-weight: 400;
-    margin: 0;
-    margin-top: 4px;
-    line-height: 1.3;
-    text-shadow: none;
-  }
-
-  .exp-body {
-    margin-bottom: 24px;
-    flex: 1;
-  }
-
-  .exp-body p {
-    font-size: 15px;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 16px;
-    padding-left: 0;
-    text-shadow: none;
-  }
-
-  .exp-bullet {
-    font-size: 15px;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 12px;
-    padding-left: 20px;
-    margin-left: 0;
-    text-shadow: none;
-  }
-
-  .exp-bullet::before {
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .exp-link {
-    color: #0a84ff;
-    text-decoration: none;
-    font-weight: 400;
-    border-bottom: none;
-    transition: opacity 0.2s ease;
-    text-shadow: none;
-  }
-
-  .exp-link:hover {
-    opacity: 0.8;
-    border-bottom-color: transparent;
-  }
-
-  .exp-tech {
-    gap: 8px;
-    margin-top: 20px;
-    margin-bottom: 24px;
-  }
-
-  .exp-tech span {
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 20px;
-    backdrop-filter: none;
-    text-shadow: none;
-  }
-
-  .exp-dismiss-button {
-    /* In-flow dismiss CTA (part of the body stack) */
-    position: static;
-    margin-top: 24px;
-    /* Keep it comfortably above iOS Safari bottom chrome */
-    margin-bottom: max(24px, env(safe-area-inset-bottom) + 24px);
-    padding: 0;
-    width: 100%;
-    height: 50px;
-    border-radius: 14px;
-    background: #1d1d1f;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: #ffffff;
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.4px;
-    text-shadow: none;
-    backdrop-filter: none;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, Arial, sans-serif;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-  }
-
-  /* Modal - full screen bottom sheet */
-  .modal-overlay {
-    align-items: flex-end;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-  }
-
-  .modal {
-    max-width: 100%;
-    width: 100%;
-    max-height: 90vh;
-    border-radius: 24px 24px 0 0;
-    padding: max(24px, env(safe-area-inset-top) + 24px) 20px max(24px, env(safe-area-inset-bottom) + 24px);
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .modal-overlay.active .modal {
-    transform: translateY(0);
-  }
-
-  .modal-close {
-    width: 44px;
-    height: 44px;
-    font-size: 20px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-  }
-
-  .modal-content {
-    font-size: 15px;
-    line-height: 1.6;
-  }
-
-  .modal-link {
-    width: 100%;
-    text-align: center;
-    padding: 14px 20px;
-    font-size: 15px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-  }
-
-  /* Optimize animations for mobile */
-  .widget {
-    animation-duration: 0.3s;
-  }
-
-  .icon {
-    animation-duration: 0.2s;
-  }
-
-  /* Remove hover effects on mobile, keep active states */
-  .icon:hover {
-    transform: none;
-  }
-
-  .icon:hover .tile {
-    transform: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
-
-  .icon:hover .tile img {
-    transform: none;
-  }
-
-  .icon:hover .tile img[src*="xcode.png"] {
-    transform: translateY(-1px);
-  }
-
-  .icon:hover .tile img[src*="swiftui.png"] {
-    transform: translateY(-2px);
-  }
-
-  .icon:hover .label {
-    opacity: 1;
-  }
-
-  .widget:hover {
-    transform: none;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  }
-
-  .dock a:hover .tile {
-    transform: none;
-  }
-
-  .note-item:hover {
-    background: transparent;
-  }
-
-  .note-item:active {
-    background: rgba(0, 0, 0, 0.05);
-  }
-
-  .exp-link:hover {
-    border-bottom-color: rgba(255, 255, 255, 0.4);
-  }
-
-  .exp-dismiss-button:hover {
-    transform: none;
-    background: #1d1d1f;
-  }
-
-  .exp-dismiss-button:active {
-    transform: scale(0.98);
-    background: #2d2d2f;
-    opacity: 0.9;
-  }
-
-  /* Modal: occupy a quarter of the viewport height on mobile */
-  .modal {
-    height: 25vh;
-    max-height: 25vh;
-    min-height: 25vh;
-  }
-
-  .modal-close:hover {
-    transform: none;
-    background: rgba(0, 0, 0, 0.05);
-  }
-
-  .modal-link:hover {
-    transform: none;
-    background: var(--accent);
-  }
-
-  /* Reduce backdrop-filter complexity on mobile for performance */
-  .widget {
-    backdrop-filter: blur(15px);
-  }
-
-  .dock {
-    backdrop-filter: blur(20px);
-  }
-
-  /* Remove backdrop filters for App Store style on mobile */
-  .experience-content .exp-icon {
-    backdrop-filter: none;
-  }
-
-  .experience-content .exp-tech span {
-    backdrop-filter: none;
-  }
-
-  .experience-content .exp-dismiss-button {
-    backdrop-filter: none;
-  }
-}
-
-/* Tablet: 768px - 1024px */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .phones-container {
-    padding: 10px;
-  }
+  .stage::after { display: none; }
 
   .phone-frame {
-    width: 360px;
-    height: 760px;
-    border-radius: 40px;
-    padding: 16px;
-  }
-
-  .row-apps {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px 10px;
-  }
-
-  .tile {
-    width: 65px;
-    height: 65px;
-  }
-
-  .experience-content.visible {
-    width: 400px;
-  }
-}
-
-/* Large mobile / Small tablet: 480px - 767px */
-@media (min-width: 480px) and (max-width: 767px) {
-  .row-apps {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px 0;
-    column-gap: 0;
-    justify-items: center;
-  }
-  
-  .icon {
-    margin: 0;
-  }
-  
-  .tile {
     width: 100%;
     height: auto;
-    aspect-ratio: 1;
-    margin: 0;
+    min-height: 100dvh;
+    max-height: none;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    animation: none;
+    transform: none !important;
   }
 
-  .tile {
-    width: 65px;
-    height: 65px;
+  .dynamic-island { display: none; }
+
+  .screen {
+    min-height: 100dvh;
+    height: auto;
+    border-radius: 0;
+    gap: 20px;
+    padding:
+      max(12px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
+      max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+    /* Four rows, same as the base rule — status bar, widgets, apps, dock.
+       The 1fr must land on the app grid: if a child above it is ever removed
+       from the grid (display:none rather than hidden), the rows shift up, the
+       dock inherits the 1fr and stretches, and a gap opens beneath it. */
+    grid-template-rows: auto auto 1fr auto;
   }
 
-  .dock .tile {
-    width: 60px;
-    height: 60px;
+  /* The wallpaper is fixed so it does not slide away as the page scrolls. */
+  .screen::before,
+  .screen::after {
+    position: fixed;
+    inset: 0;
+  }
+
+  /* Kept on mobile, as it was originally: the clock and indicators are what
+     make the page read as a phone once the frame is gone. */
+  .statusbar {
+    padding: 2px 4px 0;
+    font-size: var(--t-subhead);
+  }
+
+  .widgets { gap: 12px; }
+  .widget { padding: 16px; border-radius: 22px; }
+
+  /* Two columns on a phone leaves each widget around 0.5:1 — a tall sliver
+     matching no iOS widget size, with the name, tagline and every note title
+     wrapping. Full width puts each at 1.8-2.4:1 (2.19 at 390px, against the
+     2.15 of a real iOS medium widget) and every string fits on one line.
+
+     It costs height rather than saving it: the pair goes from 285px to 358px.
+     That is affordable here because the phone layout scrolls, and it would not
+     be on desktop, where the frame is a fixed 892px. Above this width the two
+     columns are near-square — the small widget shape — so they stay side by
+     side. */
+  @media (max-width: 449px) {
+    .widgets { grid-template-columns: 1fr; }
+    .about .tagline { margin-top: 8px; }
+  }
+
+  .about h1 { font-size: var(--t-title2); }
+  .about .role { font-size: var(--t-footnote); }
+  .about .tagline { font-size: var(--t-footnote); }
+  .notes h2 { font-size: var(--t-subhead); }
+  .note-title { font-size: var(--t-footnote); }
+  .note-meta { font-size: var(--t-caption2); }
+
+  .apps { gap: 22px; }
+  .row-title { font-size: var(--t-subhead); margin-bottom: 12px; }
+
+  .row-apps {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px 6px;
+  }
+
+  .tile { width: min(68px, 15vw); }
+  .label { font-size: var(--t-caption); }
+
+  .dock { gap: min(28px, 7vw); }
+  .dock .tile { width: min(62px, 14vw); }
+
+  /* --- Detail becomes a bottom sheet ------------------------------------ */
+
+  .detail {
+    /* `inset: 0` alone sizes this to the viewport. An explicit height here
+       disagrees with the inset in some embedded contexts and leaves a strip of
+       wallpaper under the sheet. */
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    width: auto;
+    height: auto;
+    max-height: none;
+    transform: none;
+    background: rgba(4, 2, 10, 0.42);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .stage.detail-open .detail { transform: none; }
+
+  .detail-panel {
+    height: auto;
+    max-height: 92dvh;
+    width: 100%;
+    padding: 10px 22px max(26px, env(safe-area-inset-bottom));
+    border-radius: 24px 24px 0 0;
+    transform: translateY(100%);
+    transition: transform var(--dur-sheet) var(--ease-sheet);
+  }
+
+  .stage.detail-open .detail-panel { transform: translateY(0); }
+
+  .detail-grabber {
+    display: block;
+    width: 36px;
+    height: 5px;
+    margin: 0 auto 14px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .detail-close {
+    top: 14px;
+    right: 16px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .detail-head { gap: 14px; padding-bottom: 16px; margin-bottom: 16px; }
+  .detail-icon { width: 54px; height: 54px; }
+  .detail-title { font-size: var(--t-title3); }
+
+  /* --- Modal becomes a bottom sheet too --------------------------------- */
+
+  .sheet-backdrop {
+    display: flex;
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .sheet {
+    width: 100%;
+    max-height: 88dvh;
+    padding: 10px 22px max(26px, env(safe-area-inset-bottom));
+    border-radius: 24px 24px 0 0;
+    transform: translateY(100%);
+    transition: transform var(--dur-sheet) var(--ease-sheet), opacity 200ms var(--ease-out);
+  }
+
+  .sheet-backdrop.open .sheet { transform: translateY(0); }
+
+  .sheet::before {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 5px;
+    margin: 0 auto 16px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.28);
   }
 }
 
+/* Four columns hold down to 320px once the tiles shrink; dropping to three
+   would strand the fourth app of each row on a line of its own. */
+@media (max-width: 360px) {
+  .tile { width: min(58px, 15vw); }
+  .label { font-size: var(--t-caption2); }
+  .row-apps { gap: 14px 4px; }
+  .dock .tile { width: min(54px, 14vw); }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .detail,
+  .stage.detail-open .detail { transition: opacity 0.01ms, visibility 0s; }
+}

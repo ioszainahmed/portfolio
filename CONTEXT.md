@@ -1,160 +1,135 @@
-# Portfolio Project Context
+# Architecture notes
 
-## Project Overview
-iOS-themed portfolio website for Zain Ahmed. Mimics iPhone interface on desktop, native mobile UI on mobile devices.
+Working notes for anyone (human or model) changing this site. `README.md` covers
+running and editing it; this file covers why things are shaped the way they are.
 
-## File Structure
-- `index.html` - Main HTML structure (105 lines)
-- `styles.css` - All styling, mobile-first responsive (1364 lines)
-- `script.js` - Interactive functionality, swipe gestures (579 lines)
-- `assets/` - Images (app icons, wallpaper, contact icons)
+## Design system
 
-## Key Features Implemented
+The site's premise is that an iOS engineer's portfolio should be built the way
+iOS is built, so the details are taken from the real thing rather than
+approximated.
 
-### Mobile-First Responsive Design
-- **Breakpoints**: Mobile (<768px), Tablet (768-1024px), Desktop (>1024px)
-- **Mobile**: Phone frame removed, full viewport, native UI patterns
-- **Desktop**: iPhone mockup with frame, side-by-side experience panel
+**Type.** `-apple-system` first, so Apple devices render genuine SF. Inter is
+loaded as the fallback for everyone else — the site previously requested
+`SF Pro Display` from Google Fonts, which does not exist there, so non-Apple
+visitors silently got Arial.
 
-### Widget System
-- **About Widget**: Name, title, tagline with responsive font scaling
-- **Notes Widget**: iOS Notes-style with yellow header, note list
-- **Layout**: Horizontal 2-column grid on all devices, scales with viewport
-- **Font Sizes**: Use `clamp()` for responsive scaling (e.g., `clamp(18px, 5vw, 22px)`)
+Sizes are the iOS ramp (`--t-large` 34 … `--t-caption2` 11). The frame is 393px
+wide, matching an iPhone 15 Pro at 1x, so these are true point sizes. Keep them
+that way instead of introducing arbitrary `clamp()` values.
 
-### App Grid
-- **Experience Row**: Marriott, myQ, Community, WanaSell (opens full-screen experience)
-- **Connect Row**: LinkedIn, GitHub, Notes, App Store (opens modals)
-- **Tools Row**: Swift, SwiftUI, Xcode, Dev Stack (opens modals)
-- **Mobile**: 3-column grid, 70px icons, 44px+ touch targets
-- **Desktop**: 4-column grid, 60px icons
+**Color.** `--wall` is the stock iOS wallpaper. It is deliberately the real
+Apple image rather than a generated gradient: it is what makes the page read as
+*an iPhone* instead of a generic phone, and that recognisability is the point.
 
-### Experience Content Panel
-- **Desktop**: Slides in from right (500px width), phone shifts left
-- **Mobile**: Full-screen frosted-glass overlay (Option B), panel slides up from bottom, swipe-down to dismiss
-- **Content**: Project details, role, dates, bullet points, tech tags, dismiss button (in-flow) + top-right close (X)
-- **Dismiss actions (mobile)**:
-  - Tap **X** (top-right)
-  - Tap **dismiss** (bottom CTA inside content)
-  - Swipe down on the panel
-  - Tap on non-interactive area (dismisses unless tap is on `a`, `button`, or `.exp-tech span`)
+The image runs the full spectrum at full saturation, including a near-white band
+across the middle where the Connect and Tools rows sit, so `--wall-scrim` does
+the legibility work. Compositing the scrim over the image, worst-case contrast
+for the white app labels is **5.04:1** with the current stops and **1.08:1**
+with no scrim at all — the latter being what the site shipped before, with
+text-shadows papering over it. Lightening the stops by about 0.10 yields a more
+vivid wallpaper at 3.52:1, which is under AA for 11px labels. Adjust with that
+trade in mind rather than by eye.
 
-### Modals
-- **Desktop**: Centered modal (320px max-width)
-- **Mobile**: Full-screen bottom sheet, swipe-down to dismiss
-- **Content**: Project descriptions, tech tags, external links
+The page background behind the phone stays near black, so the wallpaper is the
+only saturated thing on screen.
 
-### Mobile Interactions
-- **Swipe Gestures**: Swipe down to dismiss experience content and modals
-- **Body Scroll Lock**: Prevents background scroll when overlays open
-- **Touch Feedback**: Visual feedback on all interactive elements
-- **Safe Area Support**: iOS safe area insets for notched devices
-- **Performance/Smoothness**: Backdrop blur layer fades (opacity), content panel slides (transform) to reduce iOS jitter
+**Motion.** `--ease-sheet` is the curve iOS uses to present sheets;
+`--spring` is a real spring with the overshoot left in. One orchestrated
+entrance on load, then motion only in response to a tap.
 
-## CSS Architecture
+## Layout
 
-### Key Classes
-- `.phone-frame` - iPhone mockup (hidden on mobile)
-- `.screen` - Main content container (grid layout)
-- `.widgets` - 2-column grid, responsive scaling
-- `.apps` - App icon grid (3-col mobile, 4-col desktop)
-- `.experience-content` - Project detail container (desktop side panel / mobile overlay backdrop)
-- `.experience-content-inner` - Experience details panel content (mobile slide animation target)
-- `.exp-close-button` - Mobile close (X) button (top-right, safe-area aware)
-- `.modal-overlay` - Modal container
+`.stage` centers the phone. `.detail` is absolutely positioned and translated
+into place beside it; opening adds `.detail-open` to `.stage`, which slides the
+phone left and the panel in.
 
-### Responsive Strategy
-- Uses `clamp()` extensively for fluid typography and spacing
-- Viewport units (vw) for scaling
-- `min-height: 100vh` with `-webkit-fill-available` for iOS
-- `overflow-y: auto` for scrollable content
-- All rows use `auto` sizing to allow natural growth
+Below 768px the frame is removed, `.detail` becomes a fixed bottom sheet, and
+the wallpaper pseudo-elements switch to `position: fixed` so they do not slide
+away as the page scrolls.
 
-## JavaScript Architecture
+### Widget arrangement
 
-### Core Functions
-- `showExperienceContent(projectData)` - Opens experience panel with animation
-- `hideExperienceContent()` - Closes experience panel
-- `createModal(projectData)` - Creates and shows modal
-- `updateTime()` - Updates status bar time display
+The two widgets are sized against real iOS widget proportions: small is 1:1,
+medium is about 2.15:1. Side by side inside the desktop frame they land at
+0.86 — near enough to a pair of small widgets. On a phone the same two columns
+collapse to 0.51, which is no iOS size at all and wraps the name, the tagline
+and every note title, so they stack below 449px and land at 2.19 (medium) with
+every string on one line.
 
-### Mobile Enhancements
-- `isMobile()` - Detects mobile devices
-- `setupSwipeToDismiss()` - Adds swipe gesture handlers
-- `preventBodyScroll()` - Locks/unlocks body scroll
-- Touch event handlers for visual feedback
-- **Experience overlay behavior (mobile)**:
-  - Swipe-to-dismiss is attached to `.experience-content-inner` (panel), not the blurred overlay
-  - Backdrop uses opacity transition; panel uses transform transition for smoother dismiss
+Stacking costs height rather than saving it — 285px to 358px, taking the page
+from 844 to 966 at iPhone 14 width. That is deliberate. Safari's chrome leaves
+roughly 734px of viewport on that device, so the dock sits below the fold
+either way and the fold is not a reason to prefer one arrangement. Vertical
+space is only genuinely scarce on desktop, where the frame is a fixed 892px and
+does not scroll — which is why the columns stay side by side there.
 
-### Project Data
-- `projects` object contains all project information
-- Experience projects have: title, role, dateRange, description, tech, icon
-- Other projects have: title, description, tech, link
+### Geometry constraints
 
-## Recent Changes
+The offsets in the breakpoints are computed, not eyeballed. Two things make them
+easy to get wrong:
 
-### Mobile Widget Scaling
-- Widgets remain horizontal (2-column) on mobile
-- All dimensions scale using `clamp()` and viewport units
-- Font sizes increased for better readability:
-  - About h1: `18px-22px` (was 14px-18px)
-  - About subtitle: `11px-13px` (was 9px-11px)
-  - Notes h2: `13px-15px` (was 11px-12.6px)
-  - Note titles: `12px-14px` (was 10px-12px)
+- A transform does not change an element's layout box. In the ≤900px block the
+  phone is scaled to 0.84, so its offsets are figured from its *visual*
+  half-width (433 × 0.84 / 2), not 433 / 2.
+- A `visibility: hidden` element still counts toward `scrollWidth`. The resting
+  offset of `.detail` therefore stays close to its open position; parking it far
+  to the right gave the page a phantom horizontal scrollbar.
 
-### Content Flow
-- Screen uses `grid-template-rows: auto auto auto auto` (all auto)
-- Widgets can grow vertically and push content down
-- Screen has `height: auto` with `min-height: 100vh`
-- Overflow scrolling enabled for long content
+After changing any of these, check that `document.documentElement.scrollWidth`
+still equals `clientWidth` at 768, 900, 1180 and 1440 — those are the widths
+where the rules change hands.
 
-### Mobile Experience Details (UX polish)
-- **Dismiss button** moved into the normal content stack (no longer fixed), with safe-area-friendly bottom spacing
-- Added a **top-right close (X)** button (mobile only)
-- Updated **Option B frosted glass** styling for the mobile experience overlay
-- Smoothed dismiss by **fading the backdrop** and **sliding the panel**, reducing iOS blur/transform jitter
+## Traps
 
-## Design System
+**Do not give `.phone-frame`'s entrance animation `animation-fill-mode: both`.**
+A forwards-filling animation keeps ownership of `transform` after it ends, which
+beats `.stage.detail-open .phone-frame` and stops the phone sliding aside — the
+panel then opens on top of it. It is `backwards` for that reason.
 
-### Colors
-- `--text`: `rgba(255,255,255,0.95)`
-- `--muted`: `rgba(255,255,255,0.75)`
-- `--accent`: `#007aff` (iOS blue)
+**Keep the breakpoint in one place conceptually.** `styles.css` breaks at 767px
+and `script.js` uses `matchMedia('(max-width: 767px)')`. The old code sniffed the
+user agent, so an iPad on a wide viewport got the desktop layout with mobile
+scroll-locking and swipe handling bolted on.
 
-### Typography
-- Font: `-apple-system, BlinkMacSystemFont, 'SF Pro Display'`
-- Responsive scaling via `clamp()` throughout
+**`--dur-sheet` and `SHEET_MS` are a pair.** The JS waits that long before
+clearing panel markup and removing a dismissed sheet. Change one, change both.
 
-### Animations
-- Phone fade-in on load
-- Staggered line animations in experience content
-- Smooth transitions (0.3s-0.4s cubic-bezier)
-- Mobile: Reduced animation complexity for performance
+## JavaScript
 
-## Testing Notes
-- Test on real iOS/Android devices
-- Verify swipe gestures work smoothly
-- Check body scroll lock/unlock
-- Test orientation changes
-- Verify touch targets are 44px+ minimum
-- Test on iPhone SE (smallest) to iPhone Pro Max (largest)
+One delegated `click` listener dispatches on `data-action`. There is a single
+`layers` stack for Escape, so the topmost surface closes and nothing leaks —
+previously each modal added its own key listener and only removed it if you
+actually pressed Escape.
 
-## Known Patterns
-- Experience row icons → `showExperienceContent()`
-- Other row icons → `createModal()`
-- LinkedIn/GitHub → Direct links (no modal)
-- Contact dock → Direct tel:/mailto:/sms: links
-- Time updates every minute
-- Escape key closes modals
+`lockScroll` / `unlockScroll` are reference-counted and restore the scroll
+offset; the earlier version applied `position: fixed` without recording
+`scrollY`, so closing a sheet dropped you at the top of the page.
 
-## Future Considerations
-- Image optimization (WebP, lazy loading)
-- Service worker for offline support
-- Enhanced accessibility (ARIA labels)
-- Performance monitoring
+`openDetail` reuses the persistent `.detail-panel` element and re-renders its
+markup, so swipe handlers are attached once at startup rather than per open.
+Modal sheets are created and destroyed, so their listeners die with the node.
 
+## Accessibility
 
+App icons are `<button>` and `<a>` elements — they were `<div>`s with click
+handlers, which left the whole grid unreachable by keyboard. Dialogs use
+`inert` when closed (not `hidden`, which would kill the transition), trap Tab
+while open, and restore focus to the trigger on close. Decorative chrome (the
+status bar, signal, battery, icon images behind text labels) is `aria-hidden`
+or `alt=""` so it is not announced twice.
 
+`prefers-reduced-motion` is respected globally.
 
+## Verifying changes
 
+There is no test suite. Render it and look:
+
+```sh
+python3 -m http.server 8899
+```
+
+Headless Chrome clamps `--window-size` to a 500px minimum, so a narrow
+`--screenshot` is a *crop of a 500px render*, not a phone-width layout — it will
+show phantom overflow that is not real. To check true phone widths, load the
+page in an iframe of the exact size and screenshot the wrapper.
