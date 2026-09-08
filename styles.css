@@ -224,14 +224,20 @@ a {
   position: relative;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
-  gap: 14px;
+  gap: 11px;
   width: 100%;
   height: 100%;
-  padding: 14px 18px 16px;
+  padding: 12px 18px 14px;
   border-radius: var(--r-screen);
-  overflow: hidden;
+  /* The frame is a fixed height and shrinks with the viewport, so on a short
+     window the content can exceed it. Scrolling beats clipping the dock. */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
   isolation: isolate;
 }
+
+.screen::-webkit-scrollbar { display: none; }
 
 .screen::before {
   content: "";
@@ -329,11 +335,11 @@ a {
 .widgets {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 .widget {
-  padding: 14px;
+  padding: 12px;
   border-radius: var(--r-widget);
   background: var(--widget-bg);
   color: var(--ink-dark);
@@ -386,11 +392,11 @@ a {
 }
 
 .about .tagline {
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: var(--t-caption);
-  line-height: 1.4;
+  font-size: var(--t-caption2);
+  line-height: 1.35;
   color: var(--ink-2);
   text-wrap: pretty;
 }
@@ -495,13 +501,13 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 18px;
+  gap: 13px;
 }
 
 .row-title {
   position: relative;
-  margin-bottom: 12px;
-  padding: 0 4px 8px;
+  margin-bottom: 9px;
+  padding: 0 4px 6px;
   font-size: var(--t-footnote);
   font-weight: 600;
   letter-spacing: -0.08px;
@@ -539,14 +545,14 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   min-width: 0;
 }
 
 .tile {
   position: relative;
   display: block;
-  width: 60px;
+  width: 56px;
   aspect-ratio: 1;
   border-radius: var(--r-tile);
   overflow: hidden;
@@ -609,7 +615,7 @@ a {
   display: flex;
   justify-content: center;
   gap: 22px;
-  padding: 12px 20px;
+  padding: 9px 20px;
   border-radius: 30px;
   background: rgba(255, 255, 255, 0.12);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -617,7 +623,7 @@ a {
   box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.10) inset;
 }
 
-.dock .tile { width: 56px; }
+.dock .tile { width: 52px; }
 .dock a:active .tile { transform: scale(0.9); }
 
 @media (hover: hover) {
@@ -1018,20 +1024,9 @@ a {
   .widgets { gap: 12px; }
   .widget { padding: 16px; border-radius: 22px; }
 
-  /* Two columns on a phone leaves each widget around 0.5:1 — a tall sliver
-     matching no iOS widget size, with the name, tagline and every note title
-     wrapping. Full width puts each at 1.8-2.4:1 (2.19 at 390px, against the
-     2.15 of a real iOS medium widget) and every string fits on one line.
-
-     It costs height rather than saving it: the pair goes from 285px to 358px.
-     That is affordable here because the phone layout scrolls, and it would not
-     be on desktop, where the frame is a fixed 892px. Above this width the two
-     columns are near-square — the small widget shape — so they stay side by
-     side. */
-  @media (max-width: 449px) {
-    .widgets { grid-template-columns: 1fr; }
-    .about .tagline { margin-top: 8px; }
-  }
+  /* Two columns at every width. Stacking these full-width gets closer to the
+     iOS medium widget proportion, but it costs 73px of height and pushes the
+     app grid and dock further down the page, which matters more. */
 
   .about h1 { font-size: var(--t-title2); }
   .about .role { font-size: var(--t-footnote); }

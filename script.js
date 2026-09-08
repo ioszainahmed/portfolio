@@ -12,66 +12,61 @@
 const projects = {
   'Marriott': {
     title: 'Marriott Bonvoy',
-    role: 'Software Engineer',
-    dateRange: 'January 2023 – Present',
+    role: 'iOS Engineer @ Marriott International',
+    dateRange: 'Jan 2023 – Present',
     icon: 'assets/bonvoy.png',
     description: [
       '• Marriott Bonvoy App (hyperlink: https://apps.apple.com/us/app/marriott-bonvoy-book-hotels/id455004730)',
-      '• Spearhead the redesign of legacy UIKit and Storyboard views into modern SwiftUI-based flows using Figma.',
-      '• Migrate eAPI calls to GraphQL using Apollo Studio, enhancing performance and maintainability.',
-      '• Enhance accessibility by customizing ADA-compliant experiences across key user flows and app interfaces.',
-      '• Led the deprecation of legacy Objective-C modules in favor of SwiftUI-first architecture for modern development.',
-      '• Collaborate with product, design and QA teams to define best practices for SwiftUI implementation and testing.',
-      '• Deliver regular cross-team presentations and demos to showcase new features and technical advancements.'
+      '• Own features end-to-end from design through production, driving multi-million dollar annual booking revenue.',
+      "• Architected the SwiftUI foundation underpinning the team's SPM feature package, standardizing state-driven UI patterns.",
+      '• Ensure full test coverage across features, building reusable testing helpers for async and state-driven workflows.',
+      '• Led end-to-end migration of a core app tab from legacy Objective-C and UIKit to SwiftUI-first, ADA-compliant architecture.',
+      '• Migrated REST eAPI services to GraphQL via Apollo, reducing over-fetching and simplifying feature integrations.',
+      "• Automated feature-branch builds via Harness CI/CD's Execute Pipeline API, eliminating manual build coordination for the team."
     ].join('\n'),
-    tech: ['Swift', 'SwiftUI', 'GraphQL', 'Apollo Studio', 'Figma']
+    tech: ['Swift', 'SwiftUI', 'GraphQL', 'Apollo', 'SPM', 'XCTest', 'Harness CI/CD', 'Accessibility']
   },
 
   'myQ': {
-    title: 'myQ Smart Garage',
-    role: 'Software Engineer II',
-    dateRange: 'November 2021 – December 2022',
+    title: 'myQ Garage and Access',
+    role: 'Software Engineer @ Chamberlain Group',
+    dateRange: 'Nov 2021 – Dec 2022',
     icon: 'assets/myQ.png',
     description: [
       '• myQ Garage and Access App (hyperlink: https://apps.apple.com/us/app/myq-garage-access-control/id456282559)',
-      '• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.',
-      '• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.',
-      '• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.',
-      '• Documented, unit tested and contributed to the automation of existing code for usability and reliability.',
-      '• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.'
+      '• Configured iOS communication with garage openers, gates and smart cameras, using CoreBluetooth for device onboarding and MQTT with WebSocket state sync for live door status.',
+      '• Built live camera viewing and motion-alert handling, including stored clip playback for reviewing entry events.',
+      '• Shipped shared access and auto-close scheduling, letting owners grant entry to family and service providers.',
+      '• Built and deployed a shared analytics package via Carthage, enabling consistent event logging across both myQ apps.'
     ].join('\n'),
-    tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile']
+    tech: ['Swift', 'SwiftUI', 'CoreBluetooth', 'MQTT', 'WebSocket', 'IoT', 'Carthage']
   },
 
   'Community': {
     title: 'myQ Community',
-    role: 'Software Engineer II',
-    dateRange: 'November 2021 – December 2022',
+    role: 'Software Engineer @ Chamberlain Group',
+    dateRange: 'Nov 2021 – Dec 2022',
     icon: 'assets/community.png',
     description: [
       '• myQ Community App (hyperlink: https://apps.apple.com/us/app/myq-community/id1516518499)',
-      '• Configured communication of the iOS App with IOT devices such as garage door openers, cameras and intercom.',
-      '• Converted all views and elements to Programmatic UI and SwiftUI to remove dependency on Storyboards.',
-      '• Tested and deployed a generic iOS package via Carthage to log analytics for multiple iOS applications.',
-      '• Documented, unit tested and contributed to the automation of existing code for usability and reliability.',
-      '• Worked in a cross-functional Scrum team to deliver features and services in a fast-paced Agile environment.'
+      '• Built the resident video intercom flow, letting residents answer a call from the main entrance and grant entry from the same screen.',
+      '• Implemented guest passes for visitors, deliveries and service providers, with time-bound access to shared community doors and gates.',
+      '• Migrated Storyboard views to programmatic UI and SwiftUI, adopting Combine for reactive state management across multi-tenant access flows.'
     ].join('\n'),
-    tech: ['Swift', 'SwiftUI', 'IoT', 'Carthage', 'Agile']
+    tech: ['Swift', 'SwiftUI', 'Combine', 'Video Intercom', 'Access Control', 'Programmatic UI']
   },
 
   'WanaSell': {
     title: 'WanaSell',
-    role: 'iOS Developer',
-    dateRange: 'June 2019 – September 2021',
+    role: 'iOS Developer @ WanaSell',
+    dateRange: 'Jun 2019 – Oct 2021',
     icon: 'assets/wanasell.png',
     description: [
       '• WanaSell App (hyperlink: https://apptopia.com/ios/app/1521338655/about)',
-      '• Designed and built adaptive User Interface on Storyboards and Xibs using Auto-layout.',
-      "• Implemented an object detection feature using AVKit and Apple's ResNet50 data model.",
-      '• Used various instruments tools to identify memory leaks and improve the performance of the app.',
-      '• Participated in the full iOS mobile application life cycle from conception to release to the App Store.'
+      '• Implemented real-time object detection with AVFoundation, Vision, and CoreML for in-camera product recognition.',
+      '• Owned full lifecycle from conception to App Store release: URLSession/Codable networking, Firebase auth and storage, Instruments profiling to eliminate memory leaks.'
     ].join('\n'),
-    tech: ['Swift', 'UIKit', 'AVKit', 'ResNet50', 'Auto Layout']
+    tech: ['Swift', 'UIKit', 'AVFoundation', 'Vision', 'CoreML', 'URLSession', 'Firebase', 'Instruments']
   },
 
   'Notes': {
