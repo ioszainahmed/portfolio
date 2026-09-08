@@ -1024,20 +1024,9 @@ a {
   .widgets { gap: 12px; }
   .widget { padding: 16px; border-radius: 22px; }
 
-  /* Two columns on a phone leaves each widget around 0.5:1 — a tall sliver
-     matching no iOS widget size, with the name, tagline and every note title
-     wrapping. Full width puts each at 1.8-2.4:1 (2.19 at 390px, against the
-     2.15 of a real iOS medium widget) and every string fits on one line.
-
-     It costs height rather than saving it: the pair goes from 285px to 358px.
-     That is affordable here because the phone layout scrolls, and it would not
-     be on desktop, where the frame is a fixed 892px. Above this width the two
-     columns are near-square — the small widget shape — so they stay side by
-     side. */
-  @media (max-width: 449px) {
-    .widgets { grid-template-columns: 1fr; }
-    .about .tagline { margin-top: 8px; }
-  }
+  /* Two columns at every width. Stacking these full-width gets closer to the
+     iOS medium widget proportion, but it costs 73px of height and pushes the
+     app grid and dock further down the page, which matters more. */
 
   .about h1 { font-size: var(--t-title2); }
   .about .role { font-size: var(--t-footnote); }
