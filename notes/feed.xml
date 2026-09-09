@@ -5,7 +5,7 @@
     <link>https://iosza.in/notes/</link>
     <description>Long-form notes on iOS engineering, architecture and the systems around them.</description>
     <language>en</language>
-    <lastBuildDate>Wed, 09 Sep 2026 01:21:37 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 09 Sep 2026 01:26:55 +0000</lastBuildDate>
     <atom:link href="https://iosza.in/notes/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Thinking in systems</title>
@@ -15,11 +15,11 @@
       <description>Placeholder. Chessboards, codebases and coalitions turn out to be the same problem wearing different clothes.</description>
       <content:encoded><![CDATA[<p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
 <p>A chessboard is a system with perfect information and no ambiguity about the rules, and it is still hard. A codebase is a system with none of that. What carries over is not tactics but the habit of asking what a move does to the position two moves from now.</p>
-<h3 id="what-a-system-asks-of-you">What a system asks of you</h3>
+<h2 id="what-a-system-asks-of-you">What a system asks of you</h2>
 <p>The interesting question in a codebase is rarely <em>does this work</em>. It is <strong>what does this make easy, and what does it quietly make expensive</strong>. A function that saves four lines today and forces every future caller to remember an ordering constraint has not saved anything.</p>
 <p>Three things I keep coming back to:</p>
 <ul class="prose-list"><li>The shape of the data decides the shape of the code. Change the model and half the awkward call sites stop being awkward.</li><li>Every abstraction is a bet about which direction the requirements will move. Some bets are cheap to lose; take those.</li><li>Coupling you can see is better than coupling you cannot. An explicit dependency is a design decision; an implicit one is a trap for whoever comes next.</li></ul>
-<h4 id="a-small-example">A small example</h4>
+<h3 id="a-small-example">A small example</h3>
 <p>The version that reads best is usually the one where the types make the invalid state impossible to write down:</p>
 <div class="code-block"><span class="code-lang" aria-hidden="true">swift</span><pre class="lang-swift"><code>enum LoadState&lt;Value&gt; {
     case idle
@@ -29,9 +29,9 @@
 }</code></pre></div>
 <p>Two booleans and an optional describe the same four states, plus twelve that should never exist. You will spend the life of the feature defending against those twelve.</p>
 <blockquote><p>The purpose of a system is what it does, not what it was intended to do.</p></blockquote>
-<h3 id="where-it-stops-working">Where it stops working</h3>
+<h2 id="where-it-stops-working">Where it stops working</h2>
 <p>The analogy has a limit. Chess ends. Software does not, and the position you are optimising for is one you will still be sitting in three years from now with a different team. That changes what counts as a good move: legibility starts to beat cleverness by a wide margin.</p>
-<p>More on this in <a href="../mvvm-vs-mvc-vs-viper/">MVVM vs MVC vs VIPER</a>, which is the same argument applied to something narrower.</p>]]></content:encoded>
+<p>More on this in <a href="https://iosza.in/notes/mvvm-vs-mvc-vs-viper/">MVVM vs MVC vs VIPER</a>, which is the same argument applied to something narrower.</p>]]></content:encoded>
     </item>
     <item>
       <title>MVVM vs MVC vs VIPER</title>
@@ -41,11 +41,11 @@
       <description>Placeholder. The architecture argument is mostly an argument about where you are willing to put the mess.</description>
       <content:encoded><![CDATA[<p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
 <p>Nobody picks an architecture because it is correct. They pick it because of where it lets them put the parts of the app that refuse to be tidy — and every one of these patterns has a designated room for the mess.</p>
-<h3 id="the-three-briefly">The three, briefly</h3>
+<h2 id="the-three-briefly">The three, briefly</h2>
 <p><strong>MVC</strong> as Apple shipped it puts the mess in the view controller. That is not a flaw in the pattern so much as a flaw in the name: the controller is a view layer, so anything that touches both the view and the model lands there and stays.</p>
 <p><strong>MVVM</strong> moves it one hop out. The view model is testable, which is the real win, and it is also where every piece of formatting, coordination and half-business-logic will accumulate unless someone is watching.</p>
 <p><strong>VIPER</strong> splits the room into five smaller rooms. On a large team with a large app that is a genuine gain, because the seams are where the ownership boundaries are. On a screen with a title and a button it is ceremony.</p>
-<h3 id="what-actually-decides-it">What actually decides it</h3>
+<h2 id="what-actually-decides-it">What actually decides it</h2>
 <ol class="prose-list"><li>How many people touch this screen in a sprint.</li><li>Whether navigation is a property of the screen or of the flow.</li><li>How much of the logic you need to test without a simulator.</li></ol>
 <p>The third one does most of the work. If the answer is <em>most of it</em>, you want a layer that does not import <code>UIKit</code>, and the name you give that layer matters much less than the fact that it exists.</p>
 <div class="code-block"><span class="code-lang" aria-hidden="true">swift</span><pre class="lang-swift"><code>@MainActor
@@ -60,7 +60,7 @@ final class ReservationViewModel: ObservableObject {
 }</code></pre></div>
 <p>That is MVVM by most definitions, and it would be a presenter under VIPER, and it would live in a controller extension under MVC. The testability is a property of the boundary, not of the acronym.</p>
 <blockquote><p>Pick the smallest structure that still puts the untestable parts on one side of a line you can draw.</p></blockquote>
-<p>See also <a href="../thinking-in-systems/">Thinking in systems</a>.</p>]]></content:encoded>
+<p>See also <a href="https://iosza.in/notes/thinking-in-systems/">Thinking in systems</a>.</p>]]></content:encoded>
     </item>
     <item>
       <title>Swift concurrency</title>
@@ -70,7 +70,7 @@ final class ReservationViewModel: ObservableObject {
       <description>Placeholder. Actors do not remove the concurrency problem, they move it to the boundary where you can see it.</description>
       <content:encoded><![CDATA[<p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
 <p>The pitch for <code>async/await</code> is that it makes concurrent code read like sequential code. That is true and it is also the trap: it reads sequentially, so it is easy to stop noticing the suspension points, which are the only places anything interesting can go wrong.</p>
-<h3 id="suspension-points-are-the-api">Suspension points are the API</h3>
+<h2 id="suspension-points-are-the-api">Suspension points are the API</h2>
 <p>Every <code>await</code> is a place where the world can change underneath you. State you read before it may not hold after it.</p>
 <div class="code-block"><span class="code-lang" aria-hidden="true">swift</span><pre class="lang-swift"><code>func refresh() async {
     let stale = cache.snapshot()
@@ -78,7 +78,7 @@ final class ReservationViewModel: ObservableObject {
     apply(fresh ?? stale)                     // is `stale` still current?
 }</code></pre></div>
 <p>Actors fix the data race and not the logic race. Serialised access means two tasks will not corrupt the same field; it does not mean the second one is still doing something that makes sense.</p>
-<h3 id="things-worth-being-deliberate-about">Things worth being deliberate about</h3>
+<h2 id="things-worth-being-deliberate-about">Things worth being deliberate about</h2>
 <ul class="prose-list"><li><code>@MainActor</code> on the type, not scattered across its methods.</li><li>Structured tasks over detached ones — cancellation should follow the tree.</li><li><code>Sendable</code> warnings are the compiler telling you where the boundary is. Do not silence them; move the boundary.</li></ul>
 <p>More once this is written properly.</p>]]></content:encoded>
     </item>
@@ -90,11 +90,11 @@ final class ReservationViewModel: ObservableObject {
       <description>Placeholder. Both reward positional play, and both punish the move that only works if nothing else changes.</description>
       <content:encoded><![CDATA[<p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
 <p>Club players lose to tactics. Everyone above that loses to position — a slow accumulation of small concessions, none of which looked like a mistake at the time. Codebases go the same way, and the concessions have names: the one-off flag, the temporary bridge, the <em>we will clean this up after launch</em>.</p>
-<h3 id="the-shared-lesson">The shared lesson</h3>
+<h2 id="the-shared-lesson">The shared lesson</h2>
 <p>A move that only works if nothing else changes is not a move, it is a liability with a delay on it.</p>
 <ul class="prose-list"><li>In chess you ask what squares this gives up.</li><li>In a codebase you ask what this makes harder to change.</li></ul>
 <p>They are the same question. Neither has a good answer available in the moment you most want one.</p>
-<h3 id="where-the-analogy-pays">Where the analogy pays</h3>
+<h2 id="where-the-analogy-pays">Where the analogy pays</h2>
 <p><em>Tempo.</em> Shipping is not only about the feature; it is about who has to move next and how constrained they are when they do. A change that leaves the next person with three good options is worth more than a slightly better change that leaves them with one.</p>
 <p>Full version to follow.</p>]]></content:encoded>
     </item>

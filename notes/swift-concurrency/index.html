@@ -75,7 +75,7 @@
     <article class="reader-col prose">
       <p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
       <p>The pitch for <code>async/await</code> is that it makes concurrent code read like sequential code. That is true and it is also the trap: it reads sequentially, so it is easy to stop noticing the suspension points, which are the only places anything interesting can go wrong.</p>
-      <h3 id="suspension-points-are-the-api">Suspension points are the API</h3>
+      <h2 id="suspension-points-are-the-api">Suspension points are the API</h2>
       <p>Every <code>await</code> is a place where the world can change underneath you. State you read before it may not hold after it.</p>
       <div class="code-block"><span class="code-lang" aria-hidden="true">swift</span><pre class="lang-swift"><code>func refresh() async {
     let stale = cache.snapshot()
@@ -83,7 +83,7 @@
     apply(fresh ?? stale)                     // is `stale` still current?
 }</code></pre></div>
       <p>Actors fix the data race and not the logic race. Serialised access means two tasks will not corrupt the same field; it does not mean the second one is still doing something that makes sense.</p>
-      <h3 id="things-worth-being-deliberate-about">Things worth being deliberate about</h3>
+      <h2 id="things-worth-being-deliberate-about">Things worth being deliberate about</h2>
       <ul class="prose-list"><li><code>@MainActor</code> on the type, not scattered across its methods.</li><li>Structured tasks over detached ones — cancellation should follow the tree.</li><li><code>Sendable</code> warnings are the compiler telling you where the boundary is. Do not silence them; move the boundary.</li></ul>
       <p>More once this is written properly.</p>
     </article>

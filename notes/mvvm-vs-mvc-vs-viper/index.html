@@ -75,11 +75,11 @@
     <article class="reader-col prose">
       <p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
       <p>Nobody picks an architecture because it is correct. They pick it because of where it lets them put the parts of the app that refuse to be tidy — and every one of these patterns has a designated room for the mess.</p>
-      <h3 id="the-three-briefly">The three, briefly</h3>
+      <h2 id="the-three-briefly">The three, briefly</h2>
       <p><strong>MVC</strong> as Apple shipped it puts the mess in the view controller. That is not a flaw in the pattern so much as a flaw in the name: the controller is a view layer, so anything that touches both the view and the model lands there and stays.</p>
       <p><strong>MVVM</strong> moves it one hop out. The view model is testable, which is the real win, and it is also where every piece of formatting, coordination and half-business-logic will accumulate unless someone is watching.</p>
       <p><strong>VIPER</strong> splits the room into five smaller rooms. On a large team with a large app that is a genuine gain, because the seams are where the ownership boundaries are. On a screen with a title and a button it is ceremony.</p>
-      <h3 id="what-actually-decides-it">What actually decides it</h3>
+      <h2 id="what-actually-decides-it">What actually decides it</h2>
       <ol class="prose-list"><li>How many people touch this screen in a sprint.</li><li>Whether navigation is a property of the screen or of the flow.</li><li>How much of the logic you need to test without a simulator.</li></ol>
       <p>The third one does most of the work. If the answer is <em>most of it</em>, you want a layer that does not import <code>UIKit</code>, and the name you give that layer matters much less than the fact that it exists.</p>
       <div class="code-block"><span class="code-lang" aria-hidden="true">swift</span><pre class="lang-swift"><code>@MainActor

@@ -30,6 +30,7 @@ import shutil
 import sys
 from datetime import datetime, timezone
 from email.utils import format_datetime
+from urllib.parse import urljoin
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CONTENT = os.path.join(ROOT, 'content', 'notes')
@@ -206,7 +207,12 @@ def render_markdown(source):
 
         head = HEADING.match(stripped)
         if head:
-            level = min(len(head.group('hashes')) + 1, 6)  # h1 belongs to the page
+            # The page supplies the h1, so body headings start at h2 — a second
+            # h1 in the article would flatten the document outline. Authors
+            # writing under front matter reach for "##" as their top section,
+            # so "#" and "##" both land on h2 rather than "##" dropping to h3
+            # and leaving the largest heading style unreachable.
+            level = min(max(len(head.group('hashes')), 2), 4)
             text = head.group('text')
             out.append('<h%d id="%s">%s</h%d>'
                        % (level, esc_attr(heading_id(text)), inline(text), level))
@@ -574,17 +580,31 @@ def json_string(value):
 # Feed and sitemap
 # ---------------------------------------------------------------------------
 
+RELATIVE_ATTR = re.compile(r'((?:href|src)=")(?!https?:|mailto:|tel:|#)([^"]*)"')
+
+
+def absolutise(markup, base):
+    """Rewrite relative hrefs against the article's own URL.
+
+    A feed item is read somewhere else entirely, where ../another-note/ points
+    at nothing. On the page itself the relative form is what keeps the site
+    portable, so the rewrite happens here rather than in the renderer.
+    """
+    return RELATIVE_ATTR.sub(lambda m: '%s%s"' % (m.group(1), urljoin(base, m.group(2))), markup)
+
+
 def render_feed(notes):
     now = datetime.now(timezone.utc)
     items = []
     for note in notes:
+        body = absolutise(note['html'], note['url']).replace(']]>', ']]&gt;')
         items.append(f'''    <item>
       <title>{esc(note['title'])}</title>
       <link>{note['url']}</link>
       <guid isPermaLink="true">{note['url']}</guid>
       <pubDate>{format_datetime(note['date'])}</pubDate>
       <description>{esc(note['description'])}</description>
-      <content:encoded><![CDATA[{note['html'].replace(']]>', ']]&gt;')}]]></content:encoded>
+      <content:encoded><![CDATA[{body}]]></content:encoded>
     </item>''')
 
     return f'''<?xml version="1.0" encoding="UTF-8"?>
