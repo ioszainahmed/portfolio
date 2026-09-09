@@ -26,6 +26,7 @@
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="alternate" type="application/rss+xml" title="Notes — Zain A." href="notes/feed.xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,27 +74,39 @@
           </section>
 
           <section class="widget notes" aria-labelledby="notes-heading">
-            <div class="notes-header">
+            <a class="notes-header" href="notes/">
               <span class="notes-glyph" aria-hidden="true"></span>
               <h2 id="notes-heading">Notes</h2>
-            </div>
+            </a>
+            <!-- The rows below are written by build.py from content/notes/*.md.
+                 Edit the Markdown and re-run the build; hand edits here are lost. -->
             <ul class="notes-list">
+              <!-- build:notes-widget -->
               <li class="note-item">
-                <span class="note-title">Thinking in systems</span>
-                <span class="note-meta">9/5 • No additional text</span>
+                <a class="note-link" href="notes/thinking-in-systems/">
+                  <span class="note-title">Thinking in systems</span>
+                  <span class="note-meta">9/5 &#8226; Placeholder. Chessboards, codebases and coalitions turn out to be the same problem wearing different clothes.</span>
+                </a>
               </li>
               <li class="note-item">
-                <span class="note-title">MVVM vs MVC vs VIPER</span>
-                <span class="note-meta">9/2 • No additional text</span>
+                <a class="note-link" href="notes/mvvm-vs-mvc-vs-viper/">
+                  <span class="note-title">MVVM vs MVC vs VIPER</span>
+                  <span class="note-meta">9/2 &#8226; Placeholder. The architecture argument is mostly an argument about where you are willing to put the mess.</span>
+                </a>
               </li>
               <li class="note-item">
-                <span class="note-title">Swift concurrency</span>
-                <span class="note-meta">8/27 • No additional text</span>
+                <a class="note-link" href="notes/swift-concurrency/">
+                  <span class="note-title">Swift concurrency</span>
+                  <span class="note-meta">8/27 &#8226; Placeholder. Actors do not remove the concurrency problem, they move it to the boundary where you can see it.</span>
+                </a>
               </li>
               <li class="note-item">
-                <span class="note-title">Chess and codebases</span>
-                <span class="note-meta">8/19 • No additional text</span>
+                <a class="note-link" href="notes/chess-and-codebases/">
+                  <span class="note-title">Chess and codebases</span>
+                  <span class="note-meta">8/19 &#8226; Placeholder. Both reward positional play, and both punish the move that only works if nothing else changes.</span>
+                </a>
               </li>
+              <!-- /build:notes-widget -->
             </ul>
           </section>
         </div>
@@ -132,10 +145,10 @@
                 <span class="tile"><img src="assets/github.png" alt="" width="180" height="180" decoding="async"></span>
                 <span class="label">GitHub</span>
               </a>
-              <button class="icon" type="button" data-action="modal" data-project="Notes">
+              <a class="icon" href="notes/">
                 <span class="tile"><img src="assets/notes.png" alt="" width="180" height="180" decoding="async"></span>
                 <span class="label">Notes</span>
-              </button>
+              </a>
               <button class="icon" type="button" data-action="modal" data-project="App Store">
                 <span class="tile"><img src="assets/app-store.png" alt="" width="180" height="180" decoding="async"></span>
                 <span class="label">App Store</span>

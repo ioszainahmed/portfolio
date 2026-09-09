@@ -69,11 +69,8 @@ const projects = {
     tech: ['Swift', 'UIKit', 'AVFoundation', 'Vision', 'CoreML', 'URLSession', 'Firebase', 'Instruments']
   },
 
-  'Notes': {
-    title: 'Notes',
-    description: "A space for in-progress thoughts, technical notes, and ideas I'm actively refining. This section is evolving and will be published soon.",
-    tech: ['Drafts', 'Ideas', 'In Progress']
-  },
+  /* Notes has no entry here any more: the icon is a link to /notes/, which is
+     a real page, so there is nothing left for a "coming soon" sheet to say. */
 
   'App Store': {
     title: 'App Store',
