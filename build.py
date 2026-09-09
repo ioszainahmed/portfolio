@@ -356,6 +356,7 @@ def head(*, title, description, canonical, up, og_type='website', extra=''):
     works from a file:// open as well as from a server."""
     return f'''  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+{STAMP}
 
   <title>{esc(title)}</title>
   <meta name="description" content="{esc_attr(description)}" />
@@ -426,7 +427,6 @@ def render_index(notes):
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
-{STAMP}
 {head(title='Notes — Zain A.', description=FEED_DESC, canonical=SITE + '/notes/', up='../')}
 {ld}
 </head>
@@ -447,7 +447,7 @@ def render_index(notes):
               <span>Home</span>
             </a>
             <h1 class="notes-app-title" id="notes-app-title">
-              <span class="notes-glyph notes-glyph-dark" aria-hidden="true"></span>
+              <span class="notes-glyph" aria-hidden="true"></span>
               Notes
             </h1>
           </header>
@@ -514,7 +514,6 @@ def render_article(note, newer, older):
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
-{STAMP}
 {head(title='%s — Zain A.' % note['title'], description=note['description'],
       canonical=note['url'], up='../../', og_type='article', extra=extra)}
 {ld}
@@ -594,7 +593,10 @@ def absolutise(markup, base):
 
 
 def render_feed(notes):
-    now = datetime.now(timezone.utc)
+    # The newest note's date, not the wall clock. The output is committed, so a
+    # build that changes nothing should produce no diff — otherwise every run
+    # dirties the tree and the real change gets lost in the noise.
+    built = notes[0]['date']
     items = []
     for note in notes:
         body = absolutise(note['html'], note['url']).replace(']]>', ']]&gt;')
@@ -614,7 +616,7 @@ def render_feed(notes):
     <link>{SITE}/notes/</link>
     <description>{esc(FEED_DESC)}</description>
     <language>en</language>
-    <lastBuildDate>{format_datetime(now)}</lastBuildDate>
+    <lastBuildDate>{format_datetime(built)}</lastBuildDate>
     <atom:link href="{SITE}/notes/feed.xml" rel="self" type="application/rss+xml" />
 {chr(10).join(items)}
   </channel>
