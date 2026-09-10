@@ -23,6 +23,7 @@ starting one. The Markdown support below is the subset actually used, not a
 CommonMark implementation.
 """
 
+import hashlib
 import html
 import os
 import re
@@ -87,6 +88,35 @@ def safe_href(url):
     if url.startswith(('/', './', '../', '#')) or re.match(r'^[\w][\w./-]*$', url):
         return url
     return '#'
+
+
+# ---------------------------------------------------------------------------
+# Asset versioning
+#
+# styles.css and the scripts keep the same URL forever, and the markup is now
+# coupled to them tightly enough that a mismatch renders visibly broken rather
+# than merely unstyled: a cached stylesheet that predates .note-link lays the
+# widget's title and date out inline and lets the preview wrap, which inflates
+# the card until it fills the screen. Appending a content hash means a changed
+# stylesheet is a changed URL, so that pairing cannot happen.
+# ---------------------------------------------------------------------------
+
+def asset(name):
+    """Return name with a short content hash appended, for cache busting."""
+    path = os.path.join(ROOT, name)
+    digest = hashlib.sha1(open(path, 'rb').read()).hexdigest()[:8]
+    return '%s?v=%s' % (name, digest)
+
+
+ASSET_REF = re.compile(r'(href|src)="((?:\.\./)*)(styles\.css|script\.js|clock\.js|reader\.js)(?:\?v=[0-9a-f]+)?"')
+
+
+def version_assets(markup):
+    """Rewrite every local asset reference to carry the current hash."""
+    def sub(m):
+        attr, prefix, name = m.group(1), m.group(2), m.group(3)
+        return '%s="%s%s"' % (attr, prefix, asset(name))
+    return ASSET_REF.sub(sub, markup)
 
 
 # ---------------------------------------------------------------------------
@@ -676,7 +706,7 @@ def render_widget_rows(notes):
 
 def inject_widget(notes):
     path = os.path.join(ROOT, 'index.html')
-    source = open(path, encoding='utf-8').read()
+    source = version_assets(open(path, encoding='utf-8').read())
     start = source.find(WIDGET_START)
     end = source.find(WIDGET_END)
     if start == -1 or end == -1:
@@ -696,6 +726,10 @@ written = []
 
 
 def write(path, text):
+    # Single hook: every HTML file the build emits leaves with current asset
+    # hashes, whether it was generated here or hand-written and injected into.
+    if path.endswith('.html'):
+        text = version_assets(text)
     existing = None
     if os.path.exists(path):
         existing = open(path, encoding='utf-8').read()
