@@ -551,7 +551,12 @@ def render_article(note, newer, older):
 
   <footer class="reader-foot">
     <div class="reader-col">
-{nav_html}      <p class="reader-home"><a href="../../">Back to the home screen</a></p>
+{nav_html}      <p class="reader-home">
+        <a href="../../">
+          <span class="reader-home-glyph" aria-hidden="true"></span>
+          <span>Back to the home screen</span>
+        </a>
+      </p>
     </div>
   </footer>
 

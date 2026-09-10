@@ -1513,20 +1513,63 @@ a {
   text-wrap: pretty;
 }
 
+/* The way back out of the article, and the only route to the rest of the site
+   from here — so it is a button rather than the footnote-sized text link it
+   started as. Same shape as .detail-dismiss on the home screen, which is
+   already this site's language for "leave this view".
+
+   #58a6ff rather than the iOS system blue: on this tinted fill the system
+   blue measures 4.52:1, which clears AA by nothing at all. This is 6.53:1. */
 .reader-home {
-  margin-top: clamp(24px, 4vw, 34px);
-  font-size: var(--t-footnote);
-  color: var(--ink-2);
+  margin-top: clamp(26px, 5vw, 40px);
 }
 
 .reader-home a {
-  color: var(--ink-2);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 22px;
+  border-radius: 16px;
+  font-size: var(--t-headline);
+  font-weight: 600;
+  color: #58a6ff;
+  background: rgba(10, 132, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(88, 166, 255, 0.22);
+  transition:
+    background var(--dur-tap) var(--ease-out),
+    transform var(--dur-tap) var(--ease-out);
 }
 
-.reader-home a:hover { color: var(--ink); text-decoration-color: var(--ink-2); }
+@media (hover: hover) {
+  .reader-home a:hover { background: rgba(10, 132, 255, 0.26); }
+}
+
+.reader-home a:active { transform: scale(0.985); }
+
+/* A four-icon grid — the thing being returned to, not a generic house.
+   One 7px tile plus three box-shadow copies at a 10px pitch. */
+.reader-home-glyph {
+  position: relative;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.reader-home-glyph::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow:
+    10px 0 0 currentColor,
+    0 10px 0 currentColor,
+    10px 10px 0 currentColor;
+}
 
 @media (max-width: 360px) {
   .reader-hero,
