@@ -69,11 +69,8 @@ const projects = {
     tech: ['Swift', 'UIKit', 'AVFoundation', 'Vision', 'CoreML', 'URLSession', 'Firebase', 'Instruments']
   },
 
-  'Notes': {
-    title: 'Notes',
-    description: "A space for in-progress thoughts, technical notes, and ideas I'm actively refining. This section is evolving and will be published soon.",
-    tech: ['Drafts', 'Ideas', 'In Progress']
-  },
+  /* Notes has no entry here any more: the icon is a link to /notes/, which is
+     a real page, so there is nothing left for a "coming soon" sheet to say. */
 
   'App Store': {
     title: 'App Store',
@@ -121,24 +118,8 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
   { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
 ));
 
-/* --- Status bar clock ---------------------------------------------------- */
-
-const timeEl = document.getElementById('time');
-
-function tickClock() {
-  if (!timeEl) return;
-  const now = new Date();
-  const hours = now.getHours() % 12 || 12;
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  timeEl.textContent = `${hours}:${minutes}`;
-
-  /* Re-arm on the minute boundary rather than every 60s from load, which
-     otherwise drifts by up to 59 seconds. */
-  const ms = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-  window.setTimeout(tickClock, ms);
-}
-
-tickClock();
+/* The status bar clock lives in clock.js — the Notes app view draws a status
+   bar too, and this file's detail-panel wiring assumes the home screen. */
 
 /* --- Scroll lock ---------------------------------------------------------
    Reference-counted, and it restores the scroll position on release — the

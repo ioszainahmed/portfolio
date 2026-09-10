@@ -80,6 +80,59 @@ After changing any of these, check that `document.documentElement.scrollWidth`
 still equals `clientWidth` at 768, 900, 1180 and 1440 — those are the widths
 where the rules change hands.
 
+## Notes
+
+Three URLs, three different jobs, and the phone frame is kept for one of them
+and dropped for another on purpose.
+
+`/notes/` is the Notes app opened over the home screen, still inside the frame.
+A list of titles reads fine in a 393px column, so the frame costs nothing there
+and the illusion is worth keeping. It zooms open from roughly where the Notes
+icon sits on the home screen — `transform-origin: 62% 66%`, scaling from 0.16,
+which is an icon's share of a 393px screen.
+
+It is a page rather than an overlay on `/`. As an overlay, browser Back out of
+an article would land on the home screen with the app shut, and the list would
+have no address to link or share.
+
+`/notes/<slug>/` drops the frame. Two thousand words at 393px is not a reading
+experience, and a fixed 393px column inside a 1440px window is a costume. The
+wallpaper, the type family and the tokens carry over; the geometry does not.
+
+**The measure is 52ch, not 65ch.** `ch` is the width of "0", which is much
+wider than the average lowercase letter in SF: 65ch ran the longest lines to 90
+characters. 52ch measures 557px at the largest reading size and lands them at
+76. Re-measure rather than reasoning about it — the mapping is font-specific.
+
+**The reading scale extends the ramp, it does not replace it.** `--t-read`,
+`--t-read-lead`, `--t-read-h2` and `--t-display` are each the ceiling of a
+clamp whose floor is a value from the iOS ramp, so a phone reads the iOS sizes
+and a laptop reads the larger ones.
+
+**The wallpaper gets a second veil on article pages.** The scrim is tuned for
+11px app labels and leaves the worst case at 4.57:1, which is not a margin to
+hand a standfirst. `--read-veil` takes it to 9.3:1 for white and 5.7:1 for
+`--ink-2`. Under it, `--read-surface` composites to rgb(19,19,22) against the
+same worst case, which puts body text at 14.0:1 and iOS system blue at 4.94:1 —
+which is why links keep `--blue` instead of needing a lightened one.
+
+**Neither the reading surface nor the footer takes a backdrop-filter.** They
+abut, and two separately blurred regions sampling the same fixed image leave a
+visible seam at the join.
+
+### Build
+
+`content/notes/*.md` in, `notes/` and `sitemap.xml` out, via `build.py` —
+python3, standard library only. Generated HTML is committed so Pages stays
+dumb. The four widget rows on the home screen are injected between markers in
+`index.html`, so the widget cannot drift from what is actually published.
+
+Each article is a real document with its own title, description, canonical URL
+and Open Graph tags. One shell serving every article by hash would give them
+all identical metadata and leave a crawler an empty page.
+
+`README.md` has the authoring instructions.
+
 ## Traps
 
 **Do not give `.phone-frame`'s entrance animation `animation-fill-mode: both`.**
@@ -94,6 +147,16 @@ scroll-locking and swipe handling bolted on.
 
 **`--dur-sheet` and `SHEET_MS` are a pair.** The JS waits that long before
 clearing panel markup and removing a dismissed sheet. Change one, change both.
+
+**`script.js` is the home screen's alone.** It resolves `#detail` at module
+scope and calls `querySelector` on the result, so it throws on any page without
+the detail panel. That is why the status bar clock lives in `clock.js`, which
+`/notes/` loads instead.
+
+**Do not indent generated markup blindly.** `build.py` pretty-prints the
+article body into the template, and whitespace inside `<pre>` is content — an
+early pass walked every line of every code sample six columns right of the one
+above it. `indent()` tracks `<pre>` depth for that reason.
 
 ## JavaScript
 
@@ -132,4 +195,9 @@ python3 -m http.server 8899
 Headless Chrome clamps `--window-size` to a 500px minimum, so a narrow
 `--screenshot` is a *crop of a 500px render*, not a phone-width layout — it will
 show phantom overflow that is not real. To check true phone widths, load the
-page in an iframe of the exact size and screenshot the wrapper.
+page in an iframe of the exact size and screenshot the wrapper; to measure
+inside it, read the iframe's `contentDocument` from the parent.
+
+Look at the screenshots. The staircase in every code block and the reading
+measure running to 90 characters were both invisible in the source and obvious
+in a render.

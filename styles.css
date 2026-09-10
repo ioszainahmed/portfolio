@@ -68,6 +68,36 @@
 
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
           "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* --- Reading scale ----------------------------------------------------
+     The ramp above is a UI ramp. It tops out at 17px for body copy, which is
+     right in a 393px column and too small in a 65ch one, so long-form gets
+     four more steps rather than a second system — the article pages still use
+     --t-footnote, --t-callout and --t-title3 alongside these. Each one is the
+     ceiling of a clamp whose floor is a value from the ramp above, so a phone
+     reads the iOS sizes and a laptop reads the larger ones. */
+  --t-read: 20px;
+  --t-read-lead: 22px;
+  --t-read-h2: 30px;
+  --t-display: 40px;
+
+  /* --- Article surfaces --------------------------------------------------
+     The article pages keep the wallpaper so they feel like the same site, but
+     a 2,000-word column cannot be asked to hold contrast against the image's
+     near-white band. A second veil over the usual scrim takes the worst case
+     from 4.57:1 to 9.3:1 for white and 5.7:1 for --ink-2, which is what the
+     hero sits on; the reading surface under it composites to rgb(19,19,22)
+     over that same worst case, putting body text at 14.0:1. */
+  --read-veil:
+    linear-gradient(
+      180deg,
+      rgba(6, 4, 14, 0.42) 0%,
+      rgba(6, 4, 14, 0.55) 55%,
+      rgba(6, 4, 14, 0.62) 100%
+    );
+  --read-surface: rgba(12, 12, 15, 0.94);
+  --ink-read: rgba(255, 255, 255, 0.88);
 
   /* --- Geometry --------------------------------------------------------- */
   --r-tile: 22%;            /* percentage keeps the squircle proportional */
@@ -414,13 +444,28 @@ a {
   overflow: hidden;
 }
 
+/* An <a> to /notes/, matching the real widget: tapping the header opens the
+   app. The band bleeds to the widget edges under `overflow: hidden`, so the
+   focus ring is inset — a positive offset would be clipped away. */
 .notes-header {
   display: flex;
   align-items: center;
   gap: 7px;
   padding: 9px 13px 7px;
+  color: var(--ink-dark);
   background: linear-gradient(135deg, #ffd60a 0%, #ffcc00 100%);
   border-bottom: 1.5px dotted rgba(0, 0, 0, 0.22);
+  transition: filter var(--dur-tap) var(--ease-out);
+}
+
+.notes-header:focus-visible {
+  outline: 2px solid var(--ink-dark);
+  outline-offset: -3px;
+  border-radius: 0;
+}
+
+@media (hover: hover) {
+  .notes-header:hover { filter: brightness(1.06); }
 }
 
 /* Filled white folder: a tab, then the body. */
@@ -439,7 +484,7 @@ a {
   width: 7.5px;
   height: 3.5px;
   border-radius: 1.5px 1.5px 0 0;
-  background: #fff;
+  background: currentColor;
 }
 
 .notes-glyph::after {
@@ -450,14 +495,18 @@ a {
   width: 17px;
   height: 11.5px;
   border-radius: 1.5px;
-  background: #fff;
+  background: currentColor;
 }
 
+/* Dark ink, not white. White on this yellow measures 1.41:1 — it is what the
+   real widget does, and it is indefensible on a site that lists ADA work in
+   its own experience panel. Near-black on the same band is 12.8:1 and reads
+   as the Notes app's navigation bar, which is where the app view takes it. */
 .notes h2 {
   font-size: var(--t-footnote);
   font-weight: 700;
   letter-spacing: -0.1px;
-  color: #fff;
+  color: var(--ink-dark);
 }
 
 .notes-list {
@@ -469,12 +518,28 @@ a {
 .note-item {
   display: flex;
   flex-direction: column;
-  gap: 1px;
   padding: 6px 0;
   border-bottom: 1px solid var(--widget-line);
 }
 
 .note-item:last-child { border-bottom: 0; padding-bottom: 0; }
+
+/* Each row goes straight to its article rather than to the list: the rows name
+   specific pieces, so landing on an index would read as a misfire. */
+.note-link {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.note-link:active { opacity: 0.5; }
+
+@media (hover: hover) {
+  .note-link:hover .note-title {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
 
 .note-title {
   font-size: var(--t-caption);
@@ -482,10 +547,177 @@ a {
   line-height: 1.25;
 }
 
+/* One line, clipped. The preview is the note's description now rather than a
+   fixed "No additional text", and a two-line preview would grow the card past
+   the name widget it is stretch-aligned with.
+
+   --ink-dark-3 was 2.53:1 against the widget paper. --ink-dark-2 is 4.96:1;
+   the alpha that first clears AA here is 0.591, so 0.62 is the nearest token
+   above it rather than a new one. */
 .note-meta {
   font-size: 10px;
-  color: var(--ink-dark-3);
+  color: var(--ink-dark-2);
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   Notes app — /notes/, the widget's app opened over the home screen
+
+   This is a page of its own rather than an overlay on /. An overlay would mean
+   browser Back from an article returns to the home screen with the app shut,
+   and the list would have no URL to link or share.
+
+   A list of titles reads fine at 393px, so the frame costs nothing here and
+   the illusion is worth keeping. The articles abandon it — see Reader below.
+   ========================================================================== */
+
+/* Two rows, not four: status bar, then the app filling everything under it.
+   `.screen.screen-app` outranks the plain `.screen` rule in the mobile block,
+   which restates the four-row template. */
+.screen.screen-app {
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  padding: 12px 0 0;
+}
+
+.screen-app .statusbar { padding: 6px 22px 0; }
+
+/* iOS zooms an app open from the icon it was launched from. The Notes icon is
+   the third tile of the Connect row, about 62% across and 66% down the home
+   screen, and the app is very nearly the full screen, so its own 62%/66% is
+   close enough to land the zoom where the icon was. 0.16 is 62px over 393px —
+   an icon's share of the screen width. */
+@keyframes app-open {
+  from { opacity: 0; transform: scale(0.16); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.notes-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;             /* so the list, not the card, does the scrolling */
+  margin-top: 10px;
+  border-radius: 22px 22px 0 0;
+  background: rgba(252, 252, 254, 0.96);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  color: var(--ink-dark);
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 -14px 40px -12px rgba(0, 0, 0, 0.7);
+  transform-origin: 62% 66%;
+  animation: app-open 520ms var(--ease-sheet) backwards;
+}
+
+/* --- Navigation bar ----------------------------------------------------- */
+
+.notes-app-bar {
+  flex-shrink: 0;
+  padding: 10px 16px 12px;
+  background: linear-gradient(135deg, #ffd60a 0%, #ffcc00 100%);
+  border-bottom: 1.5px dotted rgba(0, 0, 0, 0.22);
+}
+
+.notes-app-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  color: var(--ink-dark-2);   /* 7.3:1 on the band */
+}
+
+.notes-app-back:focus-visible {
+  outline-color: var(--ink-dark);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .notes-app-back:hover { color: var(--ink-dark); }
+}
+
+.notes-app-chevron {
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+.notes-app-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: var(--t-title2);
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  color: var(--ink-dark);
+}
+
+/* --- List --------------------------------------------------------------- */
+
+.notes-app-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.note-row + .note-row { border-top: 1px solid var(--widget-line); }
+
+.note-row-link {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 16px;
+}
+
+/* The rows run edge to edge inside `overflow: hidden`, so the ring is inset. */
+.note-row-link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -3px;
+  border-radius: 8px;
+}
+
+.note-row-link:active { background: rgba(0, 0, 0, 0.05); }
+
+@media (hover: hover) {
+  .note-row-link:hover { background: rgba(0, 0, 0, 0.035); }
+}
+
+.note-row-title {
+  font-size: var(--t-headline);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.2px;
+}
+
+/* One line with an ellipsis, the way the real list truncates a preview. */
+.note-row-meta {
+  font-size: var(--t-footnote);
+  line-height: 1.3;
+  color: var(--ink-dark-2);   /* 4.96:1 on the app's paper */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The count sits in a bottom toolbar, as it does in the app. */
+.notes-app-count {
+  flex-shrink: 0;
+  padding: 10px 16px max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--widget-line);
+  background: rgba(0, 0, 0, 0.025);
+  font-size: var(--t-caption);
+  text-align: center;
+  color: var(--ink-dark-2);
 }
 
 /* ==========================================================================
@@ -901,6 +1133,452 @@ a {
 
 .sheet-cta:hover { filter: brightness(1.1); }
 .sheet-cta:active { transform: scale(0.985); }
+
+/* ==========================================================================
+   Reader — /notes/<slug>/, one article
+
+   The frame is abandoned here, on purpose. A list of titles reads fine at
+   393px; two thousand words do not, and a fixed 393px column inside a 1440px
+   window is a costume rather than a design. What carries over is the
+   wallpaper, the type family and the tokens — the page should feel like the
+   same site with the phone put down.
+   ========================================================================== */
+
+.reader {
+  min-height: 100dvh;
+  background: var(--void);
+}
+
+/* Fixed, so the wallpaper stays put as the article scrolls. Same image and
+   same filter as the home screen; the extra veil is in --read-veil. */
+.reader-wall {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.reader-wall::before,
+.reader-wall::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.reader-wall::before {
+  background: var(--wall);
+  filter: var(--wall-filter);
+}
+
+.reader-wall::after { background: var(--read-veil), var(--wall-scrim); }
+
+.reader-hero,
+.reader-main,
+.reader-foot {
+  position: relative;
+  z-index: 1;
+  padding-left: max(22px, env(safe-area-inset-left));
+  padding-right: max(22px, env(safe-area-inset-right));
+}
+
+/* The measure, set by measurement rather than by the usual 65ch reflex. `ch`
+   is the width of "0", which is much wider than the average lowercase letter
+   in SF, so the usual 65ch ran the longest lines here to 90 characters — well
+   past comfortable. 52ch measures 560px at this size and lands the longest
+   lines at 76, which is the top of the range rather than past it. */
+.reader-col {
+  width: 100%;
+  max-width: 52ch;
+  margin: 0 auto;
+}
+
+/* --- Navigation bar ------------------------------------------------------
+   Sticky, so the way back is reachable at any scroll position. The article
+   otherwise reads as a page you have been dropped onto rather than a screen
+   you pushed onto a stack, which is the wrong end of the illusion to lose.
+
+   The title swap is progressive: `position: sticky` and the back link are
+   pure CSS, and reader.js only adds the condensed title. With the script
+   blocked you still get a working bar.
+   ------------------------------------------------------------------------ */
+
+.reader-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0 max(22px, env(safe-area-inset-left));
+  background: rgba(14, 10, 22, 0.62);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.reader-bar-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 52ch;
+  height: 52px;
+  margin: 0 auto;
+}
+
+.reader-bar-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  color: var(--ink-2);
+  transition: color var(--dur-tap) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .reader-bar-back:hover { color: var(--ink); }
+}
+
+/* Sits out of the way until the hero title has scrolled under the bar. */
+.reader-bar-title {
+  min-width: 0;
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 220ms var(--ease-out),
+    transform 220ms var(--ease-out);
+}
+
+.reader-bar.is-condensed .reader-bar-title {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Hero --------------------------------------------------------------- */
+
+.reader-hero {
+  padding-top: clamp(22px, 5vw, 52px);
+  padding-bottom: clamp(34px, 7vw, 76px);
+}
+
+.reader-title {
+  font-size: clamp(var(--t-title2), 8vw, var(--t-display));
+  font-weight: 700;
+  letter-spacing: -1.2px;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.reader-standfirst {
+  margin-top: 14px;
+  font-size: clamp(var(--t-callout), 4vw, var(--t-read-lead));
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.reader-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(18px, 3vw, 26px);
+  font-size: var(--t-footnote);
+  color: var(--ink-2);
+}
+
+.reader-meta > * + *::before {
+  content: "\2022";
+  margin-right: 10px;
+  color: var(--ink-3);
+}
+
+.reader-byline { font-weight: 600; color: var(--ink); }
+
+/* --- Reading surface ---------------------------------------------------- */
+
+/* No backdrop-filter on these two. They abut, and two separately blurred
+   regions sampling the same fixed image leave a seam at the join. At 0.94 the
+   wallpaper still shows through as a few levels of drift, which is the
+   continuity the page is after. */
+.reader-main {
+  padding-top: clamp(30px, 6vw, 54px);
+  padding-bottom: clamp(24px, 5vw, 44px);
+  background: var(--read-surface);
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--r-panel) var(--r-panel) 0 0;
+}
+
+.reader-foot {
+  padding-bottom: clamp(40px, 9vw, 88px);
+  background: var(--read-surface);
+}
+
+/* --- Prose -------------------------------------------------------------- */
+
+.prose {
+  font-size: clamp(var(--t-body), 3.4vw, var(--t-read));
+  line-height: 1.72;
+  color: var(--ink-read);     /* 14.0:1 on the reading surface */
+  text-wrap: pretty;
+}
+
+.prose > * + * { margin-top: 1.15em; }
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: var(--ink);
+  letter-spacing: -0.4px;
+  line-height: 1.22;
+  text-wrap: balance;
+}
+
+.prose h2 {
+  margin-top: 2em;
+  font-size: clamp(var(--t-title2), 5.2vw, var(--t-read-h2));
+  font-weight: 700;
+}
+
+.prose h3 {
+  margin-top: 1.7em;
+  font-size: clamp(var(--t-title3), 4vw, var(--t-read-lead));
+  font-weight: 600;
+}
+
+/* h4 stays at the body size and leans on weight; anything smaller than the
+   copy it introduces stops reading as a heading. */
+.prose h4 {
+  margin-top: 1.5em;
+  font-size: 1em;
+  font-weight: 700;
+}
+
+.prose strong { font-weight: 600; color: var(--ink); }
+.prose em { font-style: italic; }
+
+/* iOS system blue measures 4.94:1 on the reading surface, so the token holds
+   here without lightening the way it had to on the name widget. */
+.prose a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(10, 132, 255, 0.45);
+  transition: text-decoration-color var(--dur-tap) var(--ease-out);
+}
+
+.prose a:hover { text-decoration-color: var(--blue); }
+
+.prose-list { padding-left: 1.4em; }
+.prose li + li { margin-top: 0.5em; }
+
+.prose ul.prose-list > li {
+  position: relative;
+  list-style: none;
+}
+
+.prose ul.prose-list > li::before {
+  content: "";
+  position: absolute;
+  left: -1em;
+  top: 0.66em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--yellow);
+}
+
+.prose ol.prose-list > li::marker {
+  color: var(--yellow);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.prose blockquote {
+  margin-top: 1.7em;
+  padding: 2px 0 2px 20px;
+  border-left: 3px solid var(--yellow);
+  font-size: clamp(var(--t-callout), 3.7vw, var(--t-read-lead));
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.prose blockquote > * + * { margin-top: 0.8em; }
+
+.prose code {
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* Wide code scrolls inside its own box; the page itself never does. */
+.code-block {
+  position: relative;
+  margin-top: 1.5em;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.42);
+  overflow: hidden;
+}
+
+.code-block pre {
+  overflow-x: auto;
+  padding: 18px;
+}
+
+.code-block code {
+  display: block;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: var(--t-footnote);
+  line-height: 1.6;
+  color: var(--ink-read);
+  white-space: pre;
+}
+
+.code-lang {
+  position: absolute;
+  top: 9px;
+  right: 13px;
+  font-size: var(--t-caption2);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.code-block:has(.code-lang) pre { padding-top: 30px; }
+
+.prose hr {
+  margin: 2.2em 0;
+  border: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.prose img {
+  margin-top: 1.5em;
+  border-radius: 14px;
+}
+
+/* --- Footer ------------------------------------------------------------- */
+
+.reader-adjacents {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding-top: clamp(26px, 5vw, 38px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+@media (min-width: 640px) {
+  .reader-adjacents { grid-template-columns: 1fr 1fr; }
+}
+
+.reader-adjacent {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.055);
+  transition: background var(--dur-tap) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .reader-adjacent:hover { background: rgba(255, 255, 255, 0.11); }
+}
+
+.reader-adjacent-label {
+  font-size: var(--t-caption2);
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--yellow);        /* 12.7:1 on the card */
+}
+
+.reader-adjacent-title {
+  font-size: var(--t-callout);
+  font-weight: 600;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* The way back out of the article, and the only route to the rest of the site
+   from here — so it is a button rather than the footnote-sized text link it
+   started as. Same shape as .detail-dismiss on the home screen, which is
+   already this site's language for "leave this view".
+
+   #58a6ff rather than the iOS system blue: on this tinted fill the system
+   blue measures 4.52:1, which clears AA by nothing at all. This is 6.53:1. */
+.reader-home {
+  margin-top: clamp(26px, 5vw, 40px);
+}
+
+.reader-home a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 22px;
+  border-radius: 16px;
+  font-size: var(--t-headline);
+  font-weight: 600;
+  color: #58a6ff;
+  background: rgba(10, 132, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(88, 166, 255, 0.22);
+  transition:
+    background var(--dur-tap) var(--ease-out),
+    transform var(--dur-tap) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .reader-home a:hover { background: rgba(10, 132, 255, 0.26); }
+}
+
+.reader-home a:active { transform: scale(0.985); }
+
+/* A four-icon grid — the thing being returned to, not a generic house.
+   One 7px tile plus three box-shadow copies at a 10px pitch. */
+.reader-home-glyph {
+  position: relative;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.reader-home-glyph::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow:
+    10px 0 0 currentColor,
+    0 10px 0 currentColor,
+    10px 10px 0 currentColor;
+}
+
+@media (max-width: 360px) {
+  .reader-hero,
+  .reader-main,
+  .reader-foot {
+    padding-left: max(18px, env(safe-area-inset-left));
+    padding-right: max(18px, env(safe-area-inset-right));
+  }
+}
 
 /* ==========================================================================
    Entrance — one orchestrated page load, then motion only on interaction
