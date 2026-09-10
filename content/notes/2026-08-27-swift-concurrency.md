@@ -2,11 +2,8 @@
 title: Swift concurrency
 date: 2026-08-27
 slug: swift-concurrency
-description: Placeholder. Actors do not remove the concurrency problem, they move it to the boundary where you can see it.
+description: Actors do not remove the concurrency problem, they move it to the boundary where you can see it.
 ---
-
-*Placeholder text. Replace the body of this file with the real article; the
-front matter above drives the title, the URL, the widget row and the feed.*
 
 The pitch for `async/await` is that it makes concurrent code read like
 sequential code. That is true and it is also the trap: it reads sequentially,

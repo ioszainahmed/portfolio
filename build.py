@@ -521,12 +521,18 @@ def render_article(note, newer, older):
 <body class="reader">
   <div class="reader-wall" aria-hidden="true"></div>
 
-  <header class="reader-hero">
-    <div class="reader-col">
-      <a class="reader-back" href="../">
+  <div class="reader-bar">
+    <div class="reader-bar-col">
+      <a class="reader-bar-back" href="../">
         <span class="notes-app-chevron" aria-hidden="true"></span>
         <span>Notes</span>
       </a>
+      <span class="reader-bar-title" aria-hidden="true">{esc(note['title'])}</span>
+    </div>
+  </div>
+
+  <header class="reader-hero">
+    <div class="reader-col">
       <h1 class="reader-title">{esc(note['title'])}</h1>
       <p class="reader-standfirst">{esc(note['description'])}</p>
       <p class="reader-meta">
@@ -548,6 +554,8 @@ def render_article(note, newer, older):
 {nav_html}      <p class="reader-home"><a href="../../">Back to the home screen</a></p>
     </div>
   </footer>
+
+  <script src="../../reader.js" defer></script>
 </body>
 </html>
 '''

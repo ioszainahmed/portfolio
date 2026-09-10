@@ -12,9 +12,8 @@
       <link>https://iosza.in/notes/thinking-in-systems/</link>
       <guid isPermaLink="true">https://iosza.in/notes/thinking-in-systems/</guid>
       <pubDate>Sat, 05 Sep 2026 00:00:00 +0000</pubDate>
-      <description>Placeholder. Chessboards, codebases and coalitions turn out to be the same problem wearing different clothes.</description>
-      <content:encoded><![CDATA[<p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
-<p>A chessboard is a system with perfect information and no ambiguity about the rules, and it is still hard. A codebase is a system with none of that. What carries over is not tactics but the habit of asking what a move does to the position two moves from now.</p>
+      <description>Chessboards, codebases and coalitions turn out to be the same problem wearing different clothes.</description>
+      <content:encoded><![CDATA[<p>A chessboard is a system with perfect information and no ambiguity about the rules, and it is still hard. A codebase is a system with none of that. What carries over is not tactics but the habit of asking what a move does to the position two moves from now.</p>
 <h2 id="what-a-system-asks-of-you">What a system asks of you</h2>
 <p>The interesting question in a codebase is rarely <em>does this work</em>. It is <strong>what does this make easy, and what does it quietly make expensive</strong>. A function that saves four lines today and forces every future caller to remember an ordering constraint has not saved anything.</p>
 <p>Three things I keep coming back to:</p>
@@ -31,45 +30,42 @@
 <blockquote><p>The purpose of a system is what it does, not what it was intended to do.</p></blockquote>
 <h2 id="where-it-stops-working">Where it stops working</h2>
 <p>The analogy has a limit. Chess ends. Software does not, and the position you are optimising for is one you will still be sitting in three years from now with a different team. That changes what counts as a good move: legibility starts to beat cleverness by a wide margin.</p>
-<p>More on this in <a href="https://iosza.in/notes/mvvm-vs-mvc-vs-viper/">MVVM vs MVC vs VIPER</a>, which is the same argument applied to something narrower.</p>]]></content:encoded>
+<p>More on this in <a href="https://iosza.in/notes/migrating-a-core-tab/">Migrating a core tab</a>, which is the same argument applied to something narrower.</p>]]></content:encoded>
     </item>
     <item>
-      <title>MVVM vs MVC vs VIPER</title>
-      <link>https://iosza.in/notes/mvvm-vs-mvc-vs-viper/</link>
-      <guid isPermaLink="true">https://iosza.in/notes/mvvm-vs-mvc-vs-viper/</guid>
+      <title>Migrating a core tab</title>
+      <link>https://iosza.in/notes/migrating-a-core-tab/</link>
+      <guid isPermaLink="true">https://iosza.in/notes/migrating-a-core-tab/</guid>
       <pubDate>Wed, 02 Sep 2026 00:00:00 +0000</pubDate>
-      <description>Placeholder. The architecture argument is mostly an argument about where you are willing to put the mess.</description>
-      <content:encoded><![CDATA[<p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
-<p>Nobody picks an architecture because it is correct. They pick it because of where it lets them put the parts of the app that refuse to be tidy — and every one of these patterns has a designated room for the mess.</p>
-<h2 id="the-three-briefly">The three, briefly</h2>
-<p><strong>MVC</strong> as Apple shipped it puts the mess in the view controller. That is not a flaw in the pattern so much as a flaw in the name: the controller is a view layer, so anything that touches both the view and the model lands there and stays.</p>
-<p><strong>MVVM</strong> moves it one hop out. The view model is testable, which is the real win, and it is also where every piece of formatting, coordination and half-business-logic will accumulate unless someone is watching.</p>
-<p><strong>VIPER</strong> splits the room into five smaller rooms. On a large team with a large app that is a genuine gain, because the seams are where the ownership boundaries are. On a screen with a title and a button it is ceremony.</p>
-<h2 id="what-actually-decides-it">What actually decides it</h2>
-<ol class="prose-list"><li>How many people touch this screen in a sprint.</li><li>Whether navigation is a property of the screen or of the flow.</li><li>How much of the logic you need to test without a simulator.</li></ol>
-<p>The third one does most of the work. If the answer is <em>most of it</em>, you want a layer that does not import <code>UIKit</code>, and the name you give that layer matters much less than the fact that it exists.</p>
-<div class="code-block"><span class="code-lang" aria-hidden="true">swift</span><pre class="lang-swift"><code>@MainActor
-final class ReservationViewModel: ObservableObject {
-    @Published private(set) var state: LoadState&lt;[Reservation]&gt; = .idle
-
-    func load() async {
-        state = .loading
-        do { state = .loaded(try await service.reservations()) }
-        catch { state = .failed(error) }
+      <description>Replacing a legacy tab in a shipping app, one screen at a time, without a rewrite anyone had to approve.</description>
+      <content:encoded><![CDATA[<p>Nobody signs off on a rewrite. What they sign off on is a feature, and the migration rides along underneath it. A tab that has been in the app since Objective-C was the only option is not going to be replaced in a quarter, and proposing that is the fastest way to have the idea rejected on cost.</p>
+<h2 id="start-at-the-leaves">Start at the leaves</h2>
+<p>The instinct is to rebuild the container first — the tab, the navigation, the coordinator — and fill it in. That is the version that stalls, because nothing ships until all of it works, and the branch ages badly against a codebase twenty other people are changing.</p>
+<p>Going the other way works better: replace the smallest leaf screen, ship it, then the next one. Each step is a normal feature-sized change that a reviewer can hold in their head.</p>
+<ul class="prose-list"><li>Every step is independently shippable, so the work survives a reprioritisation.</li><li>Bugs are attributable. When something regresses you know which screen did it.</li><li>The container is migrated last, by which point it barely does anything.</li></ul>
+<h3 id="the-seam-is-the-hard-part">The seam is the hard part</h3>
+<p>Hosting a SwiftUI view inside a UIKit stack is trivial. Keeping two navigation models honest about who owns the back button is not:</p>
+<div class="code-block"><span class="code-lang" aria-hidden="true">swift</span><pre class="lang-swift"><code>final class LegacyHost: UIHostingController&lt;DetailView&gt; {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // The UIKit parent still owns the chrome until the whole tab moves.
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
 }</code></pre></div>
-<p>That is MVVM by most definitions, and it would be a presenter under VIPER, and it would live in a controller extension under MVC. The testability is a property of the boundary, not of the acronym.</p>
-<blockquote><p>Pick the smallest structure that still puts the untestable parts on one side of a line you can draw.</p></blockquote>
-<p>See also <a href="https://iosza.in/notes/thinking-in-systems/">Thinking in systems</a>.</p>]]></content:encoded>
+<p>That line is the entire migration in miniature. Two systems, one of which thinks it is in charge, and a boundary you have to keep explicit until the older one is gone.</p>
+<h2 id="what-actually-slows-you-down">What actually slows you down</h2>
+<p>Not the UI. The UI is the part with a clear finish line. The slow parts are the analytics events that fired from <code>viewDidAppear</code> and now need somewhere honest to live, the A/B assignment read at a point in the lifecycle SwiftUI does not have, and the deep links that pointed at a view controller by name.</p>
+<blockquote><p>The old code is not badly written. It is written against assumptions that stopped being true, and it never got told.</p></blockquote>
+<h2 id="knowing-when-to-stop">Knowing when to stop</h2>
+<p>The goal was never a SwiftUI app. It was a tab that a new engineer can change without reading five years of history first. Some of the old code clears that bar already, and rewriting it buys nothing but risk. Leave it.</p>]]></content:encoded>
     </item>
     <item>
       <title>Swift concurrency</title>
       <link>https://iosza.in/notes/swift-concurrency/</link>
       <guid isPermaLink="true">https://iosza.in/notes/swift-concurrency/</guid>
       <pubDate>Thu, 27 Aug 2026 00:00:00 +0000</pubDate>
-      <description>Placeholder. Actors do not remove the concurrency problem, they move it to the boundary where you can see it.</description>
-      <content:encoded><![CDATA[<p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
-<p>The pitch for <code>async/await</code> is that it makes concurrent code read like sequential code. That is true and it is also the trap: it reads sequentially, so it is easy to stop noticing the suspension points, which are the only places anything interesting can go wrong.</p>
+      <description>Actors do not remove the concurrency problem, they move it to the boundary where you can see it.</description>
+      <content:encoded><![CDATA[<p>The pitch for <code>async/await</code> is that it makes concurrent code read like sequential code. That is true and it is also the trap: it reads sequentially, so it is easy to stop noticing the suspension points, which are the only places anything interesting can go wrong.</p>
 <h2 id="suspension-points-are-the-api">Suspension points are the API</h2>
 <p>Every <code>await</code> is a place where the world can change underneath you. State you read before it may not hold after it.</p>
 <div class="code-block"><span class="code-lang" aria-hidden="true">swift</span><pre class="lang-swift"><code>func refresh() async {
@@ -87,9 +83,8 @@ final class ReservationViewModel: ObservableObject {
       <link>https://iosza.in/notes/chess-and-codebases/</link>
       <guid isPermaLink="true">https://iosza.in/notes/chess-and-codebases/</guid>
       <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
-      <description>Placeholder. Both reward positional play, and both punish the move that only works if nothing else changes.</description>
-      <content:encoded><![CDATA[<p><em>Placeholder text. Replace the body of this file with the real article; the front matter above drives the title, the URL, the widget row and the feed.</em></p>
-<p>Club players lose to tactics. Everyone above that loses to position — a slow accumulation of small concessions, none of which looked like a mistake at the time. Codebases go the same way, and the concessions have names: the one-off flag, the temporary bridge, the <em>we will clean this up after launch</em>.</p>
+      <description>Both reward positional play, and both punish the move that only works if nothing else changes.</description>
+      <content:encoded><![CDATA[<p>Club players lose to tactics. Everyone above that loses to position — a slow accumulation of small concessions, none of which looked like a mistake at the time. Codebases go the same way, and the concessions have names: the one-off flag, the temporary bridge, the <em>we will clean this up after launch</em>.</p>
 <h2 id="the-shared-lesson">The shared lesson</h2>
 <p>A move that only works if nothing else changes is not a move, it is a liability with a delay on it.</p>
 <ul class="prose-list"><li>In chess you ask what squares this gives up.</li><li>In a codebase you ask what this makes harder to change.</li></ul>

@@ -2,11 +2,8 @@
 title: Chess and codebases
 date: 2026-08-19
 slug: chess-and-codebases
-description: Placeholder. Both reward positional play, and both punish the move that only works if nothing else changes.
+description: Both reward positional play, and both punish the move that only works if nothing else changes.
 ---
-
-*Placeholder text. Replace the body of this file with the real article; the
-front matter above drives the title, the URL, the widget row and the feed.*
 
 Club players lose to tactics. Everyone above that loses to position — a slow
 accumulation of small concessions, none of which looked like a mistake at the

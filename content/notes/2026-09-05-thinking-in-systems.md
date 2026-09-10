@@ -2,11 +2,8 @@
 title: Thinking in systems
 date: 2026-09-05
 slug: thinking-in-systems
-description: Placeholder. Chessboards, codebases and coalitions turn out to be the same problem wearing different clothes.
+description: Chessboards, codebases and coalitions turn out to be the same problem wearing different clothes.
 ---
-
-*Placeholder text. Replace the body of this file with the real article; the
-front matter above drives the title, the URL, the widget row and the feed.*
 
 A chessboard is a system with perfect information and no ambiguity about the
 rules, and it is still hard. A codebase is a system with none of that. What
@@ -57,5 +54,5 @@ are optimising for is one you will still be sitting in three years from now
 with a different team. That changes what counts as a good move: legibility
 starts to beat cleverness by a wide margin.
 
-More on this in [MVVM vs MVC vs VIPER](../mvvm-vs-mvc-vs-viper/), which is the
+More on this in [Migrating a core tab](../migrating-a-core-tab/), which is the
 same argument applied to something narrower.
