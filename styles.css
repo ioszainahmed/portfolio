@@ -393,10 +393,16 @@ a {
    Widgets
    ========================================================================== */
 
+/* The Dynamic Island overlays the top of the screen, and the status bar sits
+   beside it rather than under it, so the first widget row has to clear the
+   island itself. A real home screen leaves roughly 24pt there; at 2px the
+   widgets looked welded to it. Trimmed back on mobile, where the island is
+   hidden and only the status bar is above. */
 .widgets {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  margin-top: 22px;
 }
 
 .widget {
@@ -1737,7 +1743,7 @@ a {
     font-size: var(--t-subhead);
   }
 
-  .widgets { gap: 12px; }
+  .widgets { gap: 12px; margin-top: 6px; }
   .widget { padding: 16px; border-radius: 22px; }
 
   /* Two columns at every width. Stacking these full-width gets closer to the
