@@ -174,6 +174,7 @@ a {
 
 .stage {
   position: relative;
+  z-index: 1;              /* above .home-wall on mobile */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -268,6 +269,36 @@ a {
 }
 
 .screen::-webkit-scrollbar { display: none; }
+
+/* The mobile wallpaper. Off on desktop, where the frame clips the wallpaper to
+   the screen's rounded rect and .screen's own pseudo-elements do the job.
+
+   Structured deliberately: the fixed element carries no filter, and the filter
+   sits on a child. A filter on a fixed element promotes it to its own
+   composited layer in WebKit, which stops it tracking the viewport on iOS
+   Safari — it scrolls with the document and exposes a band above it. This is
+   the same shape as .reader-wall, which never had the problem. */
+.home-wall {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.home-wall::before,
+.home-wall::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.home-wall::before {
+  background: var(--wall);
+  filter: var(--wall-filter);
+}
+
+.home-wall::after { background: var(--wall-scrim); }
 
 .screen::before {
   content: "";
@@ -1685,12 +1716,19 @@ a {
     grid-template-rows: auto auto 1fr auto;
   }
 
-  /* The wallpaper is fixed so it does not slide away as the page scrolls. */
+  /* The wallpaper moves out to .home-wall here. Fixing the screen's own
+     pseudo-elements did not survive iOS Safari: a filter on a fixed element
+     promotes it to its own composited layer, which stops tracking the viewport
+     and scrolls with the document instead, sliding the top edge down and
+     leaving a black band above it. The article pages never had this because
+     .reader-wall keeps the filter on a child of the fixed element rather than
+     on the fixed element itself, which is the shape .home-wall copies. */
   .screen::before,
   .screen::after {
-    position: fixed;
-    inset: 0;
+    display: none;
   }
+
+  .home-wall { display: block; }
 
   /* Kept on mobile, as it was originally: the clock and indicators are what
      make the page read as a phone once the frame is gone. */

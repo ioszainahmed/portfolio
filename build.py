@@ -461,6 +461,8 @@ def render_index(notes):
 {ld}
 </head>
 <body>
+  <div class="home-wall" aria-hidden="true"></div>
+
   <div class="stage">
     <div class="phone-frame">
       <div class="dynamic-island" aria-hidden="true">
