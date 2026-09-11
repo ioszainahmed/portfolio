@@ -1706,11 +1706,12 @@ a {
     padding:
       max(12px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
       max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
-    /* Four rows, same as the base rule — status bar, widgets, apps, dock.
-       The 1fr must land on the app grid: if a child above it is ever removed
-       from the grid (display:none rather than hidden), the rows shift up, the
-       dock inherits the 1fr and stretches, and a gap opens beneath it. */
-    grid-template-rows: auto auto 1fr auto;
+    /* Three rows, not the base rule's four: the status bar is hidden below, and
+       display:none takes a child out of the grid entirely rather than leaving
+       an empty track. Miss this and the rows shift up, the dock inherits the
+       1fr meant for the app grid, stretches, and leaves a gap beneath itself.
+       The 1fr has to land on .apps. */
+    grid-template-rows: auto 1fr auto;
   }
 
   /* The wallpaper moves out to .home-wall here. Fixing the screen's own
@@ -1727,12 +1728,13 @@ a {
 
   .home-wall { display: block; }
 
-  /* Kept on mobile, as it was originally: the clock and indicators are what
-     make the page read as a phone once the frame is gone. */
-  .statusbar {
-    padding: 2px 4px 0;
-    font-size: var(--t-subhead);
-  }
+  /* Hidden on a real phone, and only there. Inside the desktop frame this is
+     the illusion — there is no other status bar on screen. On a phone iOS is
+     already drawing one a few pixels above it, so this one is a second clock
+     showing the same time, which reads as a rendering fault rather than a
+     styling choice. It also gives back its own height on the layout that can
+     least afford it. */
+  .statusbar { display: none; }
 
   .widgets { gap: 12px; margin-top: 6px; }
   .widget { padding: 16px; border-radius: 22px; }
