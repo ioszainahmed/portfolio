@@ -8,21 +8,16 @@
   /* --- Wallpaper -------------------------------------------------------- */
   /* The stock iOS wallpaper. It is what makes this read as an iPhone rather
      than a generic phone, so it stays. */
-  --wall: url('assets/wallpaper.jpg') center / cover no-repeat;
-  /* The image has a near-white band across the middle, exactly where the
-     Connect and Tools rows sit, and that band sets the legibility floor.
+  --wall: url('assets/wallpaper-tuned.jpg') center / cover no-repeat;
+  /* The image ships pre-filtered. The CSS filter it replaces promoted the
+     wallpaper into its own composited layer, and on iOS Safari that layer
+     stopped tracking the viewport: a fixed wallpaper drifted as the page
+     scrolled, exposing bands of page background above and below it. Baking it
+     also stops the browser re-filtering a full-screen image every frame.
 
-     Most of the taming is done by the filter rather than the scrim, because a
-     black scrim desaturates as it darkens — it washes the wallpaper toward
-     grey — whereas contrast() compresses the bright band while lifting the
-     shadows, and saturate() puts the colour back. Measured against the source
-     image, this combination is 35% brighter and 26% more colourful than a flat
-     scrim alone, at the same worst-case contrast.
-
-     White app labels sit at 4.57:1 here (AA is 4.5:1). Raising brightness or
-     dropping the scrim goes under it — re-measure rather than adjusting by
-     eye. */
-  --wall-filter: saturate(1.45) contrast(0.8) brightness(0.72);
+     tools/wallpaper.py holds the values and the reasoning. White app labels
+     sit at 4.70:1 over the scrim below (AA is 4.5:1) — re-measure there rather
+     than adjusting by eye. */
   --wall-scrim:
     linear-gradient(
       180deg,
@@ -141,7 +136,6 @@ body {
   background-image: radial-gradient(80% 60% at 50% 0%, var(--void-lift) 0%, var(--void) 70%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
 img { display: block; max-width: 100%; height: auto; }
@@ -295,7 +289,6 @@ a {
 
 .home-wall::before {
   background: var(--wall);
-  filter: var(--wall-filter);
 }
 
 .home-wall::after { background: var(--wall-scrim); }
@@ -305,7 +298,6 @@ a {
   position: absolute;
   inset: 0;
   background: var(--wall);
-  filter: var(--wall-filter);
   z-index: -2;
 }
 
@@ -1198,7 +1190,6 @@ a {
 
 .reader-wall::before {
   background: var(--wall);
-  filter: var(--wall-filter);
 }
 
 .reader-wall::after { background: var(--read-veil), var(--wall-scrim); }
